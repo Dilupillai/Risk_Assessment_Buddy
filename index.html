@@ -784,8 +784,9 @@
     <div class="p-4 bg-amber-50 border border-amber-200 rounded-lg">
         <h3 class="text-lg font-semibold text-amber-900 mb-2">2. AI Risk Assessment Generator</h3>
         <ul class="list-disc list-inside space-y-1">
-            <li>📤 <strong class="font-semibold">External API Call:</strong> For AI-powered task breakdowns and recommendations (from text descriptions or batched image notes), only the text is sent to a third-party AI service (OpenRouter). No images or videos are sent. Data is subject to <a href="https://openrouter.ai/privacy" target="_blank">OpenRouter's Privacy Policy</a>.</li>
-            <li>⚠️ <strong class="font-semibold">Do Not Include Sensitive Data:</strong> Avoid including personal info (names, addresses, etc.) in text fields, as it's processed externally.</li>
+            <li>📤 <strong class="font-semibold">External API Call:</strong> For AI-powered task breakdowns and recommendations, only text-based risk assessment data is sent to a third-party AI service (OpenRouter). This includes: step descriptions, hazard identifications, control measures, and user-provided ratings (Frequency, Severity, Likelihood). No images or videos are sent. Data is subject to <a href="https://openrouter.ai/privacy" target="_blank">OpenRouter's Privacy Policy</a>.</li>
+            <li>📦 <strong class="font-semibold">Batching:</strong> Multiple assessment entries may be processed together in batches to improve efficiency.</li>
+            <li>⚠️ <strong class="font-semibold">Do Not Include Sensitive Data:</strong> Avoid including personal info (names, addresses, employee names, etc.) in text fields, as it's processed externally.</li>
             <li><strong class="font-semibold">Anonymous Data:</strong> Text is not tied to your identity; however, the service may log IP addresses.</li>
         </ul>
     </div>
