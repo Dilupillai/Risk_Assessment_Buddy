@@ -25,6 +25,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+    <script async src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/ffmpeg.min.js"></script>
     <script src="lib/face-api.min.js"></script> 
     <script src="lib/jszip.min.js"></script>
     <script src="lib/pdfkit.min.js"></script>
@@ -155,9 +156,9 @@
     display: flex; justify-content: center; align-items: center;
 }
 .gy-modal-content {
-    background: white; width: 90%; max-width: 1400px; height: 90%; 
-    border-radius: 12px; padding: 30px; overflow-y: auto; position: relative;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3); font-family: 'Segoe UI', sans-serif;
+    background: white; width: 95%; max-width: 1600px; height: 90%; 
+    border-radius: 16px; padding: 40px; overflow-y: auto; position: relative;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3); font-family: 'Segoe UI', sans-serif;
 }
 .gy-close-modal {
     position: absolute; top: 15px; right: 20px; font-size: 30px; border: none; 
@@ -188,6 +189,11 @@
 .gy-card-body { padding: 15px; display: flex; flex-direction: column; gap: 10px; }
 .gy-textarea { width: 100%; box-sizing: border-box; border: 1px solid #e0e0e0; border-radius: 6px; padding: 8px; font-size: 0.9rem; min-height: 50px; background: #fafafa; }
 .gy-main-btn { background: #27ae60; color: white; border: none; padding: 15px 40px; font-size: 1.2rem; border-radius: 50px; cursor: pointer; }
+        .btn-indigo { background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%); color: white; border: none; padding: 12px 24px; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3); }
+        .btn-indigo:hover { background: linear-gradient(135deg, #4338ca 0%, #3730a3 100%); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4); }
+        .btn-indigo:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-white { background: white; color: #4f46e5; border: 2px solid #4f46e5; padding: 10px 20px; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; }
+        .btn-white:hover { background: #f5f3ff; border-color: #4338ca; }
 
 
         /* Custom styles for Google Charts transparency */
@@ -212,12 +218,20 @@
         .delete-btn { background:#ef4444; color:#fff; padding:6px 8px; border-radius:6px; border:none; cursor:pointer; }
         .restore-btn { background:#10b981; color:#fff; padding:6px 8px; border-radius:6px; border:none; cursor:pointer; }
         
+        /* Hide extra spacing for hidden language sections */
+        details[style*="display: none"] {
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            display: none !important;
+        }
 
     </style>
 </head>
 <body class="bg-slate-100 font-sans text-slate-800">
     <main class="mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-8">
-<details class="bg-indigo-50 rounded-lg border border-indigo-200 mb-8 group overflow-hidden" id="howToUse-en" data-lang="en">
+<div id="howToUseContainer">
+<details class="bg-indigo-50 rounded-lg border border-indigo-200 mb-8 group overflow-hidden" id="howToUse-en" data-lang="en" style="display: block;">
     <summary class="p-6 flex justify-between items-center cursor-pointer list-none">
         <h2 class="text-xl font-semibold text-indigo-900">How to Use This App 🚀</h2>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-700 transform transition-transform duration-200 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -297,7 +311,7 @@
 </details>
 
 <!-- FRENCH VERSION -->
-<details class="bg-indigo-50 rounded-lg border border-indigo-200 mb-8 group overflow-hidden hidden" id="howToUse-fr" data-lang="fr">
+<details class="bg-indigo-50 rounded-lg border border-indigo-200 mb-8 group overflow-hidden" id="howToUse-fr" data-lang="fr" style="display: none;">
     <summary class="p-6 flex justify-between items-center cursor-pointer list-none">
         <h2 class="text-xl font-semibold text-indigo-900">Comment utiliser cette application 🚀</h2>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-700 transform transition-transform duration-200 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -377,7 +391,7 @@
 </details>
 
 <!-- GERMAN VERSION -->
-<details class="bg-indigo-50 rounded-lg border border-indigo-200 mb-8 group overflow-hidden hidden" id="howToUse-de" data-lang="de">
+<details class="bg-indigo-50 rounded-lg border border-indigo-200 mb-8 group overflow-hidden" id="howToUse-de" data-lang="de" style="display: none;">
     <summary class="p-6 flex justify-between items-center cursor-pointer list-none">
         <h2 class="text-xl font-semibold text-indigo-900">Verwendung dieser Anwendung 🚀</h2>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-700 transform transition-transform duration-200 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -455,6 +469,7 @@
         </div>
     </div>
 </details>
+</div>
         <!-- Modern Tab Interface Header -->
         <section class="bg-gradient-to-r from-indigo-600 to-blue-700 rounded-t-2xl shadow-lg overflow-hidden">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-6 sm:p-8 text-white">
@@ -505,7 +520,7 @@
                             <span class="font-semibold text-indigo-900">Click to upload or drag and drop</span>
                             <span class="text-sm text-indigo-700">Images or Videos</span>
                         </label>
-                        <input type="file" id="imageUpload" multiple accept="image/png, image/jpeg, video/*" class="hidden-file-input">
+                        <input type="file" id="imageUpload" multiple accept="image/png, image/jpeg, video/mp4, video/quicktime, video/x-msvideo, video/x-matroska, .mov, .avi, .mkv, .webm" class="hidden-file-input">
                     </div>
                     <div id="progress-container" class="hidden space-y-2">
                         <label for="progressBar" class="font-semibold text-sm text-slate-700">Overall Progress:</label>
@@ -573,24 +588,14 @@
         <!-- Risk Assessment Section (Works across all tabs) -->
         <section id="risk-generator-app" class="bg-white rounded-2xl shadow-xl overflow-hidden">
             <div class="p-6 sm:p-8 space-y-6">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="bg-gradient-to-br from-indigo-50 to-blue-50 p-6 rounded-lg border border-indigo-200">
-                        <h3 class="text-lg font-bold text-indigo-900 mb-3">2️⃣ Next Steps</h3>
-                        <ul class="space-y-2 text-sm text-indigo-800">
-                            <li>✓ Finish uploading and describing your task/images</li>
-                            <li>✓ Click "Generate Task Breakdown" below</li>
-                            <li>✓ Review the risk assessment table</li>
-                            <li>✓ Generate AI recommendations</li>
-                            <li>✓ Download your complete report</li>
-                        </ul>
-                    </div>
-                    <div class="bg-gradient-to-br from-amber-50 to-orange-50 p-6 rounded-lg border border-amber-200">
+                <div class="grid grid-cols-1 lg:grid-cols-1 gap-6">
+                        <div class="bg-gradient-to-br from-amber-50 to-orange-50 p-6 rounded-lg border border-amber-200">
                         <h3 class="text-lg font-bold text-amber-900 mb-3">💡 Pro Tips</h3>
                         <ul class="space-y-2 text-sm text-amber-800">
                             <li>• Mention past incidents for more accurate scoring</li>
                             <li>• Add detailed hazard descriptions in notes</li>
                             <li>• Review AI suggestions before finalizing</li>
-                            <li>• Export to PDF for stakeholder review</li>
+                            <li>• Save your Project and resume your work </li>
                         </ul>
                     </div>
                 </div>
@@ -1221,7 +1226,53 @@
     "Repetitive motion injury": "Repetitive motion injury",
     "Respiratory irritation (e.g. Asthma)": "Respiratory irritation (e.g. Asthma)",
     "Sprain": "Sprain",
-    "Strain": "Strain"
+    "Strain": "Strain",
+    // Instruction and Helper Text (English)
+    "Upload media files. Faces will be automatically blurred. Click thumbnails to add risk descriptions, hazards, and controls.": "Upload media files. Faces will be automatically blurred. Click thumbnails to add risk descriptions, hazards, and controls.",
+    "Write a detailed description of the work process. Mention any previous incidents for better risk scoring.": "Write a detailed description of the work process. Mention any previous incidents for better risk scoring.",
+    "Upload an Excel file containing risk data. The system will parse and convert it to risk assessment format.": "Upload an Excel file containing risk data. The system will parse and convert it to risk assessment format.",
+    "Click a thumbnail below to open the large preview for manual blurring and to add risk notes. You can also drag-and-drop to reorder images.": "Click a thumbnail below to open the large preview for manual blurring and to add risk notes. You can also drag-and-drop to reorder images.",
+    "Uploaded videos will appear here...": "Uploaded videos will appear here...",
+    "Processed images/frames will appear here...": "Processed images/frames will appear here...",
+    "Click to select Excel file": "Click to select Excel file",
+    "Supported: .xlsx, .xls, .csv": "Supported: .xlsx, .xls, .csv",
+    "Finish uploading and describing your task/images": "Finish uploading and describing your task/images",
+    "Review the risk assessment table": "Review the risk assessment table",
+    "Generate AI recommendations": "Generate AI recommendations",
+    "Download your complete report": "Download your complete report",
+    "Mention past incidents for more accurate scoring": "Mention past incidents for more accurate scoring",
+    "Add detailed hazard descriptions in notes": "Add detailed hazard descriptions in notes",
+    "Review AI suggestions before finalizing": "Review AI suggestions before finalizing",
+    "Export to PDF for stakeholder review": "Export to PDF for stakeholder review",
+    "Loading AI models... 🧠": "Loading AI models... 🧠",
+    // UI Buttons and Labels (English)
+    "Process Files": "Process Files",
+    "Download All Images and Reports as ZIP": "Download All Images and Reports as ZIP",
+    "Generate AI Risk Assessment from Image Notes": "Generate AI Risk Assessment from Image Notes",
+    "Save Project": "Save Project",
+    "Load Project": "Load Project",
+    "Generate Task Breakdown": "Generate Task Breakdown",
+    "Translate Table": "Translate Table",
+    "Download Project ZIP": "Download Project ZIP",
+    "Print": "Print",
+    "Privacy Policy": "Privacy Policy",
+    "Generate AI Recommendations & Visuals": "Generate AI Recommendations & Visuals",
+    "Advanced Import / Convert": "Advanced Import / Convert",
+    "Click to upload or drag and drop": "Click to upload or drag and drop",
+    "Images or Videos": "Images or Videos",
+    "Overall Progress": "Overall Progress",
+    "Uploaded Videos (Capture frames below)": "Uploaded Videos (Capture frames below)",
+    "Upload Images & Videos": "Upload Images & Videos",
+    "Describe Your Task": "Describe Your Task",
+    "Import Excel File": "Import Excel File",
+    "Description of step": "Description of step",
+    "What can go wrong / spot hazards": "What can go wrong / spot hazards",
+    "Any existing controls": "Any existing controls",
+    "Language": "Language",
+    "Frequency": "Frequency",
+    "Severity": "Severity",
+    "Likelihood": "Likelihood",
+    "Not set": "Not set"
   },
   fr: {
     // Hazard Groups (French)
@@ -1447,7 +1498,53 @@
     "Repetitive motion injury": "Blessure par mouvements répétitifs",
     "Respiratory irritation (e.g. Asthma)": "Irritation respiratoire (ex. Asthme)",
     "Sprain": "Entorse",
-    "Strain": "Foulure"
+    "Strain": "Foulure",
+    // Instruction and Helper Text (French)
+    "Upload media files. Faces will be automatically blurred. Click thumbnails to add risk descriptions, hazards, and controls.": "Téléchargez des fichiers médias. Les visages seront automatiquement floutés. Cliquez sur les miniatures pour ajouter des descriptions de risques, des dangers et des contrôles.",
+    "Write a detailed description of the work process. Mention any previous incidents for better risk scoring.": "Écrivez une description détaillée du processus de travail. Mentionnez les incidents antérieurs pour un meilleur calcul des risques.",
+    "Upload an Excel file containing risk data. The system will parse and convert it to risk assessment format.": "Téléchargez un fichier Excel contenant des données de risque. Le système l'analysera et le convertira au format d'évaluation des risques.",
+    "Click a thumbnail below to open the large preview for manual blurring and to add risk notes. You can also drag-and-drop to reorder images.": "Cliquez sur une miniature ci-dessous pour ouvrir l'aperçu agrandi pour le floutage manuel et pour ajouter des notes de risque. Vous pouvez également glisser-déposer pour réorganiser les images.",
+    "Uploaded videos will appear here...": "Les vidéos téléchargées apparaîtront ici...",
+    "Processed images/frames will appear here...": "Les images/images traitées apparaîtront ici...",
+    "Click to select Excel file": "Cliquez pour sélectionner le fichier Excel",
+    "Supported: .xlsx, .xls, .csv": "Formats pris en charge: .xlsx, .xls, .csv",
+    "Finish uploading and describing your task/images": "Terminez le téléchargement et la description de votre tâche/images",
+    "Review the risk assessment table": "Examinez le tableau d'évaluation des risques",
+    "Generate AI recommendations": "Générer les recommandations IA",
+    "Download your complete report": "Téléchargez votre rapport complet",
+    "Mention past incidents for more accurate scoring": "Mentionnez les incidents passés pour un calcul plus précis",
+    "Add detailed hazard descriptions in notes": "Ajoutez des descriptions détaillées des dangers dans les notes",
+    "Review AI suggestions before finalizing": "Examinez les suggestions IA avant de finaliser",
+    "Export to PDF for stakeholder review": "Exporter au format PDF pour examen des parties prenantes",
+    "Loading AI models... 🧠": "Chargement des modèles IA... 🧠",
+    // UI Buttons and Labels (French)
+    "Process Files": "Traiter les fichiers",
+    "Download All Images and Reports as ZIP": "Télécharger toutes les images et rapports en ZIP",
+    "Generate AI Risk Assessment from Image Notes": "Générer une évaluation des risques IA à partir des notes d'image",
+    "Save Project": "Enregistrer le projet",
+    "Load Project": "Charger le projet",
+    "Generate Task Breakdown": "Générer une ventilation des tâches",
+    "Translate Table": "Traduire le tableau",
+    "Download Project ZIP": "Télécharger ZIP du projet",
+    "Print": "Imprimer",
+    "Privacy Policy": "Politique de confidentialité",
+    "Generate AI Recommendations & Visuals": "Générer les recommandations et visuels IA",
+    "Advanced Import / Convert": "Importation / Conversion avancée",
+    "Click to upload or drag and drop": "Cliquez pour télécharger ou glissez-déposez",
+    "Images or Videos": "Images ou vidéos",
+    "Overall Progress": "Progrès global",
+    "Uploaded Videos (Capture frames below)": "Vidéos téléchargées (capturer les images ci-dessous)",
+    "Upload Images & Videos": "Télécharger des images et des vidéos",
+    "Describe Your Task": "Décrivez votre tâche",
+    "Import Excel File": "Importer un fichier Excel",
+    "Description of step": "Description de l'étape",
+    "What can go wrong / spot hazards": "Qu'est-ce qui pourrait mal tourner / repérer les dangers",
+    "Any existing controls": "Tous les contrôles existants",
+    "Language": "Langue",
+    "Frequency": "Fréquence",
+    "Severity": "Gravité",
+    "Likelihood": "Probabilité",
+    "Not set": "Non défini"
   },
   de: {
     // Hazard Groups (German)
@@ -1674,39 +1771,58 @@
     "Respiratory irritation (e.g. Asthma)": "Atemwegsreizung (z.B. Asthma)",
     "Sprain": "Verstauchung",
     "Strain": "Zerrung",
-    // How to Use App (English)
-    "How to Use This App": "How to Use This App",
-    "Risk Assessment Buddy is a field accelerator": "Risk Assessment Buddy is a field accelerator",
-    "Start Fresh with Rich Media": "Start Fresh with Rich Media",
-    "Describe the Task in Plain Language": "Describe the Task in Plain Language",
-    "Format Legacy Risk Assessments": "Format Legacy Risk Assessments",
-    "Important Notes": "Important Notes",
-    "No Cloud Storage": "No Cloud Storage",
-    "Save and Resume": "Save and Resume",
-    "Browser Refresh Warning": "Browser Refresh Warning",
-    // How to Use App (French)
-    "Risk Assessment Buddy est un outil accélérateur": "Risk Assessment Buddy est un outil accélérateur",
-    "Démarrer de zéro avec des médias riches": "Démarrer de zéro avec des médias riches",
-    "Décrivez la tâche en langage simple": "Décrivez la tâche en langage simple",
-    "Formater les évaluations des risques héritées": "Formater les évaluations des risques héritées",
-    "Notes Importantes": "Notes Importantes",
-    "Pas de stockage cloud": "Pas de stockage cloud",
-    "Enregistrer et reprendre": "Enregistrer et reprendre",
-    "Avertissement d'actualisation du navigateur": "Avertissement d'actualisation du navigateur",
-    // How to Use App (German)
-    "Risk Assessment Buddy ist ein feldgestütztes Beschleunigungstool": "Risk Assessment Buddy ist ein feldgestütztes Beschleunigungstool",
-    "Beginnen Sie von vorne mit Rich Media": "Beginnen Sie von vorne mit Rich Media",
-    "Beschreiben Sie die Aufgabe in einfacher Sprache": "Beschreiben Sie die Aufgabe in einfacher Sprache",
-    "Formatieren Sie ältere Risikobewertungen": "Formatieren Sie ältere Risikobewertungen",
-    "Wichtige Hinweise": "Wichtige Hinweise",
-    "Keine Cloud-Speicherung": "Keine Cloud-Speicherung",
-    "Speichern und fortfahren": "Speichern und fortfahren",
-    "Browseraktualisierungswarnung": "Browseraktualisierungswarnung"
+    // Instruction and Helper Text (German)
+    "Upload media files. Faces will be automatically blurred. Click thumbnails to add risk descriptions, hazards, and controls.": "Laden Sie Mediendateien hoch. Gesichter werden automatisch unkenntlich gemacht. Klicken Sie auf Miniaturansichten, um Risikobeschreibungen, Gefahren und Kontrollen hinzuzufügen.",
+    "Write a detailed description of the work process. Mention any previous incidents for better risk scoring.": "Schreiben Sie eine detaillierte Beschreibung des Arbeitsprozesses. Erwähnen Sie frühere Vorfälle für eine bessere Risikobewertung.",
+    "Upload an Excel file containing risk data. The system will parse and convert it to risk assessment format.": "Laden Sie eine Excel-Datei mit Risikodaten hoch. Das System analysiert und konvertiert sie in das Risikobewertungsformat.",
+    "Click a thumbnail below to open the large preview for manual blurring and to add risk notes. You can also drag-and-drop to reorder images.": "Klicken Sie unten auf eine Miniaturansicht, um die große Vorschau zum manuellen Unkenntlichmachen zu öffnen und Risikonotizen hinzuzufügen. Sie können auch Bilder per Drag-and-Drop neu anordnen.",
+    "Uploaded videos will appear here...": "Hochgeladene Videos werden hier angezeigt...",
+    "Processed images/frames will appear here...": "Verarbeitete Bilder/Frames werden hier angezeigt...",
+    "Click to select Excel file": "Klicken Sie, um die Excel-Datei auszuwählen",
+    "Supported: .xlsx, .xls, .csv": "Unterstützte Formate: .xlsx, .xls, .csv",
+    "Finish uploading and describing your task/images": "Beenden Sie das Hochladen und Beschreiben Ihrer Aufgabe/Bilder",
+    "Review the risk assessment table": "Überprüfen Sie die Risikobewertungstabelle",
+    "Generate AI recommendations": "KI-Empfehlungen generieren",
+    "Download your complete report": "Laden Sie Ihren vollständigen Bericht herunter",
+    "Mention past incidents for more accurate scoring": "Erwähnen Sie frühere Vorfälle für genauere Bewertungen",
+    "Add detailed hazard descriptions in notes": "Fügen Sie detaillierte Gefahrenbeschreibungen in Notizen hinzu",
+    "Review AI suggestions before finalizing": "Überprüfen Sie KI-Vorschläge vor der Finalisierung",
+    "Export to PDF for stakeholder review": "Als PDF exportieren zur Überprüfung durch Interessenträger",
+    "Loading AI models... 🧠": "KI-Modelle werden geladen... 🧠",
+    // UI Buttons and Labels (German)
+    "Process Files": "Dateien verarbeiten",
+    "Download All Images and Reports as ZIP": "Alle Bilder und Berichte als ZIP herunterladen",
+    "Generate AI Risk Assessment from Image Notes": "KI-Risikobewertung aus Bildnotizen generieren",
+    "Save Project": "Projekt speichern",
+    "Load Project": "Projekt laden",
+    "Generate Task Breakdown": "Aufgabenaufschlüsselung generieren",
+    "Translate Table": "Tabelle übersetzen",
+    "Download Project ZIP": "Projekt-ZIP herunterladen",
+    "Print": "Drucken",
+    "Privacy Policy": "Datenschutzrichtlinie",
+    "Generate AI Recommendations & Visuals": "KI-Empfehlungen und Grafiken generieren",
+    "Advanced Import / Convert": "Erweiterter Import / Konvertierung",
+    "Click to upload or drag and drop": "Klicken zum Hochladen oder Ziehen und Ablegen",
+    "Images or Videos": "Bilder oder Videos",
+    "Overall Progress": "Gesamtfortschritt",
+    "Uploaded Videos (Capture frames below)": "Hochgeladene Videos (Bilder unten erfassen)",
+    "Upload Images & Videos": "Bilder und Videos hochladen",
+    "Describe Your Task": "Beschreiben Sie Ihre Aufgabe",
+    "Import Excel File": "Excel-Datei importieren",
+    "Description of step": "Beschreibung des Schritts",
+    "What can go wrong / spot hazards": "Was kann schiefgehen / Gefahren erkennen",
+    "Any existing controls": "Alle vorhandenen Steuerungen",
+    "Language": "Sprache",
+    "Frequency": "Häufigkeit",
+    "Severity": "Schweregrad",
+    "Likelihood": "Wahrscheinlichkeit",
+    "Not set": "Nicht gesetzt"
   }
 };
 
         // --- GLOBAL LANGUAGE STATE ---
-        let currentLang = 'en';
+        // Load language from localStorage or default to 'en'
+        let currentLang = localStorage.getItem('appLanguage') || 'en';
 
         // --- TRANSLATION FUNCTION ---
         const t = (englishText) => {
@@ -1714,6 +1830,85 @@
                 return englishText; // Fallback to English if translation not found
             }
             return TRANSLATIONS[currentLang][englishText];
+        };
+
+        // --- UPDATE UI TEXT WHEN LANGUAGE CHANGES ---
+        const updateUIText = () => {
+            // Update button text by their IDs
+            const buttonIds = [
+                'processBtn', 'downloadBtn', 'generateAiReportBtn', 'saveProjectBtn', 
+                'loadProjectBtn', 'generateTasksBtn', 'translateTableBtn', 'downloadProjectZipBtn',
+                'privacyBtn'
+            ];
+            
+            buttonIds.forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) {
+                    const englishText = btn.getAttribute('data-en-text') || btn.innerText;
+                    btn.innerText = t(englishText);
+                    btn.setAttribute('data-en-text', englishText);
+                }
+            });
+
+            // Update label text
+            const labels = document.querySelectorAll('label[for="stepDescription"], label[for="spotHazards"], label[for="existingControls"], label[for="langSelect"]');
+            labels.forEach(label => {
+                const englishText = label.getAttribute('data-en-text') || label.innerText;
+                label.innerText = t(englishText);
+                label.setAttribute('data-en-text', englishText);
+            });
+
+            // Update placeholder text
+            const placeholders = document.querySelectorAll('[placeholder]');
+            placeholders.forEach(el => {
+                const englishText = el.getAttribute('data-en-placeholder') || el.placeholder;
+                el.placeholder = t(englishText);
+                el.setAttribute('data-en-placeholder', englishText);
+            });
+
+            // Update h2 and h3 headers
+            const headers = document.querySelectorAll('h2, h3');
+            headers.forEach(header => {
+                const englishText = header.getAttribute('data-en-text') || header.innerText;
+                const translated = t(englishText);
+                if (translated !== englishText) {
+                    header.innerText = translated;
+                    header.setAttribute('data-en-text', englishText);
+                }
+            });
+
+            // Update paragraph instruction text (tab introductions and helper text)
+            const paragraphs = document.querySelectorAll('p.text-slate-600');
+            paragraphs.forEach(p => {
+                const englishText = p.getAttribute('data-en-text') || p.innerText;
+                const translated = t(englishText);
+                if (translated !== englishText) {
+                    p.innerText = translated;
+                    p.setAttribute('data-en-text', englishText);
+                }
+            });
+
+            // Update span text in info boxes (like manual blur info)
+            const infoBoxes = document.querySelectorAll('[id*="info"]');
+            infoBoxes.forEach(box => {
+                const englishText = box.getAttribute('data-en-text') || box.innerText;
+                const translated = t(englishText);
+                if (translated !== englishText) {
+                    box.innerText = translated;
+                    box.setAttribute('data-en-text', englishText);
+                }
+            });
+
+            // Update placeholder-like text in empty states
+            const emptyStates = document.querySelectorAll('p.text-slate-500');
+            emptyStates.forEach(p => {
+                const englishText = p.getAttribute('data-en-text') || p.innerText;
+                const translated = t(englishText);
+                if (translated !== englishText) {
+                    p.innerText = translated;
+                    p.setAttribute('data-en-text', englishText);
+                }
+            });
         };
 
         // --- MASTER HAZARD & CONSEQUENCE REGISTRIES ---
@@ -3232,6 +3427,13 @@ data.forEach((row, index) => {
 
         // Add event listeners for closing the new modal
         document.addEventListener('DOMContentLoaded', () => {
+             // Set language selector to saved value and apply translations
+             const langSelect = document.getElementById('langSelect');
+             if (langSelect) {
+                 langSelect.value = currentLang;
+                 updateUIText(); // Apply translations on page load
+             }
+
              const closeBtn = document.getElementById('closeTableImageModal');
              const modal = document.getElementById('tableImageModal');
              if (closeBtn) {
@@ -3247,11 +3449,13 @@ data.forEach((row, index) => {
              }
 
              // --- LANGUAGE SELECTOR LISTENER ---
-             const langSelect = document.getElementById('langSelect');
-             if (langSelect) {
-                 langSelect.addEventListener('change', (e) => {
+             const langSelect2 = document.getElementById('langSelect');
+             if (langSelect2) {
+                 langSelect2.addEventListener('change', (e) => {
                      currentLang = e.target.value;
+                     localStorage.setItem('appLanguage', currentLang); // Save to localStorage
                      console.log(`Language changed to: ${currentLang}`);
+                     updateUIText(); // Update all UI text
                      // Refresh all table dropdowns when language changes
                      const tableContainer = document.getElementById('table-container');
                      if (tableContainer) {
@@ -3291,9 +3495,9 @@ data.forEach((row, index) => {
                      const howToUseFr = document.getElementById('howToUse-fr');
                      const howToUseDe = document.getElementById('howToUse-de');
                      if (howToUseEn && howToUseFr && howToUseDe) {
-                         howToUseEn.classList.toggle('hidden', currentLang !== 'en');
-                         howToUseFr.classList.toggle('hidden', currentLang !== 'fr');
-                         howToUseDe.classList.toggle('hidden', currentLang !== 'de');
+                         howToUseEn.style.display = currentLang === 'en' ? 'block' : 'none';
+                         howToUseFr.style.display = currentLang === 'fr' ? 'block' : 'none';
+                         howToUseDe.style.display = currentLang === 'de' ? 'block' : 'none';
                      }
                  });
              }
@@ -4006,8 +4210,43 @@ window.populatePictureColumn = populatePictureColumn;
             revertTranslationsBtn.onclick = window.revertTranslations;
         }
         
+        // --- Event listener for drag and drop feedback ---
+        const fileInput = document.getElementById('imageUpload');
+        const uploadLabel = fileInput.parentElement;
+        
+        // Show loading state on drag over
+        uploadLabel.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadLabel.style.backgroundColor = '#dbeafe';
+            uploadLabel.style.borderColor = '#3b82f6';
+        });
+        
+        uploadLabel.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadLabel.style.backgroundColor = '';
+            uploadLabel.style.borderColor = '';
+        });
+        
+        uploadLabel.addEventListener('drop', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadLabel.style.backgroundColor = '';
+            uploadLabel.style.borderColor = '';
+            console.log('Files dropped, showing loading state');
+            // Files are being dropped, show loading immediately
+            progressContainer.style.display = 'block';
+            progressBar.value = 5;
+            progressBar.max = 100;
+            statusDiv.style.backgroundColor = '#fef08a';
+            statusDiv.style.borderLeft = '4px solid #eab308';
+            statusDiv.innerHTML = `<strong style="color: #78350f;">📂 Loading files into browser memory...</strong><br><span class="animate-pulse" style="color: #b45309;">⏳ This may take a moment depending on file size...</span>`;
+            processBtn.disabled = true;
+        });
+        
         // --- Event listener for file selection feedback ---
-        fileUpload.addEventListener('change', (event) => {
+        fileUpload.addEventListener('change', async (event) => {
     const files = event.target.files;
     if (!files || files.length === 0) {
         if (modelsLoaded) {
@@ -4015,12 +4254,66 @@ window.populatePictureColumn = populatePictureColumn;
         } else {
             statusDiv.innerText = 'Loading AI models... 🧠'; // Or error state if needed
         }
+        progressContainer.style.display = 'none';
         return;
     }
+    
+    // IMMEDIATELY show loading state when files are selected from file browser
+    console.log('Files selected from browser:', files.length);
+    progressContainer.style.display = 'block';
+    progressBar.value = 5;
+    progressBar.max = 100;
+    statusDiv.style.backgroundColor = '#fef08a';
+    statusDiv.style.borderLeft = '4px solid #eab308';
+    statusDiv.innerHTML = `<strong style="color: #78350f;">📂 Loading ${files.length} file(s) into browser memory...</strong><br><span class="animate-pulse" style="color: #b45309;">⏳ This may take a moment depending on file size...</span>`;
+    processBtn.disabled = true;
+    
+    // Force browser to repaint
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    // Animate progress while processing
+    let progressValue = 5;
+    const progressInterval = setInterval(() => {
+        progressValue += Math.random() * 25;
+        if (progressValue < 95) {
+            progressBar.value = Math.min(progressValue, 90);
+        }
+    }, 300);
+    
+    // Add another delay to show the loading state for longer
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Process file information
+    let totalSize = 0;
+    let videoCount = 0;
+    let imageCount = 0;
+    
+    for (let file of files) {
+        totalSize += file.size;
+        if (file.type.startsWith('video/') || file.name.match(/\.(mp4|mov|avi|mkv|webm)$/i)) {
+            videoCount++;
+        } else if (file.type.startsWith('image/')) {
+            imageCount++;
+        }
+    }
+    
+    const sizeMB = (totalSize / (1024 * 1024)).toFixed(1);
+    progressBar.value = 100;
+    clearInterval(progressInterval);
+    
     if (modelsLoaded) {
-        statusDiv.innerText = `${files.length} file(s) selected. Click 'Process Files' to continue.`;
+        statusDiv.style.backgroundColor = '#dcfce7';
+        statusDiv.style.borderLeft = '4px solid #22c55e';
+        statusDiv.innerHTML = `<strong style="color: #166534;">✅ Files Loaded Successfully!</strong><br>
+                            ${files.length} file(s) loaded (${sizeMB} MB) - ${imageCount} image(s), ${videoCount} video(s)<br>
+                            <span style="color: #15803d; font-weight: bold;">Click 'Process Files' to continue.</span>`;
+        processBtn.disabled = false;
+        setTimeout(() => { progressContainer.style.display = 'none'; }, 2000);
     } else {
-         statusDiv.innerText = `Models loading... ${files.length} file(s) selected. Please wait.`;
+        statusDiv.style.backgroundColor = '#dbeafe';
+        statusDiv.style.borderLeft = '4px solid #3b82f6';
+        statusDiv.innerHTML = `<strong style="color: #1e40af;">⏳ Models loading...</strong><br>
+                            ${files.length} file(s) ready (${sizeMB} MB). Please wait for models to load.`;
     }
 });
         // --- End of event listener ---
@@ -4268,6 +4561,70 @@ window.populatePictureColumn = populatePictureColumn;
                 updateLightboxGallery();
             });
         });
+        
+        // Simple frame extraction helper
+        const extractVideoFrames = async (file, numFrames = 5) => {
+            return new Promise((resolve) => {
+                const video = document.createElement('video');
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const frames = [];
+                
+                video.onloadedmetadata = () => {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    
+                    let framesExtracted = 0;
+                    const duration = video.duration;
+                    const interval = duration / (numFrames + 1);
+                    
+                    const extractFrame = (index) => {
+                        if (index >= numFrames) {
+                            resolve(frames);
+                            return;
+                        }
+                        
+                        video.currentTime = interval * (index + 1);
+                    };
+                    
+                    video.onseeked = () => {
+                        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        canvas.toBlob((blob) => {
+                            frames.push({
+                                timestamp: video.currentTime,
+                                blob: blob,
+                                url: URL.createObjectURL(blob)
+                            });
+                            framesExtracted++;
+                            extractFrame(framesExtracted);
+                        });
+                    };
+                    
+                    video.onerror = () => {
+                        console.warn('Could not extract frames from video:', file.name);
+                        resolve(frames);
+                    };
+                    
+                    extractFrame(0);
+                };
+                
+                video.onerror = () => {
+                    console.warn('Could not load video:', file.name);
+                    resolve([]);
+                };
+                
+                video.src = URL.createObjectURL(file);
+            });
+        };
+        
+        // Helper to handle MOV files (Pass-through for now as client-side conversion is heavy)
+        const convertMOVtoMP4 = async (file) => {
+            console.log('Pass-through MOV file:', file.name);
+            // In a real app, we might use ffmpeg.wasm here, but it's heavy.
+            // We rely on browser support for QuickTime/MP4 containers.
+            return file;
+        };
+
         processBtn.addEventListener('click', async () => {
             const files = fileUpload.files;
             // Max file check moved to the 'change' event listener
@@ -4284,9 +4641,27 @@ window.populatePictureColumn = populatePictureColumn;
             progressBar.value = 0;
             let imageFiles = [];
             let videoFiles = [];
+            
+            // Check if file is a video by MIME type or file extension
+            const isVideoFile = (file) => {
+                const videoExtensions = ['mp4', 'mov', 'avi', 'mkv', 'webm', 'flv', 'wmv', 'm4v', '3gp'];
+                const extension = file.name.split('.').pop().toLowerCase();
+                return file.type.startsWith('video/') || videoExtensions.includes(extension);
+            };
+            
             for (let file of files) {
-                if (file.type.startsWith('image/')) imageFiles.push(file);
-                if (file.type.startsWith('video/')) videoFiles.push(file);
+                if (file.type.startsWith('image/')) {
+                    imageFiles.push(file);
+                } else if (isVideoFile(file)) {
+                    // Convert MOV files to MP4
+                    const extension = file.name.split('.').pop().toLowerCase();
+                    if (extension === 'mov' || file.type === 'video/quicktime') {
+                        const convertedFile = await convertMOVtoMP4(file);
+                        videoFiles.push(convertedFile);
+                    } else {
+                        videoFiles.push(file);
+                    }
+                }
             }
             progressBar.max = imageFiles.length;
             let processedCount = 0;
@@ -4337,23 +4712,300 @@ window.populatePictureColumn = populatePictureColumn;
                 videoGallery.innerHTML = '';
                 videoFiles.forEach((file, i) => {
                     const vidContainer = document.createElement('div');
-                    vidContainer.className = 'vid-container flex flex-col items-center max-w-sm mx-auto';
+                    vidContainer.className = 'vid-container flex flex-col items-center max-w-md mx-auto p-4 bg-white rounded-lg border border-slate-200 relative';
+                    
+                    const title = document.createElement('h3');
+                    title.className = 'font-semibold text-slate-800 mb-2 w-full';
+                    title.textContent = `📹 ${file.name}`;
+                    vidContainer.appendChild(title);
+                    
                     const video = document.createElement('video');
                     video.src = URL.createObjectURL(file);
                     video.controls = true;
+                    video.controlsList = 'nodownload';
+                    video.preload = 'metadata';
                     video.id = `vid-${Date.now()}-${i}`;
-                    video.className = "w-full h-auto rounded-lg shadow-md";
-                    const captureBtn = document.createElement('button');
-                    captureBtn.textContent = 'Capture Frame';
-                    captureBtn.className = "mt-2 bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-indigo-700 transition duration-300";
-                    captureBtn.onclick = () => captureAndProcessFrame(video, file.name);
+                    video.className = "w-full h-auto rounded-lg shadow-md bg-black";
+                    video.style.minHeight = '300px';
+                    
+                    // Store file name for reference
+                    video.dataset.fileName = file.name;
+                    
                     vidContainer.appendChild(video);
-                    vidContainer.appendChild(captureBtn);
+                    
+                    const btnContainer = document.createElement('div');
+                    btnContainer.className = 'mt-3 flex gap-3 w-full';
+                    
+                    const captureBtn = document.createElement('button');
+                    captureBtn.textContent = '📸 Capture Frame';
+                    captureBtn.className = "flex-1 bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-indigo-700 transition duration-300";
+                    captureBtn.onclick = () => captureAndProcessFrame(video, file.name);
+                    
+                    const fullscreenCaptureBtn = document.createElement('button');
+                    fullscreenCaptureBtn.textContent = '⛶ Fullscreen Capture';
+                    fullscreenCaptureBtn.className = "flex-1 bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 transition duration-300";
+                    fullscreenCaptureBtn.onclick = () => openFullscreenCapture(file, file.name);
+                    
+                    btnContainer.appendChild(captureBtn);
+                    btnContainer.appendChild(fullscreenCaptureBtn);
+                    vidContainer.appendChild(btnContainer);
+                    
                     videoGallery.appendChild(vidContainer);
                 });
             } else {
                 videoSection.style.display = 'none';
             }
+            
+            // Custom fullscreen capture interface
+            const openFullscreenCapture = (videoFile, fileName) => {
+                // Remove any existing fullscreen modal first
+                const existingModal = document.getElementById('fullscreen-capture-modal');
+                if (existingModal) {
+                    existingModal.remove();
+                }
+                
+                const modal = document.createElement('div');
+                modal.id = 'fullscreen-capture-modal';
+                modal.className = 'fixed inset-0 bg-black z-50 flex flex-col';
+                modal.style.padding = '20px';
+                
+                // Create container for video and controls
+                const container = document.createElement('div');
+                container.className = 'flex flex-col h-full w-full max-w-6xl mx-auto';
+                
+                // Header with title and close button
+                const header = document.createElement('div');
+                header.className = 'flex justify-between items-center mb-4 text-white';
+                
+                const title = document.createElement('h2');
+                title.className = 'text-2xl font-bold';
+                title.textContent = `📹 ${fileName} - Fullscreen Capture`;
+                
+                const closeBtn = document.createElement('button');
+                closeBtn.textContent = '✕';
+                closeBtn.className = 'text-3xl hover:text-red-400 transition';
+                closeBtn.onclick = () => {
+                    modal.remove();
+                    // Clean up blob URL when modal closes
+                    if (video.src && video.src.startsWith('blob:')) {
+                        URL.revokeObjectURL(video.src);
+                    }
+                };
+                
+                header.appendChild(title);
+                header.appendChild(closeBtn);
+                container.appendChild(header);
+                
+                // Main content area (video + thumbnails)
+                const contentArea = document.createElement('div');
+                contentArea.className = 'flex gap-4 flex-1 overflow-hidden';
+                
+                // Left side - Video player
+                const videoContainer = document.createElement('div');
+                videoContainer.className = 'flex-1 flex flex-col';
+                
+                // Create fresh video element with new blob URL
+                const video = document.createElement('video');
+                const blobURL = URL.createObjectURL(videoFile);
+                video.controls = true;
+                video.controlsList = 'nodownload';
+                video.preload = 'auto';
+                video.muted = false;
+                video.playsInline = true;
+                video.className = 'flex-1 rounded-lg shadow-lg bg-black';
+                video.style.objectFit = 'contain';
+                video.style.maxHeight = '100%';
+                video.style.width = '100%';
+                
+                // Use source element for better codec handling
+                const source = document.createElement('source');
+                source.src = blobURL;
+                source.type = videoFile.type || 'video/quicktime';
+                video.appendChild(source);
+                
+                // Fallback error message
+                const errorText = document.createTextNode('Your browser does not support this video format.');
+                video.appendChild(errorText);
+                
+                // Ensure video loads properly before attempting playback
+                video.onloadedmetadata = () => {
+                    console.log('Video metadata loaded:', fileName, 'Dimensions:', video.videoWidth, 'x', video.videoHeight, 'Duration:', video.duration);
+                };
+                
+                video.oncanplay = () => {
+                    console.log('Video can play:', fileName);
+                    video.play().catch(err => console.warn('Autoplay prevented:', err));
+                };
+                
+                video.onerror = (e) => {
+                    console.error('Video load error:', e, fileName);
+                    statusDiv.innerText = `Error loading video: ${fileName}`;
+                };
+                
+                videoContainer.appendChild(video);
+                contentArea.appendChild(videoContainer);
+                
+                // Right side - Captured frames thumbnails
+                const thumbnailContainer = document.createElement('div');
+                thumbnailContainer.className = 'w-32 flex flex-col gap-2 overflow-y-auto bg-slate-900 p-2 rounded-lg';
+                
+                const thumbTitle = document.createElement('p');
+                thumbTitle.className = 'text-white text-sm font-semibold text-center';
+                thumbTitle.textContent = 'Captured Frames';
+                thumbnailContainer.appendChild(thumbTitle);
+                
+                const thumbGrid = document.createElement('div');
+                thumbGrid.id = 'thumbnail-grid';
+                thumbGrid.className = 'flex flex-col gap-2';
+                thumbnailContainer.appendChild(thumbGrid);
+                
+                contentArea.appendChild(thumbnailContainer);
+                container.appendChild(contentArea);
+                
+                // Bottom control panel
+                const controls = document.createElement('div');
+                controls.className = 'mt-4 flex gap-3 justify-center flex-wrap text-center';
+                
+                const captureBtn = document.createElement('button');
+                captureBtn.textContent = '📸 Capture Current Frame';
+                captureBtn.className = 'bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-200';
+                captureBtn.onclick = async () => {
+                    captureBtn.disabled = true;
+                    captureBtn.textContent = '⏳ Capturing...';
+                    
+                    try {
+                        // Wait for video to be ready
+                        if (!video.videoWidth || !video.videoHeight) {
+                            await new Promise((resolve, reject) => {
+                                const checkReady = () => {
+                                    if (video.videoWidth && video.videoHeight) {
+                                        resolve();
+                                    } else {
+                                        setTimeout(checkReady, 100);
+                                    }
+                                };
+                                checkReady();
+                                setTimeout(() => reject(new Error('Video dimensions not available')), 3000);
+                            });
+                        }
+                        
+                        // Create a promise that rejects after 5 seconds
+                        const timeoutPromise = new Promise((_, reject) => {
+                            setTimeout(() => reject(new Error('Frame capture timeout - MOV files may not be supported in fullscreen mode')), 5000);
+                        });
+
+                        // Create the capture promise
+                        const capturePromise = (async () => {
+                            const canvas = document.createElement('canvas');
+                            const ctx = canvas.getContext('2d');
+                            canvas.width = video.videoWidth;
+                            canvas.height = video.videoHeight;
+                            
+                            console.log('Capturing frame - Canvas size:', canvas.width, 'x', canvas.height);
+                            
+                            // Attempt to draw image with error handling and createImageBitmap
+                            try {
+                                if (window.createImageBitmap) {
+                                    const bitmap = await createImageBitmap(video);
+                                    ctx.drawImage(bitmap, 0, 0);
+                                    bitmap.close();
+                                } else {
+                                    ctx.drawImage(video, 0, 0);
+                                }
+                            } catch (canvasError) {
+                                console.warn('Bitmap capture failed, trying fallback:', canvasError);
+                                ctx.drawImage(video, 0, 0);
+                            }
+                            
+                            return new Promise((resolve, reject) => {
+                                canvas.toBlob((blob) => {
+                                    if (blob) resolve(blob);
+                                    else reject(new Error('Failed to create image blob from canvas'));
+                                });
+                            });
+                        })();
+                        
+                        // Race the capture against the timeout
+                        const blob = await Promise.race([capturePromise, timeoutPromise]);
+                        
+                        // If we get here, capture was successful
+                        const thumb = document.createElement('img');
+                        thumb.className = 'rounded border-2 border-indigo-400 cursor-pointer hover:border-indigo-300 transition';
+                        thumb.style.objectFit = 'contain';
+                        thumb.style.width = '100%';
+                        thumb.style.height = 'auto';
+                        thumb.style.maxHeight = '100px';
+                        thumb.title = `Frame at ${Math.round(video.currentTime)}s`;
+                        thumb.src = URL.createObjectURL(blob);
+                        document.getElementById('thumbnail-grid').appendChild(thumb);
+                        
+                        // Also process the frame for face detection
+                        await captureAndProcessFrame(video, fileName);
+                        
+                        captureBtn.textContent = '📸 Capture Current Frame';
+                    } catch (error) {
+                        console.warn('Capture failed:', error.message);
+                        
+                        // Show error message to user
+                        const errorMsg = document.createElement('div');
+                        errorMsg.className = 'absolute inset-0 flex items-center justify-center bg-black/70 rounded-lg p-4';
+                        errorMsg.innerHTML = `
+                            <div class="bg-red-900 text-white rounded p-4 text-center max-w-sm">
+                                <p class="font-bold mb-2">⚠️ Capture Not Supported</p>
+                                <p class="text-sm mb-3">${error.message}</p>
+                                <p class="text-xs text-red-300 mb-3">Try using the regular "Capture Frame" button or convert the video to MP4 format.</p>
+                                <button onclick="this.parentElement.parentElement.remove()" class="bg-red-700 hover:bg-red-800 px-4 py-2 rounded text-sm font-semibold">Dismiss</button>
+                            </div>
+                        `;
+                        
+                        const modal = document.getElementById('fullscreen-capture-modal');
+                        if (modal) {
+                            modal.appendChild(errorMsg);
+                            setTimeout(() => errorMsg.remove(), 5000);
+                        }
+                    } finally {
+                        captureBtn.disabled = false;
+                        captureBtn.textContent = '📸 Capture Current Frame';
+                    }
+                };
+                
+                const spaceHint = document.createElement('p');
+                spaceHint.className = 'text-white text-sm w-full';
+                spaceHint.textContent = '💡 Press SPACE to capture | ESC to close';
+                
+                controls.appendChild(captureBtn);
+                controls.appendChild(spaceHint);
+                container.appendChild(controls);
+                
+                modal.appendChild(container);
+                document.body.appendChild(modal);
+                
+                // Add keyboard shortcuts - capture on space
+                const handleKeyDown = (e) => {
+                    const modal = document.getElementById('fullscreen-capture-modal');
+                    if (!modal) {
+                        document.removeEventListener('keydown', handleKeyDown);
+                        return;
+                    }
+                    
+                    if (e.code === 'Space') {
+                        e.preventDefault();
+                        // Trigger the capture button click
+                        captureBtn.click();
+                    } else if (e.key === 'Escape') {
+                        e.preventDefault();
+                        modal.remove();
+                        document.removeEventListener('keydown', handleKeyDown);
+                    }
+                };
+                
+                // Use setTimeout to ensure the event listener is properly attached
+                setTimeout(() => {
+                    document.addEventListener('keydown', handleKeyDown);
+                }, 100);
+                
+                video.focus();
+            };
             if (processedCount === 0 && videoFiles.length === 0) {
                  galleryDiv.innerHTML = '<p class="text-slate-500 col-span-full text-center">No image files were processed. Upload videos will appear above.</p>';
             }
@@ -4466,10 +5118,37 @@ window.populatePictureColumn = populatePictureColumn;
             const captureCanvas = document.createElement('canvas');
             captureCanvas.width = video.videoWidth;
             captureCanvas.height = video.videoHeight;
-            captureCanvas.getContext('2d').drawImage(video, 0, 0);
+            
+            try {
+                // Try using createImageBitmap for better compatibility with some video formats
+                if (window.createImageBitmap) {
+                    const bitmap = await createImageBitmap(video);
+                    captureCanvas.getContext('2d').drawImage(bitmap, 0, 0);
+                    bitmap.close();
+                } else {
+                    captureCanvas.getContext('2d').drawImage(video, 0, 0);
+                }
+            } catch (canvasError) {
+                console.warn(`Canvas frame capture failed for ${videoName}:`, canvasError);
+                // Fallback to standard drawImage if bitmap fails
+                try {
+                     captureCanvas.getContext('2d').drawImage(video, 0, 0);
+                } catch (e) {
+                    statusDiv.innerText = 'Frame capture not supported for this video format.';
+                    return;
+                }
+            }
+            
             statusDiv.innerText = 'Processing captured frame...';
             try {
-                const result = await processCanvas(captureCanvas);
+                // Add timeout to processCanvas to prevent infinite hangs
+                const processPromise = processCanvas(captureCanvas);
+                const timeoutPromise = new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Processing timeout')), 10000)
+                );
+                
+                const result = await Promise.race([processPromise, timeoutPromise]);
+                
                 const fileId = `frame-${Date.now()}`;
                 const now = new Date();
                 const timestamp = now.toISOString().replace(/:/g, '-').replace(/\./g, '_');
@@ -5588,52 +6267,50 @@ downloadBtn.addEventListener('click', async () => {
      * @param {string} message The text to display.
      * @param {string} type 'info' (default), 'success', or 'error'.
      */
-    function showCustomAlert(message, type = 'info') {
-        const container = document.getElementById('toast-container');
-        if (!container) return; // Fail silently if container not found
+    function showCustomAlert(message, type = 'info') {
+        const container = document.getElementById('toast-container');
+        if (!container) return; // Fail silently if container not found
 
-        let bgColor, iconSVG;
-        switch (type) {
-            case 'success':
-                bgColor = 'bg-green-100 border-green-400 text-green-800';
-                iconSVG = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>`;
-                break;
-            case 'error':
-                bgColor = 'bg-red-100 border-red-400 text-red-800';
-                iconSVG = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>`;
-                break;
-            default: // 'info'
-                bgColor = 'bg-blue-100 border-blue-400 text-blue-800';
-                iconSVG = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>`;
-                break;
-        }
+        let bgColor, iconSVG;
+        switch (type) {
+            case 'success':
+                bgColor = 'bg-green-100 border-green-400 text-green-800';
+                iconSVG = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>`;
+                break;
+            case 'error':
+                bgColor = 'bg-red-100 border-red-400 text-red-800';
+                iconSVG = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>`;
+                break;
+            default: // 'info'
+                bgColor = 'bg-blue-100 border-blue-400 text-blue-800';
+                iconSVG = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>`;
+                break;
+        }
 
-        const toast = document.createElement('div');
-        toast.className = `flex items-center p-4 rounded-lg shadow-lg border ${bgColor} transition-all duration-300 opacity-0 translate-x-10`;
-        toast.innerHTML = `
-            <div class="flex-shrink-0">${iconSVG}</div>
-            <div class="ml-3 text-sm font-medium">${message}</div>
-            <button type="button" class="ml-auto -mx-1.5 -my-1.5 p-1.5 rounded-full inline-flex hover:bg-black/10" onclick="this.parentElement.remove()">
-                <span class="sr-only">Close</span>
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-            </button>
-        `;
-        
-        container.appendChild(toast);
-        
-        // Animate in
-        setTimeout(() => {
-            toast.classList.remove('opacity-0', 'translate-x-10');
-        }, 10);
+        const toast = document.createElement('div');
+        toast.className = `flex items-center p-4 rounded-lg shadow-lg border ${bgColor} transition-all duration-300 opacity-0 translate-x-10`;
+        toast.innerHTML = `
+            <div class="flex-shrink-0">${iconSVG}</div>
+            <div class="ml-3 text-sm font-medium flex-1">${message}</div>
+            <button type="button" class="ml-auto -mx-1.5 -my-1.5 p-1.5 rounded-full inline-flex hover:bg-black/10 transition" onclick="this.parentElement.remove()" title="Close">
+                <span class="sr-only">Close</span>
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+            </button>
+        `;
+        
+        container.appendChild(toast);
+        
+        // Animate in
+        setTimeout(() => {
+            toast.classList.remove('opacity-0', 'translate-x-10');
+        }, 10);
 
-        // Auto-dismiss after 5 seconds
-        setTimeout(() => {
-            toast.classList.add('opacity-0');
-            setTimeout(() => toast.remove(), 500); // Remove from DOM after fade out
-        }, 5000);
-    }
-
-    /**
+        // Auto-dismiss after 5 seconds
+        setTimeout(() => {
+            toast.classList.add('opacity-0');
+            setTimeout(() => toast.remove(), 500); // Remove from DOM after fade out
+        }, 5000);
+    }    /**
      * Shows a blocking confirmation modal.
      * @param {string} message The confirmation question.
      * @returns {Promise<boolean>} Resolves true if confirmed, false if canceled.
@@ -5747,9 +6424,9 @@ downloadBtn.addEventListener('click', async () => {
             </div>
 
         </div>
-        <div class="pt-6 mt-auto border-t border-slate-100 flex justify-end gap-4">
-            <button id="gyExportBtn" style="display:none;" class="btn-white">Save Project (JSON)</button>
-            <button id="gyForwardBtn" style="display:none;" class="btn-indigo shadow-lg shadow-indigo-100">Load as New Project ➔</button>
+        <div class="pt-8 mt-auto border-t-2 border-slate-200 flex justify-end gap-4 items-center">
+            <button id="gyExportBtn" style="display:none;" class="btn-white">💾 Save Project (JSON)</button>
+            <button id="gyForwardBtn" style="display:none;" class="btn-indigo">✓ Load as New Project</button>
         </div>
     </div>
 </div>
