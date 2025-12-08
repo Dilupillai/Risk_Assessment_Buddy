@@ -25,7 +25,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
-    <script async src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/ffmpeg.min.js"></script>
     <script src="lib/face-api.min.js"></script> 
     <script src="lib/jszip.min.js"></script>
     <script src="lib/pdfkit.min.js"></script>
@@ -771,6 +770,49 @@
         
         <span id="nextArrow" class="lightbox-arrow absolute right-4 top-1/2 -translate-y-1/2 text-white text-3xl p-4 cursor-pointer hover:bg-black/20 rounded-full transition">&#10095;</span>
     </div>
+
+    <!-- NEW: Full-Screen Video Capture Modal -->
+    <div id="fullscreenVideoModal" class="fixed inset-0 z-[110] bg-black hidden flex flex-col" style="display: none;">
+        <!-- Header with instructions and close button -->
+        <div class="bg-gradient-to-r from-indigo-900 to-blue-900 text-white p-6 flex justify-between items-center">
+            <div>
+                <h2 class="text-2xl font-bold mb-2">Full-Screen Video Capture</h2>
+                <p class="text-indigo-200 text-sm">Press <strong>SPACE</strong> to capture frame • <strong>ESC</strong> to exit</p>
+            </div>
+            <button onclick="closeFullscreenVideoModal()" class="text-white text-3xl font-bold hover:text-indigo-300 transition">×</button>
+        </div>
+
+        <!-- Main content area -->
+        <div class="flex-1 flex gap-4 p-6 bg-black overflow-hidden">
+            <!-- Video player (left/center) -->
+            <div class="flex-1 flex flex-col items-center justify-center">
+                <video id="fullscreenVideoPlayer" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl" controls autoplay></video>
+                <p class="text-white text-center mt-4 text-sm">Press SPACE to capture the current frame</p>
+            </div>
+
+            <!-- Thumbnail panel (right) -->
+            <div class="w-64 bg-slate-900 rounded-lg shadow-2xl flex flex-col overflow-hidden border border-slate-700">
+                <div class="bg-slate-800 p-4 border-b border-slate-700">
+                    <h3 class="text-white font-semibold">Captured Frames (<span id="frameCount">0</span>)</h3>
+                </div>
+                <div id="fullscreenThumbnailPanel" class="flex-1 overflow-y-auto p-3 space-y-2">
+                    <p class="text-slate-400 text-center text-sm mt-8">Captured frames appear here</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer with action buttons -->
+        <div class="bg-slate-900 text-white p-4 flex justify-between items-center border-t border-slate-700">
+            <p class="text-sm text-slate-300">💡 Exiting will load <span id="frameCountFooter">0</span> frame(s) to your review pane</p>
+            <div class="flex gap-3">
+                <button onclick="clearCapturedFrames()" class="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-6 rounded-lg transition">Clear All</button>
+                <button onclick="downloadCapturedFrames()" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg transition">Download Frames</button>
+                <button onclick="closeFullscreenVideoModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg transition">Exit & Load to Review</button>
+            </div>
+        </div>
+    </div>
+    <!-- END: Full-Screen Video Capture Modal -->
+
     <div id="privacyModal" class="modal-overlay hidden fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm p-4 items-center justify-center" style="display: none;">
         <div class="modal-content bg-white m-auto p-6 sm:p-8 rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
             <span id="closeModal" class="close-btn absolute top-4 right-5 text-slate-400 text-3xl font-bold cursor-pointer hover:text-slate-600 transition">&times;</span>
@@ -4210,43 +4252,8 @@ window.populatePictureColumn = populatePictureColumn;
             revertTranslationsBtn.onclick = window.revertTranslations;
         }
         
-        // --- Event listener for drag and drop feedback ---
-        const fileInput = document.getElementById('imageUpload');
-        const uploadLabel = fileInput.parentElement;
-        
-        // Show loading state on drag over
-        uploadLabel.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            uploadLabel.style.backgroundColor = '#dbeafe';
-            uploadLabel.style.borderColor = '#3b82f6';
-        });
-        
-        uploadLabel.addEventListener('dragleave', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            uploadLabel.style.backgroundColor = '';
-            uploadLabel.style.borderColor = '';
-        });
-        
-        uploadLabel.addEventListener('drop', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            uploadLabel.style.backgroundColor = '';
-            uploadLabel.style.borderColor = '';
-            console.log('Files dropped, showing loading state');
-            // Files are being dropped, show loading immediately
-            progressContainer.style.display = 'block';
-            progressBar.value = 5;
-            progressBar.max = 100;
-            statusDiv.style.backgroundColor = '#fef08a';
-            statusDiv.style.borderLeft = '4px solid #eab308';
-            statusDiv.innerHTML = `<strong style="color: #78350f;">📂 Loading files into browser memory...</strong><br><span class="animate-pulse" style="color: #b45309;">⏳ This may take a moment depending on file size...</span>`;
-            processBtn.disabled = true;
-        });
-        
         // --- Event listener for file selection feedback ---
-        fileUpload.addEventListener('change', async (event) => {
+        fileUpload.addEventListener('change', (event) => {
     const files = event.target.files;
     if (!files || files.length === 0) {
         if (modelsLoaded) {
@@ -4254,66 +4261,12 @@ window.populatePictureColumn = populatePictureColumn;
         } else {
             statusDiv.innerText = 'Loading AI models... 🧠'; // Or error state if needed
         }
-        progressContainer.style.display = 'none';
         return;
     }
-    
-    // IMMEDIATELY show loading state when files are selected from file browser
-    console.log('Files selected from browser:', files.length);
-    progressContainer.style.display = 'block';
-    progressBar.value = 5;
-    progressBar.max = 100;
-    statusDiv.style.backgroundColor = '#fef08a';
-    statusDiv.style.borderLeft = '4px solid #eab308';
-    statusDiv.innerHTML = `<strong style="color: #78350f;">📂 Loading ${files.length} file(s) into browser memory...</strong><br><span class="animate-pulse" style="color: #b45309;">⏳ This may take a moment depending on file size...</span>`;
-    processBtn.disabled = true;
-    
-    // Force browser to repaint
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
-    // Animate progress while processing
-    let progressValue = 5;
-    const progressInterval = setInterval(() => {
-        progressValue += Math.random() * 25;
-        if (progressValue < 95) {
-            progressBar.value = Math.min(progressValue, 90);
-        }
-    }, 300);
-    
-    // Add another delay to show the loading state for longer
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Process file information
-    let totalSize = 0;
-    let videoCount = 0;
-    let imageCount = 0;
-    
-    for (let file of files) {
-        totalSize += file.size;
-        if (file.type.startsWith('video/') || file.name.match(/\.(mp4|mov|avi|mkv|webm)$/i)) {
-            videoCount++;
-        } else if (file.type.startsWith('image/')) {
-            imageCount++;
-        }
-    }
-    
-    const sizeMB = (totalSize / (1024 * 1024)).toFixed(1);
-    progressBar.value = 100;
-    clearInterval(progressInterval);
-    
     if (modelsLoaded) {
-        statusDiv.style.backgroundColor = '#dcfce7';
-        statusDiv.style.borderLeft = '4px solid #22c55e';
-        statusDiv.innerHTML = `<strong style="color: #166534;">✅ Files Loaded Successfully!</strong><br>
-                            ${files.length} file(s) loaded (${sizeMB} MB) - ${imageCount} image(s), ${videoCount} video(s)<br>
-                            <span style="color: #15803d; font-weight: bold;">Click 'Process Files' to continue.</span>`;
-        processBtn.disabled = false;
-        setTimeout(() => { progressContainer.style.display = 'none'; }, 2000);
+        statusDiv.innerText = `${files.length} file(s) selected. Click 'Process Files' to continue.`;
     } else {
-        statusDiv.style.backgroundColor = '#dbeafe';
-        statusDiv.style.borderLeft = '4px solid #3b82f6';
-        statusDiv.innerHTML = `<strong style="color: #1e40af;">⏳ Models loading...</strong><br>
-                            ${files.length} file(s) ready (${sizeMB} MB). Please wait for models to load.`;
+         statusDiv.innerText = `Models loading... ${files.length} file(s) selected. Please wait.`;
     }
 });
         // --- End of event listener ---
@@ -4360,6 +4313,302 @@ window.populatePictureColumn = populatePictureColumn;
             existingControls.value = '';
         }
         closeLightbox.onclick = closeLightboxFunc;
+        
+        // --- NEW: Full-Screen Video Capture Functions ---
+        let fullscreenVideoCurrentFile = null;
+        let fullscreenCapturedFrames = []; // Store captured frame blobs and info
+        let fullscreenSpacebarListener = null;
+
+        window.openFullscreenVideoCapture = function(videoElement) {
+            if (!videoElement || !videoElement.src) {
+                showCustomAlert('No video to capture from.', 'error');
+                return;
+            }
+
+            // Get video file name from the button's parent or from the videoElement
+            const videoContainer = videoElement.closest('[data-video-name]');
+            const videoName = videoContainer?.dataset.videoName || 'video_frame';
+            fullscreenVideoCurrentFile = videoName;
+            fullscreenCapturedFrames = []; // Reset frames
+
+            // Set up the fullscreen modal
+            const modal = document.getElementById('fullscreenVideoModal');
+            const player = document.getElementById('fullscreenVideoPlayer');
+
+            // Clone the video element to fullscreen player
+            player.src = videoElement.src;
+            player.currentTime = videoElement.currentTime;
+            
+            // Show modal
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+
+            // Add space bar listener
+            fullscreenSpacebarListener = (e) => {
+                if (e.code === 'Space' || e.key === ' ') {
+                    e.preventDefault(); // Prevent page scroll
+                    captureFullscreenFrame();
+                }
+                // ESC to close
+                if (e.key === 'Escape') {
+                    closeFullscreenVideoModal();
+                }
+            };
+            document.addEventListener('keydown', fullscreenSpacebarListener);
+
+            // Update thumbnail count
+            updateFrameCount();
+        };
+
+        window.captureFullscreenFrame = async function() {
+            const player = document.getElementById('fullscreenVideoPlayer');
+            if (!player.src) return;
+
+            // Create canvas and capture frame
+            const canvas = document.createElement('canvas');
+            canvas.width = player.videoWidth;
+            canvas.height = player.videoHeight;
+            canvas.getContext('2d').drawImage(player, 0, 0);
+
+            try {
+                // Process frame with face blurring
+                const result = await processCanvas(canvas);
+                
+                if (result.blob) {
+                    // Create file name with timestamp
+                    const now = new Date();
+                    const timestamp = now.toISOString().replace(/:/g, '-').replace(/\./g, '_');
+                    const frameNumber = fullscreenCapturedFrames.length + 1;
+                    const frameName = `${fullscreenVideoCurrentFile}_frame_${frameNumber}_${timestamp}.jpg`;
+
+                    // Store frame info
+                    fullscreenCapturedFrames.push({
+                        blob: result.blob,
+                        name: frameName,
+                        timestamp: now.getTime()
+                    });
+
+                    // Add thumbnail to panel
+                    addFullscreenThumbnail(result.blob, frameName, fullscreenCapturedFrames.length - 1);
+                    updateFrameCount();
+                    
+                    // Visual feedback
+                    showCustomAlert(`Frame ${frameNumber} captured!`, 'success');
+                }
+            } catch (error) {
+                console.error('Error processing frame:', error);
+                showCustomAlert('Error processing frame.', 'error');
+            }
+        };
+
+        function addFullscreenThumbnail(blob, name, index) {
+            const panel = document.getElementById('fullscreenThumbnailPanel');
+            
+            // Clear placeholder text if this is the first frame
+            if (index === 0) {
+                panel.innerHTML = '';
+            }
+
+            const url = URL.createObjectURL(blob);
+            const thumb = document.createElement('div');
+            thumb.className = 'relative group';
+            thumb.innerHTML = `
+                <img src="${url}" alt="Frame ${index + 1}" class="w-full h-auto rounded shadow-md cursor-pointer hover:scale-105 transition-transform">
+                <button onclick="removeFullscreenThumbnail(${index})" class="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white rounded-full w-6 h-6 text-xs font-bold opacity-0 group-hover:opacity-100 transition">×</button>
+                <p class="text-white text-xs mt-1 text-center">${name.substring(0, 20)}...</p>
+            `;
+            panel.appendChild(thumb);
+        }
+
+        window.removeFullscreenThumbnail = function(index) {
+            fullscreenCapturedFrames.splice(index, 1);
+            const panel = document.getElementById('fullscreenThumbnailPanel');
+            const thumbs = panel.querySelectorAll('.relative');
+            if (thumbs[index]) {
+                thumbs[index].remove();
+            }
+            
+            // Re-render all thumbnails to maintain correct indices
+            panel.innerHTML = '';
+            fullscreenCapturedFrames.forEach((frame, i) => {
+                addFullscreenThumbnail(frame.blob, frame.name, i);
+            });
+
+            if (fullscreenCapturedFrames.length === 0) {
+                panel.innerHTML = '<p class="text-slate-400 text-center text-sm mt-8">Captured frames appear here</p>';
+            }
+            updateFrameCount();
+        };
+
+        function updateFrameCount() {
+            document.getElementById('frameCount').textContent = fullscreenCapturedFrames.length;
+            document.getElementById('frameCountFooter').textContent = fullscreenCapturedFrames.length;
+        }
+
+        window.downloadCapturedFrames = async function() {
+            if (fullscreenCapturedFrames.length === 0) {
+                showCustomAlert('No frames to download.', 'info');
+                return;
+            }
+
+            try {
+                const zip = new JSZip();
+                
+                // Add each frame to zip
+                fullscreenCapturedFrames.forEach((frame, index) => {
+                    zip.file(frame.name, frame.blob);
+                });
+
+                // Generate zip file
+                const zipBlob = await zip.generateAsync({ type: 'blob' });
+                const url = URL.createObjectURL(zipBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `captured_frames_${Date.now()}.zip`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                showCustomAlert('Frames downloaded successfully!', 'success');
+            } catch (error) {
+                console.error('Error downloading frames:', error);
+                showCustomAlert('Error downloading frames.', 'error');
+            }
+        };
+
+        window.clearCapturedFrames = function() {
+            fullscreenCapturedFrames = [];
+            const panel = document.getElementById('fullscreenThumbnailPanel');
+            panel.innerHTML = '<p class="text-slate-400 text-center text-sm mt-8">Captured frames appear here</p>';
+            updateFrameCount();
+            showCustomAlert('All frames cleared.', 'info');
+        };
+
+        window.closeFullscreenVideoModal = function() {
+            const modal = document.getElementById('fullscreenVideoModal');
+            const player = document.getElementById('fullscreenVideoPlayer');
+            
+            // Stop video playback
+            player.pause();
+            player.src = '';
+            
+            // Remove event listener
+            if (fullscreenSpacebarListener) {
+                document.removeEventListener('keydown', fullscreenSpacebarListener);
+                fullscreenSpacebarListener = null;
+            }
+
+            // Hide modal
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Restore scrolling
+
+            // --- NEW: Add captured frames to gallery and open for review ---
+            if (fullscreenCapturedFrames.length > 0) {
+                addCapturedFramesToGallery();
+                // Auto-open the first frame for immediate review
+                setTimeout(() => {
+                    const firstFrameId = `fullscreen-frame-${fullscreenCapturedFrames[0].timestamp}`;
+                    if (document.getElementById(firstFrameId)) {
+                        showLightboxImage(firstFrameId);
+                    }
+                }, 300); // Small delay to ensure DOM is updated
+            }
+
+            // Reset
+            fullscreenVideoCurrentFile = null;
+            fullscreenCapturedFrames = [];
+            updateFrameCount();
+        };
+
+        // --- NEW: Function to add captured frames to gallery ---
+        async function addCapturedFramesToGallery() {
+            for (const frame of fullscreenCapturedFrames) {
+                try {
+                    // Create unique ID using timestamp
+                    const fileId = `fullscreen-frame-${frame.timestamp}`;
+                    const imageUrl = URL.createObjectURL(frame.blob);
+
+                    // Store file name mapping
+                    window.originalFileNames.set(fileId, frame.name);
+
+                    // Create gallery container
+                    const container = document.createElement('div');
+                    container.className = 'gallery-item relative w-full pt-[100%] h-0 cursor-grab';
+                    container.id = `gallery-item-${fileId}`;
+                    container.draggable = true;
+
+                    // Create image element
+                    const imgElement = document.createElement('img');
+                    imgElement.src = imageUrl;
+                    imgElement.alt = frame.name;
+                    imgElement.id = fileId;
+                    imgElement.className = "absolute top-0 left-0 w-full h-full object-cover rounded-lg shadow-md cursor-pointer transition-transform duration-200 hover:scale-105";
+
+                    // Create delete button
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'delete-btn absolute top-1.5 right-1.5 z-10 bg-black/60 text-white w-5 h-5 rounded-full text-xs font-bold leading-none flex items-center justify-center hover:bg-red-600 transition';
+                    deleteBtn.innerHTML = '&times;';
+                    deleteBtn.title = 'Delete this image';
+
+                    container.appendChild(imgElement);
+                    container.appendChild(deleteBtn);
+
+                    // Clear placeholder if needed
+                    if (galleryDiv.querySelector('p')) {
+                        galleryDiv.innerHTML = '';
+                    }
+
+                    // Add to gallery
+                    galleryDiv.appendChild(container);
+
+                    // Show download/report buttons
+                    downloadBtn.style.display = 'block';
+                    document.getElementById('generateAiReportBtn').style.display = 'block';
+                    document.getElementById('saveProjectBtn').style.display = 'block';
+
+                    // Add to drag-and-drop system
+                    setupDragAndDrop(container, imgElement);
+
+                    // Make image clickable to open lightbox
+                    imgElement.addEventListener('click', () => showLightboxImage(fileId));
+
+                    // Make delete button functional
+                    deleteBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        // The gallery's event delegation will handle this
+                        // since we have the delete-btn class
+                        deleteBtn.click(); // Trigger the existing gallery click handler
+                    });
+
+                    console.debug(`Added captured frame to gallery: ${fileId}`);
+                } catch (error) {
+                    console.error('Error adding captured frame to gallery:', error);
+                    showCustomAlert('Error adding frame to gallery.', 'error');
+                }
+            }
+
+            // Show confirmation
+            showCustomAlert(`✅ ${fullscreenCapturedFrames.length} frame(s) added to review pane!`, 'success');
+        }
+
+        // --- NEW: Setup drag and drop for newly added images ---
+        function setupDragAndDrop(container, imgElement) {
+            container.addEventListener('dragstart', (e) => {
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/html', container.innerHTML);
+                container.classList.add('dragging');
+                draggedElement = container;
+            });
+
+            container.addEventListener('dragend', (e) => {
+                container.classList.remove('dragging');
+                draggedElement = null;
+            });
+        }
+        // --- END: Setup drag and drop ---
+        // --- END: Full-Screen Video Capture Functions ---
+
         function saveRiskData() {
             if (!currentLightboxImageId) return;
             const userFrequency = document.getElementById('userFrequency').value;
@@ -4562,69 +4811,6 @@ window.populatePictureColumn = populatePictureColumn;
             });
         });
         
-        // Simple frame extraction helper
-        const extractVideoFrames = async (file, numFrames = 5) => {
-            return new Promise((resolve) => {
-                const video = document.createElement('video');
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                const frames = [];
-                
-                video.onloadedmetadata = () => {
-                    canvas.width = video.videoWidth;
-                    canvas.height = video.videoHeight;
-                    
-                    let framesExtracted = 0;
-                    const duration = video.duration;
-                    const interval = duration / (numFrames + 1);
-                    
-                    const extractFrame = (index) => {
-                        if (index >= numFrames) {
-                            resolve(frames);
-                            return;
-                        }
-                        
-                        video.currentTime = interval * (index + 1);
-                    };
-                    
-                    video.onseeked = () => {
-                        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                        canvas.toBlob((blob) => {
-                            frames.push({
-                                timestamp: video.currentTime,
-                                blob: blob,
-                                url: URL.createObjectURL(blob)
-                            });
-                            framesExtracted++;
-                            extractFrame(framesExtracted);
-                        });
-                    };
-                    
-                    video.onerror = () => {
-                        console.warn('Could not extract frames from video:', file.name);
-                        resolve(frames);
-                    };
-                    
-                    extractFrame(0);
-                };
-                
-                video.onerror = () => {
-                    console.warn('Could not load video:', file.name);
-                    resolve([]);
-                };
-                
-                video.src = URL.createObjectURL(file);
-            });
-        };
-        
-        // Helper to handle MOV files (Pass-through for now as client-side conversion is heavy)
-        const convertMOVtoMP4 = async (file) => {
-            console.log('Pass-through MOV file:', file.name);
-            // In a real app, we might use ffmpeg.wasm here, but it's heavy.
-            // We rely on browser support for QuickTime/MP4 containers.
-            return file;
-        };
-
         processBtn.addEventListener('click', async () => {
             const files = fileUpload.files;
             // Max file check moved to the 'change' event listener
@@ -4653,14 +4839,7 @@ window.populatePictureColumn = populatePictureColumn;
                 if (file.type.startsWith('image/')) {
                     imageFiles.push(file);
                 } else if (isVideoFile(file)) {
-                    // Convert MOV files to MP4
-                    const extension = file.name.split('.').pop().toLowerCase();
-                    if (extension === 'mov' || file.type === 'video/quicktime') {
-                        const convertedFile = await convertMOVtoMP4(file);
-                        videoFiles.push(convertedFile);
-                    } else {
-                        videoFiles.push(file);
-                    }
+                    videoFiles.push(file);
                 }
             }
             progressBar.max = imageFiles.length;
@@ -4712,300 +4891,38 @@ window.populatePictureColumn = populatePictureColumn;
                 videoGallery.innerHTML = '';
                 videoFiles.forEach((file, i) => {
                     const vidContainer = document.createElement('div');
-                    vidContainer.className = 'vid-container flex flex-col items-center max-w-md mx-auto p-4 bg-white rounded-lg border border-slate-200 relative';
-                    
-                    const title = document.createElement('h3');
-                    title.className = 'font-semibold text-slate-800 mb-2 w-full';
-                    title.textContent = `📹 ${file.name}`;
-                    vidContainer.appendChild(title);
-                    
+                    vidContainer.className = 'vid-container flex flex-col items-center max-w-sm mx-auto';
+                    vidContainer.dataset.videoName = file.name;
                     const video = document.createElement('video');
                     video.src = URL.createObjectURL(file);
                     video.controls = true;
-                    video.controlsList = 'nodownload';
-                    video.preload = 'metadata';
                     video.id = `vid-${Date.now()}-${i}`;
-                    video.className = "w-full h-auto rounded-lg shadow-md bg-black";
-                    video.style.minHeight = '300px';
+                    video.className = "w-full h-auto rounded-lg shadow-md";
                     
-                    // Store file name for reference
-                    video.dataset.fileName = file.name;
-                    
-                    vidContainer.appendChild(video);
-                    
+                    // Button container for two buttons side by side
                     const btnContainer = document.createElement('div');
-                    btnContainer.className = 'mt-3 flex gap-3 w-full';
+                    btnContainer.className = 'flex gap-2 mt-2 w-full';
                     
                     const captureBtn = document.createElement('button');
-                    captureBtn.textContent = '📸 Capture Frame';
+                    captureBtn.textContent = 'Capture Frame';
                     captureBtn.className = "flex-1 bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-indigo-700 transition duration-300";
                     captureBtn.onclick = () => captureAndProcessFrame(video, file.name);
                     
-                    const fullscreenCaptureBtn = document.createElement('button');
-                    fullscreenCaptureBtn.textContent = '⛶ Fullscreen Capture';
-                    fullscreenCaptureBtn.className = "flex-1 bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 transition duration-300";
-                    fullscreenCaptureBtn.onclick = () => openFullscreenCapture(file, file.name);
+                    // NEW: Full-screen capture button
+                    const fullscreenBtn = document.createElement('button');
+                    fullscreenBtn.textContent = '⛶ Full-Screen';
+                    fullscreenBtn.className = "flex-1 bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 transition duration-300";
+                    fullscreenBtn.onclick = () => openFullscreenVideoCapture(video);
                     
+                    vidContainer.appendChild(video);
                     btnContainer.appendChild(captureBtn);
-                    btnContainer.appendChild(fullscreenCaptureBtn);
+                    btnContainer.appendChild(fullscreenBtn);
                     vidContainer.appendChild(btnContainer);
-                    
                     videoGallery.appendChild(vidContainer);
                 });
             } else {
                 videoSection.style.display = 'none';
             }
-            
-            // Custom fullscreen capture interface
-            const openFullscreenCapture = (videoFile, fileName) => {
-                // Remove any existing fullscreen modal first
-                const existingModal = document.getElementById('fullscreen-capture-modal');
-                if (existingModal) {
-                    existingModal.remove();
-                }
-                
-                const modal = document.createElement('div');
-                modal.id = 'fullscreen-capture-modal';
-                modal.className = 'fixed inset-0 bg-black z-50 flex flex-col';
-                modal.style.padding = '20px';
-                
-                // Create container for video and controls
-                const container = document.createElement('div');
-                container.className = 'flex flex-col h-full w-full max-w-6xl mx-auto';
-                
-                // Header with title and close button
-                const header = document.createElement('div');
-                header.className = 'flex justify-between items-center mb-4 text-white';
-                
-                const title = document.createElement('h2');
-                title.className = 'text-2xl font-bold';
-                title.textContent = `📹 ${fileName} - Fullscreen Capture`;
-                
-                const closeBtn = document.createElement('button');
-                closeBtn.textContent = '✕';
-                closeBtn.className = 'text-3xl hover:text-red-400 transition';
-                closeBtn.onclick = () => {
-                    modal.remove();
-                    // Clean up blob URL when modal closes
-                    if (video.src && video.src.startsWith('blob:')) {
-                        URL.revokeObjectURL(video.src);
-                    }
-                };
-                
-                header.appendChild(title);
-                header.appendChild(closeBtn);
-                container.appendChild(header);
-                
-                // Main content area (video + thumbnails)
-                const contentArea = document.createElement('div');
-                contentArea.className = 'flex gap-4 flex-1 overflow-hidden';
-                
-                // Left side - Video player
-                const videoContainer = document.createElement('div');
-                videoContainer.className = 'flex-1 flex flex-col';
-                
-                // Create fresh video element with new blob URL
-                const video = document.createElement('video');
-                const blobURL = URL.createObjectURL(videoFile);
-                video.controls = true;
-                video.controlsList = 'nodownload';
-                video.preload = 'auto';
-                video.muted = false;
-                video.playsInline = true;
-                video.className = 'flex-1 rounded-lg shadow-lg bg-black';
-                video.style.objectFit = 'contain';
-                video.style.maxHeight = '100%';
-                video.style.width = '100%';
-                
-                // Use source element for better codec handling
-                const source = document.createElement('source');
-                source.src = blobURL;
-                source.type = videoFile.type || 'video/quicktime';
-                video.appendChild(source);
-                
-                // Fallback error message
-                const errorText = document.createTextNode('Your browser does not support this video format.');
-                video.appendChild(errorText);
-                
-                // Ensure video loads properly before attempting playback
-                video.onloadedmetadata = () => {
-                    console.log('Video metadata loaded:', fileName, 'Dimensions:', video.videoWidth, 'x', video.videoHeight, 'Duration:', video.duration);
-                };
-                
-                video.oncanplay = () => {
-                    console.log('Video can play:', fileName);
-                    video.play().catch(err => console.warn('Autoplay prevented:', err));
-                };
-                
-                video.onerror = (e) => {
-                    console.error('Video load error:', e, fileName);
-                    statusDiv.innerText = `Error loading video: ${fileName}`;
-                };
-                
-                videoContainer.appendChild(video);
-                contentArea.appendChild(videoContainer);
-                
-                // Right side - Captured frames thumbnails
-                const thumbnailContainer = document.createElement('div');
-                thumbnailContainer.className = 'w-32 flex flex-col gap-2 overflow-y-auto bg-slate-900 p-2 rounded-lg';
-                
-                const thumbTitle = document.createElement('p');
-                thumbTitle.className = 'text-white text-sm font-semibold text-center';
-                thumbTitle.textContent = 'Captured Frames';
-                thumbnailContainer.appendChild(thumbTitle);
-                
-                const thumbGrid = document.createElement('div');
-                thumbGrid.id = 'thumbnail-grid';
-                thumbGrid.className = 'flex flex-col gap-2';
-                thumbnailContainer.appendChild(thumbGrid);
-                
-                contentArea.appendChild(thumbnailContainer);
-                container.appendChild(contentArea);
-                
-                // Bottom control panel
-                const controls = document.createElement('div');
-                controls.className = 'mt-4 flex gap-3 justify-center flex-wrap text-center';
-                
-                const captureBtn = document.createElement('button');
-                captureBtn.textContent = '📸 Capture Current Frame';
-                captureBtn.className = 'bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-200';
-                captureBtn.onclick = async () => {
-                    captureBtn.disabled = true;
-                    captureBtn.textContent = '⏳ Capturing...';
-                    
-                    try {
-                        // Wait for video to be ready
-                        if (!video.videoWidth || !video.videoHeight) {
-                            await new Promise((resolve, reject) => {
-                                const checkReady = () => {
-                                    if (video.videoWidth && video.videoHeight) {
-                                        resolve();
-                                    } else {
-                                        setTimeout(checkReady, 100);
-                                    }
-                                };
-                                checkReady();
-                                setTimeout(() => reject(new Error('Video dimensions not available')), 3000);
-                            });
-                        }
-                        
-                        // Create a promise that rejects after 5 seconds
-                        const timeoutPromise = new Promise((_, reject) => {
-                            setTimeout(() => reject(new Error('Frame capture timeout - MOV files may not be supported in fullscreen mode')), 5000);
-                        });
-
-                        // Create the capture promise
-                        const capturePromise = (async () => {
-                            const canvas = document.createElement('canvas');
-                            const ctx = canvas.getContext('2d');
-                            canvas.width = video.videoWidth;
-                            canvas.height = video.videoHeight;
-                            
-                            console.log('Capturing frame - Canvas size:', canvas.width, 'x', canvas.height);
-                            
-                            // Attempt to draw image with error handling and createImageBitmap
-                            try {
-                                if (window.createImageBitmap) {
-                                    const bitmap = await createImageBitmap(video);
-                                    ctx.drawImage(bitmap, 0, 0);
-                                    bitmap.close();
-                                } else {
-                                    ctx.drawImage(video, 0, 0);
-                                }
-                            } catch (canvasError) {
-                                console.warn('Bitmap capture failed, trying fallback:', canvasError);
-                                ctx.drawImage(video, 0, 0);
-                            }
-                            
-                            return new Promise((resolve, reject) => {
-                                canvas.toBlob((blob) => {
-                                    if (blob) resolve(blob);
-                                    else reject(new Error('Failed to create image blob from canvas'));
-                                });
-                            });
-                        })();
-                        
-                        // Race the capture against the timeout
-                        const blob = await Promise.race([capturePromise, timeoutPromise]);
-                        
-                        // If we get here, capture was successful
-                        const thumb = document.createElement('img');
-                        thumb.className = 'rounded border-2 border-indigo-400 cursor-pointer hover:border-indigo-300 transition';
-                        thumb.style.objectFit = 'contain';
-                        thumb.style.width = '100%';
-                        thumb.style.height = 'auto';
-                        thumb.style.maxHeight = '100px';
-                        thumb.title = `Frame at ${Math.round(video.currentTime)}s`;
-                        thumb.src = URL.createObjectURL(blob);
-                        document.getElementById('thumbnail-grid').appendChild(thumb);
-                        
-                        // Also process the frame for face detection
-                        await captureAndProcessFrame(video, fileName);
-                        
-                        captureBtn.textContent = '📸 Capture Current Frame';
-                    } catch (error) {
-                        console.warn('Capture failed:', error.message);
-                        
-                        // Show error message to user
-                        const errorMsg = document.createElement('div');
-                        errorMsg.className = 'absolute inset-0 flex items-center justify-center bg-black/70 rounded-lg p-4';
-                        errorMsg.innerHTML = `
-                            <div class="bg-red-900 text-white rounded p-4 text-center max-w-sm">
-                                <p class="font-bold mb-2">⚠️ Capture Not Supported</p>
-                                <p class="text-sm mb-3">${error.message}</p>
-                                <p class="text-xs text-red-300 mb-3">Try using the regular "Capture Frame" button or convert the video to MP4 format.</p>
-                                <button onclick="this.parentElement.parentElement.remove()" class="bg-red-700 hover:bg-red-800 px-4 py-2 rounded text-sm font-semibold">Dismiss</button>
-                            </div>
-                        `;
-                        
-                        const modal = document.getElementById('fullscreen-capture-modal');
-                        if (modal) {
-                            modal.appendChild(errorMsg);
-                            setTimeout(() => errorMsg.remove(), 5000);
-                        }
-                    } finally {
-                        captureBtn.disabled = false;
-                        captureBtn.textContent = '📸 Capture Current Frame';
-                    }
-                };
-                
-                const spaceHint = document.createElement('p');
-                spaceHint.className = 'text-white text-sm w-full';
-                spaceHint.textContent = '💡 Press SPACE to capture | ESC to close';
-                
-                controls.appendChild(captureBtn);
-                controls.appendChild(spaceHint);
-                container.appendChild(controls);
-                
-                modal.appendChild(container);
-                document.body.appendChild(modal);
-                
-                // Add keyboard shortcuts - capture on space
-                const handleKeyDown = (e) => {
-                    const modal = document.getElementById('fullscreen-capture-modal');
-                    if (!modal) {
-                        document.removeEventListener('keydown', handleKeyDown);
-                        return;
-                    }
-                    
-                    if (e.code === 'Space') {
-                        e.preventDefault();
-                        // Trigger the capture button click
-                        captureBtn.click();
-                    } else if (e.key === 'Escape') {
-                        e.preventDefault();
-                        modal.remove();
-                        document.removeEventListener('keydown', handleKeyDown);
-                    }
-                };
-                
-                // Use setTimeout to ensure the event listener is properly attached
-                setTimeout(() => {
-                    document.addEventListener('keydown', handleKeyDown);
-                }, 100);
-                
-                video.focus();
-            };
             if (processedCount === 0 && videoFiles.length === 0) {
                  galleryDiv.innerHTML = '<p class="text-slate-500 col-span-full text-center">No image files were processed. Upload videos will appear above.</p>';
             }
@@ -5118,37 +5035,10 @@ window.populatePictureColumn = populatePictureColumn;
             const captureCanvas = document.createElement('canvas');
             captureCanvas.width = video.videoWidth;
             captureCanvas.height = video.videoHeight;
-            
-            try {
-                // Try using createImageBitmap for better compatibility with some video formats
-                if (window.createImageBitmap) {
-                    const bitmap = await createImageBitmap(video);
-                    captureCanvas.getContext('2d').drawImage(bitmap, 0, 0);
-                    bitmap.close();
-                } else {
-                    captureCanvas.getContext('2d').drawImage(video, 0, 0);
-                }
-            } catch (canvasError) {
-                console.warn(`Canvas frame capture failed for ${videoName}:`, canvasError);
-                // Fallback to standard drawImage if bitmap fails
-                try {
-                     captureCanvas.getContext('2d').drawImage(video, 0, 0);
-                } catch (e) {
-                    statusDiv.innerText = 'Frame capture not supported for this video format.';
-                    return;
-                }
-            }
-            
+            captureCanvas.getContext('2d').drawImage(video, 0, 0);
             statusDiv.innerText = 'Processing captured frame...';
             try {
-                // Add timeout to processCanvas to prevent infinite hangs
-                const processPromise = processCanvas(captureCanvas);
-                const timeoutPromise = new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error('Processing timeout')), 10000)
-                );
-                
-                const result = await Promise.race([processPromise, timeoutPromise]);
-                
+                const result = await processCanvas(captureCanvas);
                 const fileId = `frame-${Date.now()}`;
                 const now = new Date();
                 const timestamp = now.toISOString().replace(/:/g, '-').replace(/\./g, '_');
@@ -6267,50 +6157,50 @@ downloadBtn.addEventListener('click', async () => {
      * @param {string} message The text to display.
      * @param {string} type 'info' (default), 'success', or 'error'.
      */
-    function showCustomAlert(message, type = 'info') {
-        const container = document.getElementById('toast-container');
-        if (!container) return; // Fail silently if container not found
+    function showCustomAlert(message, type = 'info') {
+        const container = document.getElementById('toast-container');
+        if (!container) return; // Fail silently if container not found
 
-        let bgColor, iconSVG;
-        switch (type) {
-            case 'success':
-                bgColor = 'bg-green-100 border-green-400 text-green-800';
-                iconSVG = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>`;
-                break;
-            case 'error':
-                bgColor = 'bg-red-100 border-red-400 text-red-800';
-                iconSVG = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>`;
-                break;
-            default: // 'info'
-                bgColor = 'bg-blue-100 border-blue-400 text-blue-800';
-                iconSVG = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>`;
-                break;
-        }
+        let bgColor, iconSVG;
+        switch (type) {
+            case 'success':
+                bgColor = 'bg-green-100 border-green-400 text-green-800';
+                iconSVG = `<svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+                break;
+            case 'error':
+                bgColor = 'bg-red-100 border-red-400 text-red-800';
+                iconSVG = `<svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+                break;
+            default: // 'info'
+                bgColor = 'bg-blue-100 border-blue-400 text-blue-800';
+                iconSVG = `<svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+                break;
+        }
 
         const toast = document.createElement('div');
-        toast.className = `flex items-center p-4 rounded-lg shadow-lg border ${bgColor} transition-all duration-300 opacity-0 translate-x-10`;
+        toast.className = `flex items-center gap-3 p-4 rounded-lg shadow-lg border ${bgColor} transition-all duration-300 opacity-0 translate-x-10`;
         toast.innerHTML = `
             <div class="flex-shrink-0">${iconSVG}</div>
-            <div class="ml-3 text-sm font-medium flex-1">${message}</div>
-            <button type="button" class="ml-auto -mx-1.5 -my-1.5 p-1.5 rounded-full inline-flex hover:bg-black/10 transition" onclick="this.parentElement.remove()" title="Close">
+            <div class="text-sm font-medium flex-1">${message}</div>
+            <button type="button" class="flex-shrink-0 p-1.5 rounded-full inline-flex hover:bg-black/10" onclick="this.parentElement.remove()">
                 <span class="sr-only">Close</span>
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
-        `;
-        
-        container.appendChild(toast);
-        
-        // Animate in
-        setTimeout(() => {
-            toast.classList.remove('opacity-0', 'translate-x-10');
-        }, 10);
+        `;        container.appendChild(toast);
+        
+        // Animate in
+        setTimeout(() => {
+            toast.classList.remove('opacity-0', 'translate-x-10');
+        }, 10);
 
-        // Auto-dismiss after 5 seconds
-        setTimeout(() => {
-            toast.classList.add('opacity-0');
-            setTimeout(() => toast.remove(), 500); // Remove from DOM after fade out
-        }, 5000);
-    }    /**
+        // Auto-dismiss after 5 seconds
+        setTimeout(() => {
+            toast.classList.add('opacity-0');
+            setTimeout(() => toast.remove(), 500); // Remove from DOM after fade out
+        }, 5000);
+    }
+
+    /**
      * Shows a blocking confirmation modal.
      * @param {string} message The confirmation question.
      * @returns {Promise<boolean>} Resolves true if confirmed, false if canceled.
@@ -7129,3 +7019,5 @@ async function loadSourceImages() {
 
 </body>
 </html>
+
+
