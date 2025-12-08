@@ -199,7 +199,58 @@
         #riskChart div, #hazardChart div { background-color: transparent !important; }
         /* Fix for lightbox drag-and-drop */
         #lightboxGallery img.dragging { opacity: 0.5; cursor: grabbing; }
-        .gallery-item.dragging { opacity: 0.5; cursor: grabbing; }
+        .gallery-item { 
+            border-radius: 0.5rem; 
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .gallery-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+        .gallery-item.dragging { 
+            opacity: 0.5; 
+            cursor: grabbing;
+            transform: scale(0.95);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+        }
+        /* Drop target indicator */
+        .gallery-item.drop-target { 
+            transition: none;
+        }
+        /* Drop position placeholder */
+        .drop-position-placeholder {
+            border: 3px dashed #fbbf24;
+            background-color: rgba(251, 191, 36, 0.2);
+            transition: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fbbf24;
+            font-weight: bold;
+            font-size: 14px;
+            border-radius: 0.5rem;
+            animation: placeholder-pulse 1.5s ease-in-out infinite;
+        }
+        .modal-hazard-invalid {
+            outline: 2px solid #f87171;
+            outline-offset: 1px;
+        }
+        .hazard-invalid {
+            outline: 2px solid #f87171;
+            outline-offset: 1px;
+        }
+        .text-hazard-invalid { color: #ef4444; font-weight: 600; }
+        @keyframes placeholder-pulse {
+            0%, 100% { 
+                background-color: rgba(251, 191, 36, 0.2);
+                box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4);
+            }
+            50% { 
+                background-color: rgba(251, 191, 36, 0.3);
+                box-shadow: 0 0 0 6px rgba(251, 191, 36, 0);
+            }
+        }
         /* Style for hidden file input */
         input[type="file"].hidden-file-input {
             width: 0.1px;
@@ -929,19 +980,49 @@
     </div>
     </div>
     <div id="tableImageModal" class="modal-overlay hidden fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm p-4 items-center justify-center" style="display: none;">
-    <div class="modal-content bg-white m-auto p-6 sm:p-8 rounded-lg shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto relative flex flex-col md:flex-row gap-6">
-        <span id="closeTableImageModal" class="close-btn absolute top-3 right-4 text-slate-400 text-4xl font-bold cursor-pointer hover:text-slate-600 transition">&times;</span>
+    <div class="modal-content bg-white m-auto p-6 sm:p-8 rounded-lg shadow-2xl w-full max-w-6xl max-h-[92vh] overflow-hidden relative flex flex-col">
+        <span id="closeTableImageModal" class="close-btn absolute top-4 right-5 text-slate-400 text-3xl font-bold cursor-pointer hover:text-slate-600 transition">&times;</span>
 
-        <div class="w-full md:w-1/2 flex-shrink-0">
-            <h3 class="text-lg font-semibold text-slate-800 mb-2">Image Preview</h3>
-            <img id="modalEnlargedImage" src="" alt="Enlarged step image" class="w-full h-auto max-h-[70vh] object-contain rounded border border-slate-300 bg-slate-100">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-200 pr-10">
+            <h2 id="modalTaskTitle" class="text-xl font-bold text-slate-800">Task Details</h2>
         </div>
 
-        <div class="w-full md:w-1/2 space-y-3 overflow-y-auto">
-             <h3 class="text-lg font-semibold text-slate-800 mb-2">Risk Details</h3>
-             <div id="modalRiskDetails" class="text-sm text-slate-700 space-y-2">
-                 <p>Loading details...</p>
-             </div>
+        <!-- Main Content: Image (left) | Details (right) -->
+        <div class="flex gap-6 flex-1 overflow-hidden">
+            <!-- Left: Image Preview -->
+            <div class="w-1/2 flex flex-col">
+                <div class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-center justify-center">
+                    <img id="modalEnlargedImage" src="" alt="Current task image" class="max-w-full max-h-[60vh] object-contain rounded border border-slate-300 bg-white">
+                </div>
+            </div>
+
+            <!-- Right: Editable Details Form -->
+            <div class="w-1/2 flex flex-col overflow-y-auto">
+                <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex-1">
+                    <h3 class="text-base font-semibold text-slate-800 mb-3">Edit Task Details</h3>
+                    <div id="modalEditableForm" class="space-y-3">
+                        <!-- Form fields will be dynamically generated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer: Tip + Navigation -->
+        <div class="flex flex-col md:flex-row md:items-center gap-4 mt-4 pt-4 border-t border-slate-200">
+            <!-- Tip -->
+            <div class="flex items-center gap-2 bg-indigo-50 border border-indigo-200 rounded-lg px-3 py-2 flex-1 min-w-0">
+                <span class="text-indigo-600 text-base">💡</span>
+                <p class="text-xs text-indigo-700 font-medium">Use ← → arrow keys to navigate. Changes are auto saved!</p>
+            </div>
+
+            <!-- Navigation Controls -->
+            <div class="flex items-center gap-3 flex-shrink-0">
+                <button id="modalCancelBtn" class="bg-slate-400 text-white font-semibold py-2 px-4 rounded-lg hover:bg-slate-500 transition text-sm">Close</button>
+                <button id="modalFooterPrevBtn" class="min-w-[100px] bg-slate-200 text-slate-800 font-semibold py-2 px-3 rounded-lg hover:bg-slate-300 transition shadow-sm text-sm" title="Previous task (← arrow)">← Previous</button>
+                <span id="modalTaskCounter" class="text-slate-600 font-medium text-sm">1 / 1</span>
+                <button id="modalFooterNextBtn" class="min-w-[100px] bg-indigo-600 text-white font-semibold py-2 px-3 rounded-lg hover:bg-indigo-700 transition shadow-sm text-sm" title="Next task (→ arrow)">Next →</button>
+            </div>
         </div>
     </div>
 </div>
@@ -2432,7 +2513,13 @@ data.forEach((row, index) => {
     const frequency = frequencyValue;
     const severity = severityValue || hazardDetails.severity;
     const likelihood = likelihoodValue || hazardDetails.likelihood;
-    const riskScore = frequency * severity * likelihood;
+    
+    // Use saved Risk Score if available, otherwise calculate
+    const savedRiskScore = row['Risk Score'] ? parseFloat(row['Risk Score']) : null;
+    const riskScore = savedRiskScore !== null && !isNaN(savedRiskScore) ? savedRiskScore : (frequency * severity * likelihood);
+    
+    // Use saved Hazard Group if available, otherwise use registry lookup
+    const hazardGroup = row['Hazard Group'] || hazardDetails.group;
    
     // --- MODIFICATION: Added empty picture cell with class ---
     // --- NEW, ROBUST CODE ---
@@ -2451,14 +2538,19 @@ data.forEach((row, index) => {
     );
     const rowBgClass = isAIAddition ? 'bg-blue-50' : '';
     const aiBadge = isAIAddition ? `<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700">🤖 AI</span>` : '';
+    
+    // Preserve deleted state from loaded project
+    const isDeleted = row.isDeleted === true || row.isDeleted === 'true';
+    const deletedClass = isDeleted ? 'deleted-row' : '';
+    const deletedAttr = isDeleted ? 'data-deleted="true"' : '';
                    
-                tableHTML += `<tr data-row-index="${index}" data-image-id="${imageId}" class="hover:bg-slate-100 transition ${rowBgClass}">
+                tableHTML += `<tr data-row-index="${index}" data-image-id="${imageId}" ${deletedAttr} class="hover:bg-slate-100 transition ${rowBgClass} ${deletedClass}">
                     <td class="${tdClasses} picture-cell" data-step="${row.Steps || ''}" data-hazard="${hazardListValue}" data-filename="${originalFileName || ''}"></td>
                     <td class="${tdClasses} text-center">${aiBadge}</td>
                     <td class="${tdClasses}">${row.Steps || ''}</td>
-                    <td class="${tdClasses} group">${createHazardGroupDropdown(hazardDetails.group)}</td>
-                    <td class="${tdClasses}">${createTextDropdown(Object.keys(HAZARD_REGISTRY), hazardListValue, `recalculateRow(${index}, 'hazard')`)}</td>
-                    <td class="${tdClasses}">${createTextDropdown(CONSEQUENCE_REGISTRY, consequenceValue, `recalculateRow(${index})`)}</td>
+                    <td class="${tdClasses} group">${createHazardGroupDropdown(hazardGroup)}</td>
+                    <td class="${tdClasses} hazard-list-cell">${createTextDropdown(Object.keys(HAZARD_REGISTRY), hazardListValue, `recalculateRow(${index}, 'hazard')`)}</td>
+                    <td class="${tdClasses} consequence-cell">${createTextDropdown(CONSEQUENCE_REGISTRY, consequenceValue, `recalculateRow(${index})`)}</td>
                     <td class="${tdClasses}">${createDropdown(FREQUENCY_SCALE, frequency, `recalculateRow(${index})`)}</td>
                     <td class="${tdClasses}">${createDropdown(SEVERITY_SCALE, severity, `recalculateRow(${index})`)}</td>
                     <td class="${tdClasses}">${createDropdown(LIKELIHOOD_SCALE, likelihood, `recalculateRow(${index})`)}</td>
@@ -2467,12 +2559,32 @@ data.forEach((row, index) => {
                     <td class="${tdClasses}"><input type="text" value="${DOMPurify.sanitize(row['Hazard Source'] || '')}" class="${inputClasses}"></td>
                     <td class="${tdClasses}"><input type="text" value="${DOMPurify.sanitize(row['Current Control'] || '')}" class="${inputClasses}"></td>
                     <td class="${tdClasses}"><input type="text" value="${DOMPurify.sanitize(row['Routine/Non-Routine/Emergency Situation'] || '')}" class="${inputClasses}"></td>
-                    <td class="${tdClasses} text-center"><button onclick="toggleRowDelete(${index}, this)" class="delete-btn" title="Delete row">🗑</button></td>
+                    <td class="${tdClasses} text-center"><button onclick="toggleRowDelete(${index}, this)" class="${isDeleted ? 'restore-btn' : 'delete-btn'}" title="${isDeleted ? 'Restore row' : 'Delete row'}">${isDeleted ? 'Restore' : '🗑'}</button></td>
                 </tr>`;
                 // --- END MODIFICATION ---
             });
             tableHTML += `</tbody></table></div>`;
             tableContainer.innerHTML = tableHTML;
+
+                // Mark hazard list dropdowns that are not in the standard registry
+                const hazardListCells = tableContainer.querySelectorAll('.hazard-list-cell select');
+                hazardListCells.forEach(sel => {
+                    if (!HAZARD_REGISTRY[sel.value]) {
+                        sel.classList.add('hazard-invalid');
+                    } else {
+                        sel.classList.remove('hazard-invalid');
+                    }
+                });
+
+                // Mark consequence dropdowns that are not in the standard registry
+                const consequenceCells = tableContainer.querySelectorAll('.consequence-cell select');
+                consequenceCells.forEach(sel => {
+                    if (!CONSEQUENCE_REGISTRY.includes(sel.value)) {
+                        sel.classList.add('hazard-invalid');
+                    } else {
+                        sel.classList.remove('hazard-invalid');
+                    }
+                });
             
             // Re-apply risk category colors after table build
             updateAllCategoryColors();
@@ -2617,6 +2729,13 @@ data.forEach((row, index) => {
                 
                 const selectedHazardName = hazardDropdown.value;
                 const hazardDetails = HAZARD_REGISTRY[selectedHazardName] || { group: 'Unknown', severity: 1, likelihood: 1 };
+
+                // Flag non-standard hazard list selections
+                if (!HAZARD_REGISTRY[selectedHazardName]) {
+                    hazardDropdown.classList.add('hazard-invalid');
+                } else {
+                    hazardDropdown.classList.remove('hazard-invalid');
+                }
                 
                 const groupDropdown = allTds[hazardGroupIndex]?.querySelector('select');
                 if (!groupDropdown) {
@@ -3243,29 +3362,23 @@ data.forEach((row, index) => {
                 const rowData = {};
                 rowData['data-row-index'] = tr.dataset.rowIndex;
                 rowData['imageId'] = tr.dataset.imageId || null;
+                rowData['isDeleted'] = tr.classList.contains('deleted-row') || tr.dataset.deleted === 'true';
+                
                 tr.querySelectorAll('td').forEach((td, index) => {
                     const header = headers[index];
-                    if (header) {
+                    if (header && header !== 'Picture' && header !== 'Delete') {
                         const select = td.querySelector('select');
                         const input = td.querySelector('input');
                         if (select) {
                             rowData[header] = select.value;
                         } else if (input) {
                             rowData[header] = input.value;
-                        } else if (header === 'Risk Score') { // Make sure score is read correctly
+                        } else {
+                            // Capture all text content for text-based columns
                             rowData[header] = td.textContent.trim();
-                        } else if (header === 'Risk Category') { // Make sure category is read correctly
-                            rowData[header] = td.textContent.trim();
-                        } else if (header === 'Steps') { // Read steps correctly
-                             rowData[header] = td.textContent.trim();
-                         }
-                        // Add more specific reads if needed for other text-based columns
+                        }
                     }
                 });
-                 // Add Steps if it wasn't picked up by header logic (e.g., first column)
-                 if (!rowData['Steps'] && tr.cells[0]) {
-                     rowData['Steps'] = tr.cells[0].textContent.trim();
-                 }
                 rows.push(rowData);
             });
             return { headers, rows };
@@ -3382,88 +3495,364 @@ data.forEach((row, index) => {
             const baseColors = ['#4f46e5', '#0ea5e9', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#3b82f6', '#22c55e', '#eab308', '#ec4899'];
             const colors = []; for (let i = 0; i < count; i++) { colors.push(baseColors[i % baseColors.length]); } return colors;
         }
-        // --- NEW: Functions for Table Image Modal ---
+        // --- Enhanced Table Image Modal with Editable Fields ---
+        let currentModalRowIndex = 0;
+        let allModalRowIndices = [];
+        let modalFieldValues = {}; // Track edited values in modal
+        
         window.openTableImageModal = function(imageUrl, rowIndex) {
+            // Get all visible rows for navigation
+            const allRows = document.querySelectorAll('#table-container tbody tr:not(.deleted-row)');
+            allModalRowIndices = Array.from(allRows).map((row, i) => parseInt(row.dataset.rowIndex || i));
+            currentModalRowIndex = allModalRowIndices.indexOf(rowIndex);
+            
+            if (currentModalRowIndex === -1) {
+                currentModalRowIndex = 0;
+            }
+            
+            loadModalTaskDetails(allModalRowIndices[currentModalRowIndex]);
+            document.getElementById('tableImageModal').style.display = 'flex';
+        };
+        
+        function loadModalTaskDetails(rowIndex) {
             const modal = document.getElementById('tableImageModal');
             const enlargedImage = document.getElementById('modalEnlargedImage');
-            const detailsContainer = document.getElementById('modalRiskDetails');
-
-            if (!modal || !enlargedImage || !detailsContainer) {
+            const editableForm = document.getElementById('modalEditableForm');
+            const taskTitle = document.getElementById('modalTaskTitle');
+            const taskCounter = document.getElementById('modalTaskCounter');
+            
+            if (!modal || !enlargedImage || !editableForm) {
                 console.error("Modal elements not found!");
-                showCustomAlert("Error: Could not open image preview.", 'error');
                 return;
             }
-
-            // Set the image source
-            enlargedImage.src = imageUrl;
-            enlargedImage.alt = `Enlarged image for row ${rowIndex + 1}`;
-
+            
             // Get the corresponding table row
             const row = document.querySelector(`#table-container tr[data-row-index="${rowIndex}"]`);
             if (!row) {
-                detailsContainer.innerHTML = '<p class="text-red-600">Error: Could not find table row data.</p>';
-                modal.style.display = 'flex';
+                editableForm.innerHTML = '<p class="text-red-600">Error: Could not find table row data.</p>';
                 return;
             }
-
-            // Extract data from the row (using current values)
-            const rowData = {};
+            
+            // Extract headers and row data
             const headers = Array.from(document.querySelectorAll('#table-container thead th')).map(th => th.textContent.trim());
-            row.querySelectorAll('td').forEach((td, index) => {
-                 const header = headers[index];
-                 if (header && header !== 'Picture') { // Skip Picture column
+            const rowData = {};
+            const allCells = row.querySelectorAll('td');
+            
+            allCells.forEach((td, index) => {
+                const header = headers[index];
+                if (header && header !== 'Picture') {
                     const select = td.querySelector('select');
                     const input = td.querySelector('input');
                     if (select) {
-                        // Get full text for dropdowns
-                        rowData[header] = select.options[select.selectedIndex] ? select.options[select.selectedIndex].text : select.value;
+                        rowData[header] = select.value;
+                        rowData[header + '_text'] = select.options[select.selectedIndex]?.text || select.value;
                     } else if (input) {
-                        rowData[header] = input.value || 'N/A';
+                        rowData[header] = input.value || '';
                     } else {
-                         rowData[header] = td.textContent.trim() || 'N/A';
+                        rowData[header] = td.textContent.trim() || '';
                     }
-                 }
-            });
-
-            // Format details HTML
-            let detailsHtml = '<dl class="divide-y divide-slate-200">';
-            const importantHeaders = [
-                "Steps", "Hazard Group", "Hazard List", "Risk/Consequences", 
-                "Risk Score", "Risk Category", "Hazard Source", "Current Control", 
-                "Recommendation", "Residual Risk Score", "Residual Risk Category"
-            ]; // Prioritize these
-
-            importantHeaders.forEach(header => {
-                if (rowData[header] && rowData[header] !== 'N/A') { // Only show if data exists
-                    detailsHtml += `<div class="py-2 flex justify-between">`;
-                    detailsHtml += `<dt class="font-medium text-slate-600">${header}:</dt>`;
-                    // Add color styling for categories
-                    let valueClass = 'text-slate-800 text-right';
-                    if (header === 'Risk Category' || header === 'Residual Risk Category') {
-                       valueClass += ` ${getRiskCategoryColor(rowData[header])} font-semibold`;
-                    } else if (header === 'Risk Score' || header === 'Residual Risk Score') {
-                       valueClass += ` font-bold`;
-                    }
-                     detailsHtml += `<dd class="${valueClass}">${DOMPurify.sanitize(rowData[header])}</dd>`;
-                     detailsHtml += `</div>`;
                 }
             });
-             detailsHtml += '</dl>';
+            
+            // Get image from first img in row (if exists)
+            const imgInRow = row.querySelector('img');
+            if (imgInRow) {
+                enlargedImage.src = imgInRow.src;
+            }
+            
+            // Update title and counter
+            taskTitle.textContent = `Task ${currentModalRowIndex + 1}: ${rowData['Steps'] || 'Untitled'}`;
+            taskCounter.textContent = `${currentModalRowIndex + 1} / ${allModalRowIndices.length}`;
+            
+            // Build editable form
+            let formHtml = '';
+            const editableFields = [
+                'Steps', 'Hazard Group', 'Hazard List', 'Risk/Consequences',
+                'Hazard Source', 'Current Control', 'Recommendation',
+                'Routine/Non-Routine/Emergency Situation'
+            ];
+            
+            editableFields.forEach(field => {
+                if (rowData[field] !== undefined) {
+                    const isSelect = headers.includes(field) && row.querySelector(`td:nth-child(${headers.indexOf(field) + 1}) select`);
+                    const fieldId = `modal-${field.replace(/\//g, '-').replace(/\s/g, '_')}`;
+                    
+                    if (isSelect) {
+                        // Get dropdown options
+                        const selectOptions = row.querySelector(`td:nth-child(${headers.indexOf(field) + 1}) select`);
+                        if (selectOptions) {
+                            formHtml += `<div class="form-group">
+                                <label class="block text-sm font-medium text-slate-700 mb-1">${field}:</label>
+                                <select id="${fieldId}" class="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 transition text-sm">`;
+                            
+                            Array.from(selectOptions.options).forEach(opt => {
+                                const selected = opt.value === rowData[field] ? 'selected' : '';
+                                formHtml += `<option value="${opt.value}" ${selected}>${opt.text}</option>`;
+                            });
+                            
+                            formHtml += `</select></div>`;
+                        }
+                    } else {
+                        // Text area for text fields
+                        formHtml += `<div class="form-group">
+                            <label class="block text-sm font-medium text-slate-700 mb-1">${field}:</label>
+                            <textarea id="${fieldId}" class="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 transition text-sm resize-none" rows="2">${DOMPurify.sanitize(rowData[field])}</textarea>
+                        </div>`;
+                    }
+                }
+            });
 
+            // Add Frequency, Severity, Likelihood dropdowns (horizontal layout)
+            const ratingFields = ['Frequency', 'Severity', 'Likelihood'];
+            formHtml += `<div class="form-group mt-4 pt-3 border-t border-slate-200">
+                <label class="block text-sm font-medium text-slate-700 mb-2">Risk Rating:</label>
+                <div class="grid grid-cols-3 gap-2">`;
+            
+            ratingFields.forEach(field => {
+                const fieldId = `modal-${field}`;
+                const selectEl = row.querySelector(`td:nth-child(${headers.indexOf(field) + 1}) select`);
+                if (selectEl) {
+                    formHtml += `<div>
+                        <label class="block text-[10px] uppercase tracking-wide text-slate-500 mb-1">${field}</label>
+                        <select id="${fieldId}" class="w-full p-1.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 transition text-xs">`;
+                    Array.from(selectEl.options).forEach(opt => {
+                        const selected = opt.value === rowData[field] ? 'selected' : '';
+                        formHtml += `<option value="${opt.value}" ${selected}>${opt.text}</option>`;
+                    });
+                    formHtml += `</select></div>`;
+                }
+            });
+            
+            formHtml += `</div></div>`;
 
-            detailsContainer.innerHTML = detailsHtml;
+            // Add Risk Score and Risk Category display
+            const riskScore = rowData['Risk Score'] || '—';
+            const riskCategory = rowData['Risk Category'] || '—';
+            formHtml += `<div class="form-group mt-3 pt-3 border-t border-slate-200">
+                <div class="flex items-center gap-4">
+                    <div class="flex-1">
+                        <label class="block text-[10px] uppercase tracking-wide text-slate-500 mb-1">Risk Score</label>
+                        <div id="modal-risk-score" class="text-lg font-bold text-slate-800">${riskScore}</div>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-[10px] uppercase tracking-wide text-slate-500 mb-1">Risk Category</label>
+                        <div id="modal-risk-category" class="text-sm font-semibold px-2 py-1 rounded inline-block">${riskCategory}</div>
+                    </div>
+                </div>
+            </div>`;
+            
+            editableForm.innerHTML = formHtml;
 
-            // Show the modal
-            modal.style.display = 'flex';
+            // Apply category color styling
+            const categoryEl = document.getElementById('modal-risk-category');
+            if (categoryEl) {
+                const cat = riskCategory.toLowerCase();
+                if (cat.includes('critical')) {
+                    categoryEl.classList.add('bg-red-100', 'text-red-700');
+                } else if (cat.includes('high')) {
+                    categoryEl.classList.add('bg-orange-100', 'text-orange-700');
+                } else if (cat.includes('medium')) {
+                    categoryEl.classList.add('bg-yellow-100', 'text-yellow-700');
+                } else if (cat.includes('low')) {
+                    categoryEl.classList.add('bg-green-100', 'text-green-700');
+                } else {
+                    categoryEl.classList.add('bg-slate-100', 'text-slate-700');
+                }
+            }
+
+            // Add listeners to recalculate risk score when F/S/L change
+            const recalcModalRisk = () => {
+                const freqSelect = document.getElementById('modal-Frequency');
+                const sevSelect = document.getElementById('modal-Severity');
+                const likeSelect = document.getElementById('modal-Likelihood');
+                if (freqSelect && sevSelect && likeSelect) {
+                    const f = parseFloat(freqSelect.value) || 1;
+                    const s = parseFloat(sevSelect.value) || 1;
+                    const l = parseFloat(likeSelect.value) || 1;
+                    const score = f * s * l;
+                    const scoreEl = document.getElementById('modal-risk-score');
+                    const catEl = document.getElementById('modal-risk-category');
+                    if (scoreEl) scoreEl.textContent = score.toFixed(2);
+                    if (catEl) {
+                        const newCat = getRiskCategory(score);
+                        catEl.textContent = newCat;
+                        catEl.className = 'text-sm font-semibold px-2 py-1 rounded inline-block';
+                        const c = newCat.toLowerCase();
+                        if (c.includes('critical')) catEl.classList.add('bg-red-100', 'text-red-700');
+                        else if (c.includes('high')) catEl.classList.add('bg-orange-100', 'text-orange-700');
+                        else if (c.includes('medium')) catEl.classList.add('bg-yellow-100', 'text-yellow-700');
+                        else if (c.includes('low')) catEl.classList.add('bg-green-100', 'text-green-700');
+                        else catEl.classList.add('bg-slate-100', 'text-slate-700');
+                    }
+                }
+            };
+            ['modal-Frequency', 'modal-Severity', 'modal-Likelihood'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('change', recalcModalRisk);
+            });
+
+            // Highlight unknown/empty hazard group
+            const hazardSelect = document.getElementById('modal-Hazard_Group');
+            const hazardListSelect = document.getElementById('modal-Hazard_List');
+            if (hazardSelect) {
+                const value = hazardSelect.value?.toLowerCase() || '';
+                const text = hazardSelect.selectedOptions[0]?.text?.toLowerCase() || '';
+                if (!value || value === 'unknown' || text.includes('unknown')) {
+                    hazardSelect.classList.add('modal-hazard-invalid');
+                } else {
+                    hazardSelect.classList.remove('modal-hazard-invalid');
+                }
+                hazardSelect.addEventListener('change', () => {
+                    const v = hazardSelect.value?.toLowerCase() || '';
+                    const t = hazardSelect.selectedOptions[0]?.text?.toLowerCase() || '';
+                    if (!v || v === 'unknown' || t.includes('unknown')) {
+                        hazardSelect.classList.add('modal-hazard-invalid');
+                    } else {
+                        hazardSelect.classList.remove('modal-hazard-invalid');
+                    }
+                });
+            }
+
+            // Keep hazard group in sync when hazard list changes inside the modal
+            if (hazardListSelect && hazardSelect) {
+                const applyHazardListValidity = () => {
+                    if (!HAZARD_REGISTRY[hazardListSelect.value]) {
+                        hazardListSelect.classList.add('modal-hazard-invalid');
+                    } else {
+                        hazardListSelect.classList.remove('modal-hazard-invalid');
+                    }
+                };
+                applyHazardListValidity();
+                hazardListSelect.addEventListener('change', () => {
+                    const selectedHazard = hazardListSelect.value;
+                    const hazardDetails = HAZARD_REGISTRY[selectedHazard];
+                    const nextGroup = hazardDetails?.group || 'Unknown';
+                    // Ensure the group option exists; if not, prepend it
+                    const hasOption = Array.from(hazardSelect.options).some(opt => opt.value === nextGroup);
+                    if (!hasOption && nextGroup !== 'Unknown') {
+                        const opt = document.createElement('option');
+                        opt.value = nextGroup;
+                        opt.text = t(nextGroup);
+                        hazardSelect.add(opt, 0);
+                    }
+                    hazardSelect.value = nextGroup;
+                    const v = hazardSelect.value?.toLowerCase() || '';
+                    const tText = hazardSelect.selectedOptions[0]?.text?.toLowerCase() || '';
+                    if (!v || v === 'unknown' || tText.includes('unknown')) {
+                        hazardSelect.classList.add('modal-hazard-invalid');
+                    } else {
+                        hazardSelect.classList.remove('modal-hazard-invalid');
+                    }
+                    applyHazardListValidity();
+                });
+            }
+
+            // Highlight non-standard Risk/Consequences in modal
+            const consequenceSelect = document.getElementById('modal-Risk-Consequences');
+            if (consequenceSelect) {
+                const applyConsequenceValidity = () => {
+                    if (!CONSEQUENCE_REGISTRY.includes(consequenceSelect.value)) {
+                        consequenceSelect.classList.add('modal-hazard-invalid');
+                    } else {
+                        consequenceSelect.classList.remove('modal-hazard-invalid');
+                    }
+                };
+                applyConsequenceValidity();
+                consequenceSelect.addEventListener('change', applyConsequenceValidity);
+            }
+            
+            // Update next task preview if exists
+            // Next task preview removed - no longer needed
+        }
+        
+        function updateNextTaskPreview() {
+            // Function kept for compatibility but no longer displays preview
+            // Elements were removed from modal footer
+            return;
+        }
+        
+        function saveModalChanges() {
+            const row = document.querySelector(`#table-container tr[data-row-index="${allModalRowIndices[currentModalRowIndex]}"]`);
+            if (!row) return;
+            
+            const headers = Array.from(document.querySelectorAll('#table-container thead th')).map(th => th.textContent.trim());
+            const editableFields = [
+                'Steps', 'Hazard Group', 'Hazard List', 'Risk/Consequences',
+                'Hazard Source', 'Current Control', 'Recommendation',
+                'Routine/Non-Routine/Emergency Situation'
+            ];
+            
+            editableFields.forEach(field => {
+                const fieldId = `modal-${field.replace(/\//g, '-').replace(/\s/g, '_')}`;
+                const inputElement = document.getElementById(fieldId);
+                
+                if (inputElement) {
+                    const headerIndex = headers.indexOf(field);
+                    if (headerIndex >= 0) {
+                        const cellElement = row.querySelectorAll('td')[headerIndex];
+                        if (cellElement) {
+                            const select = cellElement.querySelector('select');
+                            const input = cellElement.querySelector('input');
+                            
+                            if (select) {
+                                select.value = inputElement.value;
+                            } else if (input) {
+                                input.value = inputElement.value;
+                            } else {
+                                cellElement.textContent = inputElement.value;
+                            }
+                        }
+                    }
+                    // If hazard list changed, re-run linkage to auto-set parent hazard group/severity/likelihood
+                    if (field === 'Hazard List') {
+                        recalculateRow(allModalRowIndices[currentModalRowIndex], 'hazard');
+                    }
+                }
+            });
+
+            // Save Frequency, Severity, Likelihood
+            ['Frequency', 'Severity', 'Likelihood'].forEach(field => {
+                const modalEl = document.getElementById(`modal-${field}`);
+                if (modalEl) {
+                    const headerIndex = headers.indexOf(field);
+                    if (headerIndex >= 0) {
+                        const cellElement = row.querySelectorAll('td')[headerIndex];
+                        const select = cellElement?.querySelector('select');
+                        if (select) {
+                            select.value = modalEl.value;
+                        }
+                    }
+                }
+            });
+
+            // Recalculate the row's risk score and category
+            recalculateRow(allModalRowIndices[currentModalRowIndex]);
+            
+            showCustomAlert('Changes saved successfully!', 'success');
+        }
+        
+        function navigateModal(direction) {
+            // Save current changes before moving
+            saveModalChanges();
+            
+            if (direction === 'next' && currentModalRowIndex < allModalRowIndices.length - 1) {
+                currentModalRowIndex++;
+                loadModalTaskDetails(allModalRowIndices[currentModalRowIndex]);
+            } else if (direction === 'prev' && currentModalRowIndex > 0) {
+                currentModalRowIndex--;
+                loadModalTaskDetails(allModalRowIndices[currentModalRowIndex]);
+            }
         }
 
         function closeTableImageModal() {
             const modal = document.getElementById('tableImageModal');
             if (modal) {
+                // Save changes before closing
+                saveModalChanges();
                 modal.style.display = 'none';
-                // Clear content to prevent old data flashing
+                // Clear content
                 document.getElementById('modalEnlargedImage').src = ""; 
-                document.getElementById('modalRiskDetails').innerHTML = "<p>Loading details...</p>";
+                document.getElementById('modalEditableForm').innerHTML = "";
             }
         }
 
@@ -3481,6 +3870,35 @@ data.forEach((row, index) => {
              if (closeBtn) {
                  closeBtn.onclick = closeTableImageModal;
              }
+             
+             // Modal button listeners
+             const modalPrevBtn = document.getElementById('modalPrevBtn');
+             const modalNextBtn = document.getElementById('modalNextBtn');
+             const modalCancelBtn = document.getElementById('modalCancelBtn');
+             const modalFooterPrevBtn = document.getElementById('modalFooterPrevBtn');
+             const modalFooterNextBtn = document.getElementById('modalFooterNextBtn');
+             
+             if (modalPrevBtn) modalPrevBtn.addEventListener('click', () => navigateModal('prev'));
+             if (modalNextBtn) modalNextBtn.addEventListener('click', () => navigateModal('next'));
+             if (modalCancelBtn) modalCancelBtn.addEventListener('click', closeTableImageModal);
+             if (modalFooterPrevBtn) modalFooterPrevBtn.addEventListener('click', () => navigateModal('prev'));
+             if (modalFooterNextBtn) modalFooterNextBtn.addEventListener('click', () => navigateModal('next'));
+             
+             // Keyboard navigation for modal
+             document.addEventListener('keydown', (event) => {
+                 if (modal.style.display === 'flex') {
+                     if (event.key === 'ArrowRight') {
+                         event.preventDefault();
+                         navigateModal('next');
+                     } else if (event.key === 'ArrowLeft') {
+                         event.preventDefault();
+                         navigateModal('prev');
+                     } else if (event.key === 'Escape') {
+                         closeTableImageModal();
+                     }
+                 }
+             });
+             
              // Close if clicking outside the modal content
              if (modal) {
                  modal.addEventListener('click', (event) => {
@@ -3531,6 +3949,14 @@ data.forEach((row, index) => {
                          });
                          // Update risk category colors with current language
                          updateAllCategoryColors();
+                     }
+                     // Refresh open modal form to reflect translated dropdown text
+                     const tableImageModal = document.getElementById('tableImageModal');
+                     if (tableImageModal && tableImageModal.style.display === 'flex' &&
+                         typeof currentModalRowIndex !== 'undefined' && allModalRowIndices?.length) {
+                         // Preserve any edits by saving first, then reload UI in the new language
+                         saveModalChanges();
+                         loadModalTaskDetails(allModalRowIndices[currentModalRowIndex]);
                      }
                      // Toggle "How to Use This App" sections based on language
                      const howToUseEn = document.getElementById('howToUse-en');
@@ -3680,25 +4106,10 @@ function generateArrangedRiskCSV(imageNameMap = new Map()) {
         return "No risk table data available.";
     }
     
-    // Translate headers based on current language
-    const headerTranslations = {
-        "Sequence": "Sequence",
-        "Task Steps": "Task Steps",
-        "Hazard Group": "Hazard Group",
-        "Hazard List": "Hazard List",
-        "Risk/Consequences": "Risk/Consequences",
-        "Picture Name": "Picture Name",
-        "Hazard Source": "Hazard Source",
-        "Current Controls": "Current Controls",
-        "Routine": "Routine",
-        "Frequency": "Frequency",
-        "Severity": "Severity",
-        "Likelihood": "Likelihood",
-        "Risk Score": "Risk Score"
-    };
+    // Translate CSV headers based on current language
+    const csvHeaders = ["Sequence", "Task Steps", "Hazard Group", "Hazard List", "Risk/Consequences", "Picture Name", "Hazard Source", "Current Controls", "Routine", "Frequency", "Severity", "Likelihood", "Risk Score"];
+    const translatedHeaders = csvHeaders.map(h => t(h));
     
-    // Apply translations if needed
-    const translatedHeaders = ["Sequence", "Task Steps", "Hazard Group", "Hazard List", "Risk/Consequences", "Picture Name", "Hazard Source", "Current Controls", "Routine", "Frequency", "Severity", "Likelihood", "Risk Score"].map(h => t(h));
     const csv = [translatedHeaders.map(h => `"${h.replace(/"/g, '""')}"`).join(',')];
     
     // Get deleted row indices to skip them
@@ -3745,7 +4156,7 @@ function generateArrangedRiskCSV(imageNameMap = new Map()) {
             pictureName = createFinalFileName(orig, idx);
         }
         
-        // Translate dropdown values
+        // Translate dropdown values based on current language
         const frequency = row.Frequency ? t(row.Frequency.split(' - ')[1] || row.Frequency) : '';
         const severity = row.Severity ? t(row.Severity.split(' - ')[1] || row.Severity) : '';
         const likelihood = row.Likelihood ? t(row.Likelihood.split(' - ')[1] || row.Likelihood) : '';
@@ -4742,6 +5153,11 @@ window.populatePictureColumn = populatePictureColumn;
                     showLightboxImage(event.target.id);
                 }
             });
+            // Track drag state for visual feedback
+            let dragOverTarget = null;
+            let lastClientY = 0;
+            let dropPlaceholder = null;
+            
             galleryDiv.addEventListener('dragstart', (event) => {
                 const galleryItem = event.target.closest('.gallery-item');
                 if (galleryItem) {
@@ -4750,25 +5166,118 @@ window.populatePictureColumn = populatePictureColumn;
                     event.dataTransfer.effectAllowed = 'move';
                 }
             });
+            
             galleryDiv.addEventListener('dragend', (event) => {
                 const galleryItem = event.target.closest('.gallery-item');
-                if (galleryItem) galleryItem.classList.remove('dragging');
+                if (galleryItem) {
+                    galleryItem.classList.remove('dragging');
+                }
+                // Clear all visual feedback
+                document.querySelectorAll('.gallery-item.drop-target').forEach(item => {
+                    item.classList.remove('drop-target');
+                });
+                // Remove placeholder
+                if (dropPlaceholder) {
+                    dropPlaceholder.remove();
+                    dropPlaceholder = null;
+                }
+                dragOverTarget = null;
             });
+            
             galleryDiv.addEventListener('dragover', (event) => {
                 event.preventDefault();
                 event.dataTransfer.dropEffect = 'move';
+                lastClientY = event.clientY;
             });
+            
+            galleryDiv.addEventListener('dragenter', (event) => {
+                event.preventDefault();
+                const galleryItem = event.target.closest('.gallery-item');
+                const draggingItem = galleryDiv.querySelector('.gallery-item.dragging');
+                
+                if (!galleryItem || !draggingItem || galleryItem === draggingItem) return;
+                
+                // Only update if we moved to a different item
+                if (dragOverTarget === galleryItem) return;
+                
+                // Clear previous visual feedback
+                if (dragOverTarget) {
+                    dragOverTarget.classList.remove('drop-target');
+                }
+                if (dropPlaceholder) {
+                    dropPlaceholder.remove();
+                    dropPlaceholder = null;
+                }
+                
+                // Add visual feedback to new target
+                dragOverTarget = galleryItem;
+                galleryItem.classList.add('drop-target');
+                
+                // Create placeholder with same dimensions as gallery item
+                const galleryItemRect = galleryItem.getBoundingClientRect();
+                dropPlaceholder = document.createElement('div');
+                dropPlaceholder.className = 'drop-position-placeholder';
+                dropPlaceholder.style.width = galleryItemRect.width + 'px';
+                dropPlaceholder.style.height = galleryItemRect.height + 'px';
+                dropPlaceholder.style.cursor = 'grabbing';
+                
+                // Get the position relative to drop target
+                const targetBox = galleryItem.getBoundingClientRect();
+                const containerBox = galleryDiv.getBoundingClientRect();
+                const isDropBefore = lastClientY < (targetBox.top + targetBox.height / 2);
+                
+                // Insert placeholder before or after target
+                if (isDropBefore) {
+                    galleryItem.parentNode.insertBefore(dropPlaceholder, galleryItem);
+                } else {
+                    if (galleryItem.nextSibling) {
+                        galleryItem.parentNode.insertBefore(dropPlaceholder, galleryItem.nextSibling);
+                    } else {
+                        galleryItem.parentNode.appendChild(dropPlaceholder);
+                    }
+                }
+            });
+            
             galleryDiv.addEventListener('drop', (event) => {
                 event.preventDefault();
+                
                 const draggedId = event.dataTransfer.getData('text/plain');
                 const draggedItem = document.getElementById(draggedId);
                 if (!draggedItem) return;
-                const afterElement = getDragAfterElement(galleryDiv, event.clientX);
-                if (afterElement) {
-                    galleryDiv.insertBefore(draggedItem, afterElement);
-                } else {
-                    galleryDiv.appendChild(draggedItem);
+                
+                // Clear visual feedback and placeholder
+                if (dragOverTarget) {
+                    dragOverTarget.classList.remove('drop-target');
                 }
+                document.querySelectorAll('.gallery-item.drop-target').forEach(item => {
+                    item.classList.remove('drop-target');
+                });
+                
+                // Get placeholder position and drop there
+                if (dropPlaceholder && dropPlaceholder.parentNode) {
+                    dropPlaceholder.parentNode.insertBefore(draggedItem, dropPlaceholder);
+                    dropPlaceholder.remove();
+                    dropPlaceholder = null;
+                } else {
+                    // Fallback: use the target item
+                    const targetItem = event.target.closest('.gallery-item');
+                    if (targetItem && targetItem !== draggedItem) {
+                        const targetBox = targetItem.getBoundingClientRect();
+                        const targetCenterY = targetBox.top + targetBox.height / 2;
+                        
+                        if (event.clientY < targetCenterY) {
+                            galleryDiv.insertBefore(draggedItem, targetItem);
+                        } else {
+                            if (targetItem.nextSibling) {
+                                galleryDiv.insertBefore(draggedItem, targetItem.nextSibling);
+                            } else {
+                                galleryDiv.appendChild(draggedItem);
+                            }
+                        }
+                    }
+                }
+                
+                dragOverTarget = null;
                 updateLightboxGallery();
             });
             lightboxGallery.addEventListener('dragstart', (event) => {
@@ -4784,6 +5293,14 @@ window.populatePictureColumn = populatePictureColumn;
             lightboxGallery.addEventListener('dragover', (event) => {
                 event.preventDefault();
                 event.dataTransfer.dropEffect = 'move';
+                // Add visual feedback for drag target in lightbox
+                const afterElement = getDragAfterElement(lightboxGallery, event.clientX, true);
+                const draggingItem = lightboxGallery.querySelector('img.dragging');
+                if (afterElement && draggingItem && afterElement !== draggingItem) {
+                    lightboxGallery.insertBefore(draggingItem, afterElement);
+                } else if (draggingItem && !afterElement) {
+                    lightboxGallery.appendChild(draggingItem);
+                }
             });
             lightboxGallery.addEventListener('drop', (event) => {
                 event.preventDefault();
@@ -5233,9 +5750,15 @@ window.populatePictureColumn = populatePictureColumn;
         async function handleDeleteLightboxImage() {
             if (!currentLightboxImageId) return;
             if (!await showCustomConfirm('Are you sure you want to delete this image?')) return;
+            
+            // Find current index BEFORE deleting
+            const galleryImages = Array.from(galleryDiv.querySelectorAll('.gallery-item img'));
+            const currentIndex = galleryImages.findIndex(gImg => gImg.id === currentLightboxImageId);
+            
             const item = document.getElementById(currentLightboxImageId)?.closest('.gallery-item');
             const img = document.getElementById(currentLightboxImageId);
             if (!item || !img) return;
+            
             const imgUrl = img.src;
             const fileName = window.originalFileNames.get(currentLightboxImageId);
             if (fileName) {
@@ -5253,12 +5776,15 @@ window.populatePictureColumn = populatePictureColumn;
             item.remove();
             updateResults();
             
-            // Try to show next image, if not possible, close lightbox
-            const galleryImages = Array.from(galleryDiv.querySelectorAll('.gallery-item img'));
-            if(galleryImages.length > 0) {
-                 const currentIndex = galleryImages.findIndex(gImg => gImg.id === currentLightboxImageId); // Find index *before* removing
-                 const nextIndex = currentIndex >= galleryImages.length ? 0 : currentIndex; // Show next or first if last was deleted
-                 showLightboxImage(galleryImages[nextIndex].id);
+            // Update lightbox gallery immediately
+            updateLightboxGallery();
+            
+            // Try to show next/previous image, if not possible, close lightbox
+            const remainingImages = Array.from(galleryDiv.querySelectorAll('.gallery-item img'));
+            if(remainingImages.length > 0) {
+                 // Show next image, or previous if we deleted the last one
+                 const nextIndex = currentIndex < remainingImages.length ? currentIndex : remainingImages.length - 1;
+                 showLightboxImage(remainingImages[nextIndex].id);
              } else {
                  closeLightboxFunc();
              }
@@ -5470,10 +5996,14 @@ ${controls}
         nextArrow.addEventListener('click', showNextImage);
         document.addEventListener('keydown', (event) => {
             if (lightboxModal.style.display === 'flex') {
-                if (event.key === 'ArrowRight') showNextImage();
-                else if (event.key === 'ArrowLeft') showPreviousImage();
+                // Don't trigger keyboard shortcuts if user is typing in an input/textarea
+                const activeElement = document.activeElement;
+                const isTyping = activeElement && (activeElement.tagName === 'TEXTAREA' || activeElement.tagName === 'INPUT' || activeElement.isContentEditable);
+                
+                if (event.key === 'ArrowRight' && !isTyping) showNextImage();
+                else if (event.key === 'ArrowLeft' && !isTyping) showPreviousImage();
                 else if (event.key === 'Escape') closeLightboxFunc();
-                else if (event.key === 'Delete') handleDeleteLightboxImage();
+                else if (event.key === 'Delete' && !isTyping) handleDeleteLightboxImage();
             }
         });
         // --- DELETE your entire, long downloadBtn.addEventListener('click', ...) function ---
