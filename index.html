@@ -251,6 +251,90 @@
                 box-shadow: 0 0 0 6px rgba(251, 191, 36, 0);
             }
         }
+        /* Recording microphone pulse animation */
+        @keyframes recording-pulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            }
+            50% { 
+                transform: scale(1.1);
+                box-shadow: 0 0 0 12px rgba(239, 68, 68, 0);
+            }
+        }
+        .speech-btn.recording {
+            animation: recording-pulse 1s ease-in-out infinite !important;
+            background-color: #dc2626 !important;
+        }
+        .speech-btn.recording:hover {
+            background-color: #b91c1c !important;
+        }
+        /* Recording indicator overlay */
+        .recording-indicator {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 20px rgba(220, 38, 38, 0.5);
+            animation: recording-indicator-pulse 1.5s ease-in-out infinite;
+        }
+        @keyframes recording-indicator-pulse {
+            0%, 100% { 
+                box-shadow: 0 4px 20px rgba(220, 38, 38, 0.5);
+            }
+            50% { 
+                box-shadow: 0 4px 30px rgba(220, 38, 38, 0.8);
+            }
+        }
+        .recording-indicator .rec-dot {
+            width: 12px;
+            height: 12px;
+            background-color: #fff;
+            border-radius: 50%;
+            animation: rec-dot-blink 1s ease-in-out infinite;
+        }
+        @keyframes rec-dot-blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        /* Interim transcription display */
+        .speech-interim-display {
+            position: fixed;
+            top: 140px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(30, 41, 59, 0.95);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 15px;
+            z-index: 9998;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .speech-interim-display .interim-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #94a3b8;
+            margin-bottom: 6px;
+        }
+        .speech-interim-display .interim-text {
+            color: #fbbf24;
+            font-weight: 500;
+        }
         /* Style for hidden file input */
         input[type="file"].hidden-file-input {
             width: 0.1px;
@@ -1395,7 +1479,15 @@
     "Frequency": "Frequency",
     "Severity": "Severity",
     "Likelihood": "Likelihood",
-    "Not set": "Not set"
+    "Not set": "Not set",
+    // Speech Recognition (English)
+    "Listening in": "Listening in",
+    "Click mic again to stop.": "Click mic again to stop.",
+    "No speech detected. Please speak into your microphone.": "No speech detected. Please speak into your microphone.",
+    "No microphone found. Please ensure a microphone is connected.": "No microphone found. Please ensure a microphone is connected.",
+    "Microphone access denied. Please allow microphone access in your browser.": "Microphone access denied. Please allow microphone access in your browser.",
+    "Network error. Please check your internet connection.": "Network error. Please check your internet connection.",
+    "Speech recognition error: ": "Speech recognition error: "
   },
   fr: {
     // Hazard Groups (French)
@@ -1667,7 +1759,15 @@
     "Frequency": "Fréquence",
     "Severity": "Gravité",
     "Likelihood": "Probabilité",
-    "Not set": "Non défini"
+    "Not set": "Non défini",
+    // Speech Recognition (French)
+    "Listening in": "Écoute en",
+    "Click mic again to stop.": "Cliquez à nouveau sur le micro pour arrêter.",
+    "No speech detected. Please speak into your microphone.": "Aucune parole détectée. Veuillez parler dans votre microphone.",
+    "No microphone found. Please ensure a microphone is connected.": "Aucun microphone trouvé. Veuillez vous assurer qu'un microphone est connecté.",
+    "Microphone access denied. Please allow microphone access in your browser.": "Accès au microphone refusé. Veuillez autoriser l'accès au microphone dans votre navigateur.",
+    "Network error. Please check your internet connection.": "Erreur réseau. Veuillez vérifier votre connexion Internet.",
+    "Speech recognition error: ": "Erreur de reconnaissance vocale : "
   },
   de: {
     // Hazard Groups (German)
@@ -1939,7 +2039,15 @@
     "Frequency": "Häufigkeit",
     "Severity": "Schweregrad",
     "Likelihood": "Wahrscheinlichkeit",
-    "Not set": "Nicht gesetzt"
+    "Not set": "Nicht gesetzt",
+    // Speech Recognition (German)
+    "Listening in": "Hört zu auf",
+    "Click mic again to stop.": "Klicken Sie erneut auf das Mikrofon zum Stoppen.",
+    "No speech detected. Please speak into your microphone.": "Keine Sprache erkannt. Bitte sprechen Sie in Ihr Mikrofon.",
+    "No microphone found. Please ensure a microphone is connected.": "Kein Mikrofon gefunden. Bitte stellen Sie sicher, dass ein Mikrofon angeschlossen ist.",
+    "Microphone access denied. Please allow microphone access in your browser.": "Mikrofonzugriff verweigert. Bitte erlauben Sie den Mikrofonzugriff in Ihrem Browser.",
+    "Network error. Please check your internet connection.": "Netzwerkfehler. Bitte überprüfen Sie Ihre Internetverbindung.",
+    "Speech recognition error: ": "Spracherkennungsfehler: "
   }
 };
 
@@ -6174,10 +6282,24 @@ downloadBtn.addEventListener('click', async () => {
 });
 // EXPOSE THE HELPER FUNCTION GLOBALLY
     window.addImagesToZip = addImagesToZip;
-    // --- Speech-to-Text Feature ---
+    // --- Speech-to-Text Feature (Enhanced) ---
 let recognition = null;
 let currentTarget = null;
+let isRecording = false;
+let interimTranscript = '';
 const speechBtns = document.querySelectorAll('.speech-btn');
+
+// Language code mapping for speech recognition
+const SPEECH_LANG_MAP = {
+    'en': 'en-US',
+    'fr': 'fr-FR',
+    'de': 'de-DE'
+};
+
+function getSpeechLanguage() {
+    const appLang = localStorage.getItem('appLanguage') || 'en';
+    return SPEECH_LANG_MAP[appLang] || 'en-US';
+}
 
 function initSpeechRecognition() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -6188,40 +6310,158 @@ function initSpeechRecognition() {
         return false;
     }
     recognition = new SpeechRecognition();
-    recognition.lang = 'en-US'; // Default to English; can be changed based on translate if needed
-    recognition.interimResults = false; // Only final results
+    recognition.lang = getSpeechLanguage(); // Sync with app language
+    recognition.continuous = true; // Keep listening until manually stopped
+    recognition.interimResults = true; // Show real-time transcription
     recognition.maxAlternatives = 1;
 
     recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
+        let finalTranscript = '';
+        interimTranscript = '';
+        
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            const transcript = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+                finalTranscript += transcript;
+            } else {
+                interimTranscript += transcript;
+            }
+        }
+        
         if (currentTarget) {
-            currentTarget.value += (currentTarget.value ? ' ' : '') + transcript;
-            // Trigger input event to save (your existing saveRiskData)
-            currentTarget.dispatchEvent(new Event('input'));
+            // Append final transcript to textarea
+            if (finalTranscript) {
+                const currentVal = currentTarget.value;
+                const needsSpace = currentVal && !currentVal.endsWith(' ') && !currentVal.endsWith('\n');
+                currentTarget.value = currentVal + (needsSpace ? ' ' : '') + finalTranscript;
+                currentTarget.dispatchEvent(new Event('input'));
+            }
+            
+            // Show interim (live) transcription in a floating indicator
+            updateInterimDisplay(interimTranscript);
         }
     };
 
     recognition.onerror = (event) => {
         console.error('Speech recognition error:', event.error);
-        showCustomAlert('Speech recognition error: ' + event.error, 'error');
+        let errorMsg = 'Speech recognition error';
+        switch(event.error) {
+            case 'no-speech':
+                errorMsg = t('No speech detected. Please speak into your microphone.');
+                break;
+            case 'audio-capture':
+                errorMsg = t('No microphone found. Please ensure a microphone is connected.');
+                break;
+            case 'not-allowed':
+                errorMsg = t('Microphone access denied. Please allow microphone access in your browser.');
+                break;
+            case 'network':
+                errorMsg = t('Network error. Please check your internet connection.');
+                break;
+            default:
+                errorMsg = t('Speech recognition error: ') + event.error;
+        }
+        showCustomAlert(errorMsg, 'error');
         stopRecognition();
     };
 
     recognition.onend = () => {
-        stopRecognition();
+        // If still recording, restart (handles browser auto-stop)
+        if (isRecording && currentTarget) {
+            try {
+                recognition.start();
+            } catch (e) {
+                stopRecognition();
+            }
+        } else {
+            stopRecognition();
+        }
     };
 
     return true;
 }
 
+// Floating interim display for live transcription preview
+function updateInterimDisplay(text) {
+    let interimDiv = document.getElementById('speechInterimDisplay');
+    
+    if (!text) {
+        if (interimDiv) interimDiv.style.display = 'none';
+        return;
+    }
+    
+    if (!interimDiv) {
+        interimDiv = document.createElement('div');
+        interimDiv.id = 'speechInterimDisplay';
+        interimDiv.className = 'speech-interim-display';
+        interimDiv.innerHTML = `
+            <div class="interim-label">Live Transcription</div>
+            <div class="interim-text"></div>
+        `;
+        document.body.appendChild(interimDiv);
+    }
+    
+    interimDiv.querySelector('.interim-text').textContent = '🎤 ' + text + '...';
+    interimDiv.style.display = 'block';
+}
+
+// Show/hide recording indicator at top of screen
+function showRecordingIndicator(show, langName = '') {
+    let indicator = document.getElementById('recordingIndicator');
+    
+    if (!show) {
+        if (indicator) indicator.remove();
+        return;
+    }
+    
+    if (!indicator) {
+        indicator = document.createElement('div');
+        indicator.id = 'recordingIndicator';
+        indicator.className = 'recording-indicator';
+        document.body.appendChild(indicator);
+    }
+    
+    indicator.innerHTML = `
+        <span class="rec-dot"></span>
+        <span>REC</span>
+        <span style="font-weight: 400; opacity: 0.9;">• ${langName}</span>
+        <span style="font-size: 12px; opacity: 0.7; margin-left: 8px;">(click mic to stop)</span>
+    `;
+}
+
 function startRecognition(targetTextarea) {
-    if (!recognition) return;
+    if (!recognition) {
+        if (!initSpeechRecognition()) return;
+    }
+    
+    // Update language before starting (in case user changed app language)
+    recognition.lang = getSpeechLanguage();
+    
     currentTarget = targetTextarea;
-    recognition.start();
-    // Update all buttons (only the active one changes)
+    isRecording = true;
+    
+    try {
+        recognition.start();
+    } catch (e) {
+        // Already started, stop and restart
+        recognition.stop();
+        setTimeout(() => {
+            try { recognition.start(); } catch (err) { console.error(err); }
+        }, 100);
+    }
+    
+    // Show current language name
+    const langNames = { 'en-US': 'English', 'fr-FR': 'Français', 'de-DE': 'Deutsch' };
+    const currentLangName = langNames[recognition.lang] || recognition.lang;
+    
+    // Show prominent recording indicator at top
+    showRecordingIndicator(true, currentLangName);
+    
+    // Update button to recording state with custom recording class
     speechBtns.forEach(btn => {
         if (btn.dataset.target === targetTextarea.id) {
-            btn.classList.add('bg-red-600', 'hover:bg-red-700');
+            btn.classList.add('recording');
+            btn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
             // Change to stop icon
             btn.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />';
         }
@@ -6229,12 +6469,24 @@ function startRecognition(targetTextarea) {
 }
 
 function stopRecognition() {
-    if (!recognition) return;
-    recognition.stop();
+    isRecording = false;
+    if (recognition) {
+        try { recognition.stop(); } catch (e) { /* ignore */ }
+    }
     currentTarget = null;
-    // Reset buttons
+    interimTranscript = '';
+    
+    // Hide recording indicator
+    showRecordingIndicator(false);
+    
+    // Hide interim display
+    const interimDiv = document.getElementById('speechInterimDisplay');
+    if (interimDiv) interimDiv.style.display = 'none';
+    
+    // Reset all buttons
     speechBtns.forEach(btn => {
-        btn.classList.remove('bg-red-600', 'hover:bg-red-700');
+        btn.classList.remove('recording', 'bg-red-600', 'hover:bg-red-700', 'animate-pulse');
+        btn.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
         // Reset to mic icon
         btn.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />';
     });
