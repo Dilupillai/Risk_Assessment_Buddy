@@ -29,6 +29,7 @@
     <script src="lib/jszip.min.js"></script>
     <script src="lib/pdfkit.min.js"></script>
     <script src="lib/blob-stream.min.js"></script>
+    <script src="shareable_html_generator.js"></script>
 
     <style>
 /* Smooth Modal Entry */
@@ -358,6 +359,60 @@
             padding: 0 !important;
             border: none !important;
             display: none !important;
+        }
+
+        /* Modern Hover Effect for Clickable Table Cells */
+        .modern-hover-cell {
+            transition: background 0.25s ease, box-shadow 0.25s ease;
+            position: relative;
+        }
+
+        .modern-hover-cell::after {
+            content: '✏️';
+            position: absolute;
+            top: 50%;
+            right: 8px;
+            transform: translateY(-50%);
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+            pointer-events: none;
+        }
+
+        .modern-hover-cell:hover {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important;
+            box-shadow: inset 0 0 0 2px rgba(59, 130, 246, 0.4), 0 2px 8px rgba(59, 130, 246, 0.15) !important;
+        }
+
+        .modern-hover-cell:hover::after {
+            opacity: 1;
+        }
+
+        /* EHS Standards Table Row Hover Effects */
+        .ehs-freq-row,
+        .ehs-sev-row,
+        .ehs-like-row {
+            transition: background 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .ehs-freq-row:hover,
+        .ehs-sev-row:hover,
+        .ehs-like-row:hover {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important;
+            box-shadow: inset 0 0 0 2px rgba(59, 130, 246, 0.3), 0 2px 12px rgba(59, 130, 246, 0.12) !important;
+        }
+
+        /* EHS Value Cell (F, S, L numbers) Hover Effect */
+        .select-ehs-value {
+            transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+            position: relative;
+        }
+
+        .select-ehs-value:hover {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+            color: white !important;
+            box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.3), 0 4px 12px rgba(59, 130, 246, 0.35) !important;
+            font-weight: 600;
         }
 
     </style>
@@ -1108,12 +1163,222 @@
                 <button id="modalFooterNextBtn" class="min-w-[100px] bg-indigo-600 text-white font-semibold py-2 px-3 rounded-lg hover:bg-indigo-700 transition shadow-sm text-sm" title="Next task (→ arrow)">Next →</button>
             </div>
         </div>
+
+        <!-- EHS Standards Reference (Collapsed) -->
+        <div class="mt-6 border-t border-slate-300 pt-4">
+            <button id="ehsRefToggleBtn" class="flex items-center gap-2 text-slate-700 hover:text-slate-900 font-semibold text-sm py-2 px-3 rounded-lg hover:bg-slate-100 transition">
+                <span id="ehsRefToggleIcon">▶️</span>
+                <span>📋 EHS Standards - Frequency, Severity & Likelihood Definitions</span>
+            </button>
+            
+            <div id="ehsRefContent" class="hidden mt-4 bg-slate-50 border border-slate-200 rounded-lg p-4 overflow-y-auto max-h-96">
+                <!-- Frequency Table -->
+                <div class="mb-6">
+                    <h4 class="font-bold text-slate-800 mb-3 text-sm">Frequency (F) Scale</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-yellow-400 font-bold">
+                                    <th class="border border-yellow-600 px-2 py-1">F Value</th>
+                                    <th class="border border-yellow-600 px-2 py-1">Category</th>
+                                    <th class="border border-yellow-600 px-2 py-1">Day</th>
+                                    <th class="border border-yellow-600 px-2 py-1">Week</th>
+                                    <th class="border border-yellow-600 px-2 py-1">Month</th>
+                                    <th class="border border-yellow-600 px-2 py-1">Year</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white hover:bg-blue-50 cursor-pointer ehs-freq-row" data-freq-value="1">
+                                    <td class="border border-slate-300 px-2 py-1 font-bold text-blue-600 hover:bg-blue-200 select-ehs-value">1</td>
+                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold">RARELY</td>
+                                    <td class="border border-slate-300 px-2 py-1">-</td>
+                                    <td class="border border-slate-300 px-2 py-1">-</td>
+                                    <td class="border border-slate-300 px-2 py-1">&lt;0.5 day</td>
+                                    <td class="border border-slate-300 px-2 py-1">1 day</td>
+                                </tr>
+                                <tr class="bg-white hover:bg-blue-50 cursor-pointer ehs-freq-row" data-freq-value="1.25">
+                                    <td class="border border-slate-300 px-2 py-1 font-bold text-blue-600 hover:bg-blue-200 select-ehs-value">1.25</td>
+                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold">OCCASIONAL</td>
+                                    <td class="border border-slate-300 px-2 py-1">&lt;30 min</td>
+                                    <td class="border border-slate-300 px-2 py-1">&lt;2 hours</td>
+                                    <td class="border border-slate-300 px-2 py-1">&lt;1 days</td>
+                                    <td class="border border-slate-300 px-2 py-1">&lt;5 days</td>
+                                </tr>
+                                <tr class="bg-white hover:bg-blue-50 cursor-pointer ehs-freq-row" data-freq-value="1.5">
+                                    <td class="border border-slate-300 px-2 py-1 font-bold text-blue-600 hover:bg-blue-200 select-ehs-value">1.5</td>
+                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold">INTERMEDIATE</td>
+                                    <td class="border border-slate-300 px-2 py-1">30-120 min</td>
+                                    <td class="border border-slate-300 px-2 py-1">2-8 hours</td>
+                                    <td class="border border-slate-300 px-2 py-1">1-4 days</td>
+                                    <td class="border border-slate-300 px-2 py-1">5 days -2 months</td>
+                                </tr>
+                                <tr class="bg-white hover:bg-blue-50 cursor-pointer ehs-freq-row" data-freq-value="1.75">
+                                    <td class="border border-slate-300 px-2 py-1 font-bold text-blue-600 hover:bg-blue-200 select-ehs-value">1.75</td>
+                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold">FREQUENTLY</td>
+                                    <td class="border border-slate-300 px-2 py-1">2-5 hours</td>
+                                    <td class="border border-slate-300 px-2 py-1">1-3 days</td>
+                                    <td class="border border-slate-300 px-2 py-1">4-15 days</td>
+                                    <td class="border border-slate-300 px-2 py-1">2-5 months</td>
+                                </tr>
+                                <tr class="bg-white hover:bg-blue-50 cursor-pointer ehs-freq-row" data-freq-value="2">
+                                    <td class="border border-slate-300 px-2 py-1 font-bold text-blue-600 hover:bg-blue-200 select-ehs-value">2</td>
+                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold">PERMANENT</td>
+                                    <td class="border border-slate-300 px-2 py-1">&gt;5 hours</td>
+                                    <td class="border border-slate-300 px-2 py-1">&gt;3 days</td>
+                                    <td class="border border-slate-300 px-2 py-1">&gt; 15 days</td>
+                                    <td class="border border-slate-300 px-2 py-1">&gt; 5 months</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Severity Table -->
+                <div class="mb-6">
+                    <h4 class="font-bold text-slate-800 mb-3 text-sm">Severity (S) Scale</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-yellow-400 font-bold">
+                                    <th class="border border-yellow-600 px-2 py-1">S Value</th>
+                                    <th class="border border-yellow-600 px-2 py-1">Classification</th>
+                                    <th class="border border-yellow-600 px-2 py-1">Most Probable Injury</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white hover:bg-blue-50 cursor-pointer ehs-sev-row" data-sev-value="1">
+                                    <td class="border border-slate-300 px-2 py-1 font-bold text-blue-600 hover:bg-blue-200 select-ehs-value">1</td>
+                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold">No potential of injury</td>
+                                    <td class="border border-slate-300 px-2 py-1">• No treatment needed</td>
+                                </tr>
+                                <tr class="bg-white hover:bg-blue-50 cursor-pointer ehs-sev-row" data-sev-value="3">
+                                    <td class="border border-slate-300 px-2 py-1 font-bold text-blue-600 hover:bg-blue-200 select-ehs-value">3</td>
+                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold">Potential of FIRST AID</td>
+                                    <td class="border border-slate-300 px-2 py-1">• Non-prescription medication<br/>• Bandage, cold therapy<br/>• Cleaning and flushing wounds<br/>• Non-rigid means of support<br/>• OSHA recordkeeping</td>
+                                </tr>
+                                <tr class="bg-white hover:bg-blue-50 cursor-pointer ehs-sev-row" data-sev-value="5">
+                                    <td class="border border-slate-300 px-2 py-1 font-bold text-blue-600 hover:bg-blue-200 select-ehs-value">5</td>
+                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold">Potential of MEDICAL TREATMENT</td>
+                                    <td class="border border-slate-300 px-2 py-1">• Prescription medications<br/>• Wound closing devices<br/>• Device with rigid support<br/>• Removal of foreign objects from the eye<br/>(beyond simple flushing)</td>
+                                </tr>
+                                <tr class="bg-white hover:bg-blue-50 cursor-pointer ehs-sev-row" data-sev-value="7">
+                                    <td class="border border-slate-300 px-2 py-1 font-bold text-blue-600 hover:bg-blue-200 select-ehs-value">7</td>
+                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold">Potential of DART</td>
+                                    <td class="border border-slate-300 px-2 py-1">• Temporary disability<br/>• Temporary hospitalization</td>
+                                </tr>
+                                <tr class="bg-white hover:bg-blue-50 cursor-pointer ehs-sev-row" data-sev-value="9">
+                                    <td class="border border-slate-300 px-2 py-1 font-bold text-blue-600 hover:bg-blue-200 select-ehs-value">9</td>
+                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold">Potential of SIA</td>
+                                    <td class="border border-slate-300 px-2 py-1">• Amputation<br/>• Disfigurement<br/>• Loss of eyesight<br/>• 3rd degree burns<br/>• Life threatening/altering<br/>• Long-term occupational disease</td>
+                                </tr>
+                                <tr class="bg-white hover:bg-blue-50 cursor-pointer ehs-sev-row" data-sev-value="10">
+                                    <td class="border border-slate-300 px-2 py-1 font-bold text-blue-600 hover:bg-blue-200 select-ehs-value">10</td>
+                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold">Potential of Fatality</td>
+                                    <td class="border border-slate-300 px-2 py-1">• Death</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Likelihood Table -->
+                <div>
+                    <h4 class="font-bold text-slate-800 mb-3 text-sm">Likelihood (L) Scale</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-yellow-400 font-bold">
+                                    <th class="border border-yellow-600 px-2 py-1">L Value</th>
+                                    <th class="border border-yellow-600 px-2 py-1">Classification</th>
+                                    <th class="border border-yellow-600 px-2 py-1">Machinery Related Risks</th>
+                                    <th class="border border-yellow-600 px-2 py-1">Industrial Hygiene Risks</th>
+                                    <th class="border border-yellow-600 px-2 py-1">Other H&amp;S Risks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white hover:bg-blue-50 cursor-pointer ehs-like-row" data-like-value="1">
+                                    <td class="border border-slate-300 px-2 py-1 font-bold text-blue-600 hover:bg-blue-200 select-ehs-value">1</td>
+                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold">Almost impossible</td>
+                                    <td class="border border-slate-300 px-2 py-1">Hazard not reachable as per ISO 13857 (safety distance to hazard) and compliant with 13849 (new equipment with PLC, equipment failure scenarios, ...)</td>
+                                    <td class="border border-slate-300 px-2 py-1">No Class 1<br/>Class 2/3 with CML 1, 2 and 3</td>
+                                    <td class="border border-slate-300 px-2 py-1">CML 4 or 5 with no known record of event</td>
+                                </tr>
+                                <tr class="bg-white hover:bg-blue-50 cursor-pointer ehs-like-row" data-like-value="3">
+                                    <td class="border border-slate-300 px-2 py-1 font-bold text-blue-600 hover:bg-blue-200 select-ehs-value">3</td>
+                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold">Very unlikely</td>
+                                    <td class="border border-slate-300 px-2 py-1">Hazard not reachable as per ISO 13857 (safety distance to hazard)</td>
+                                    <td class="border border-slate-300 px-2 py-1">Class 1 with CML 1, 2 and 3<br/>Class 2/3 with CML 1 and 3</td>
+                                    <td class="border border-slate-300 px-2 py-1">CML 4 in place but 1 event over the past 5 years<br/>CML 1, 2 and 3 in place with no known record of event</td>
+                                </tr>
+                                <tr class="bg-white hover:bg-blue-50 cursor-pointer ehs-like-row" data-like-value="5">
+                                    <td class="border border-slate-300 px-2 py-1 font-bold text-blue-600 hover:bg-blue-200 select-ehs-value">5</td>
+                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold">Possible to happen</td>
+                                    <td class="border border-slate-300 px-2 py-1">Hazard reachable per ISO 13857/13849 and if ALL the following apply: - Speed &lt;250 cm/s<br/>- Obvious hazard<br/>- Room and time to escape<br/>- Low complexity task</td>
+                                    <td class="border border-slate-300 px-2 py-1">Class 1 with CML 1 and 3<br/>Class 2/3 without CML</td>
+                                    <td class="border border-slate-300 px-2 py-1">CML 1, 2 and 3 in place but 1 event over the past 3 years<br/>CML 1 and 2 in place with no known record of event</td>
+                                </tr>
+                                <tr class="bg-white hover:bg-blue-50 cursor-pointer ehs-like-row" data-like-value="8">
+                                    <td class="border border-slate-300 px-2 py-1 font-bold text-blue-600 hover:bg-blue-200 select-ehs-value">8</td>
+                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold">Likely to happen</td>
+                                    <td class="border border-slate-300 px-2 py-1">Hazard reachable per ISO 13857/13849 and if ALL the following apply: - Speed 251 to 100mm/s<br/>- Obvious hazard<br/>- Room and time to escape</td>
+                                    <td class="border border-slate-300 px-2 py-1">Class 1 with CML 1 or higher</td>
+                                    <td class="border border-slate-300 px-2 py-1">CML 1 OR 2 OR 3 in place with 1 event over the past 3 years</td>
+                                </tr>
+                                <tr class="bg-white hover:bg-blue-50 cursor-pointer ehs-like-row" data-like-value="10">
+                                    <td class="border border-slate-300 px-2 py-1 font-bold text-blue-600 hover:bg-blue-200 select-ehs-value">10</td>
+                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold">Very likely to happen</td>
+                                    <td class="border border-slate-300 px-2 py-1">Hazard reachable per ISO 13857/13849 with: - Speed &gt;100mm/s OR<br/>- NO Room and time to escape</td>
+                                    <td class="border border-slate-300 px-2 py-1">Record of confirmed occupational disease</td>
+                                    <td class="border border-slate-300 px-2 py-1">2 or more events over the past 3 years</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Risk Rating Table -->
+                <div class="mt-6">
+                    <h4 class="font-bold text-slate-800 mb-3 text-sm">Risk Rating &amp; Response</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-yellow-400 font-bold">
+                                    <th class="border border-yellow-600 px-2 py-1">Risk Score (F × S × L)</th>
+                                    <th class="border border-yellow-600 px-2 py-1">Interpretation</th>
+                                    <th class="border border-yellow-600 px-2 py-1">Response Required</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-green-100">
+                                    <td class="border border-slate-300 px-2 py-1 font-bold">1-19</td>
+                                    <td class="border border-slate-300 px-2 py-1 bg-green-400 text-white font-bold">LOW</td>
+                                    <td class="border border-slate-300 px-2 py-1">Low priority - Further reduce risk if feasible.</td>
+                                </tr>
+                                <tr class="bg-yellow-100">
+                                    <td class="border border-slate-300 px-2 py-1 font-bold">20-49</td>
+                                    <td class="border border-slate-300 px-2 py-1 bg-yellow-400 text-black font-bold">MEDIUM</td>
+                                    <td class="border border-slate-300 px-2 py-1">Further reduce risk over time. Prioritize higher risks first.</td>
+                                </tr>
+                                <tr class="bg-orange-100">
+                                    <td class="border border-slate-300 px-2 py-1 font-bold">50-71</td>
+                                    <td class="border border-slate-300 px-2 py-1 bg-orange-400 text-white font-bold">HIGH</td>
+                                    <td class="border border-slate-300 px-2 py-1">Action plan to reduce this risk level as a lower priority.</td>
+                                </tr>
+                                <tr class="bg-red-100">
+                                    <td class="border border-slate-300 px-2 py-1 font-bold">72-200</td>
+                                    <td class="border border-slate-300 px-2 py-1 bg-red-600 text-white font-bold">CRITICAL</td>
+                                    <td class="border border-slate-300 px-2 py-1">Deploy interim protective measures and prioritize implementation of more secured permanent controls. Highlight to exposed associates the risk they are exposed to.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 </div>
-    </div>
-
-<div id="toast-container" class="fixed top-4 right-4 z-[200] w-full max-w-xs space-y-3">
+    </div><div id="toast-container" class="fixed top-4 right-4 z-[200] w-full max-w-xs space-y-3">
     </div>
 
 <div id="confirmModal" class="modal-overlay hidden fixed inset-0 z-[150] bg-black/60 backdrop-blur-sm p-4 items-center justify-center" style="display: none;">
@@ -2332,7 +2597,19 @@
         const inputClasses = "w-full p-2 border border-slate-300 rounded-md bg-white focus:ring-2 focus:ring-indigo-500 transition";
 
         const createDropdown = (options, selectedValue, onChange) => {
-            let optionsHTML = Object.entries(options).map(([value, text]) => {
+            // Define sequential order for frequency scale
+            const frequencyOrder = ["1", "1.25", "1.5", "1.75", "2"];
+            
+            let entries;
+            if (options === FREQUENCY_SCALE) {
+                // Use explicit order for frequency scale
+                entries = frequencyOrder.map(key => [key, options[key]]);
+            } else {
+                // Use default order for other scales
+                entries = Object.entries(options);
+            }
+            
+            let optionsHTML = entries.map(([value, text]) => {
                 const translatedText = t(text);
                 return `<option value="${value}" ${value == selectedValue ? 'selected' : ''}>${value} - ${translatedText}</option>`;
             }).join('');
@@ -2653,9 +2930,9 @@ data.forEach((row, index) => {
     const deletedAttr = isDeleted ? 'data-deleted="true"' : '';
                    
                 tableHTML += `<tr data-row-index="${index}" data-image-id="${imageId}" ${deletedAttr} class="hover:bg-slate-100 transition ${rowBgClass} ${deletedClass}">
-                    <td class="${tdClasses} picture-cell" data-step="${row.Steps || ''}" data-hazard="${hazardListValue}" data-filename="${originalFileName || ''}"></td>
+                    <td class="${tdClasses} picture-cell cursor-pointer modern-hover-cell" data-step="${row.Steps || ''}" data-hazard="${hazardListValue}" data-filename="${originalFileName || ''}"></td>
                     <td class="${tdClasses} text-center">${aiBadge}</td>
-                    <td class="${tdClasses}">${row.Steps || ''}</td>
+                    <td class="${tdClasses} cursor-pointer modern-hover-cell" onclick="openTableImageModal('', ${index})">${row.Steps || ''}</td>
                     <td class="${tdClasses} group">${createHazardGroupDropdown(hazardGroup)}</td>
                     <td class="${tdClasses} hazard-list-cell">${createTextDropdown(Object.keys(HAZARD_REGISTRY), hazardListValue, `recalculateRow(${index}, 'hazard')`)}</td>
                     <td class="${tdClasses} consequence-cell">${createTextDropdown(CONSEQUENCE_REGISTRY, consequenceValue, `recalculateRow(${index})`)}</td>
@@ -2928,6 +3205,19 @@ data.forEach((row, index) => {
             if (categoryCell) {
                 categoryCell.textContent = newCategory;
                 updateCategoryColor(categoryCell, newCategory);
+            }
+            
+            // Update consequence cell validation (index 5 is Risk/Consequences column)
+            const consequenceTd = allTds[5];
+            if (consequenceTd) {
+                const consequenceSelect = consequenceTd.querySelector('select');
+                if (consequenceSelect) {
+                    if (CONSEQUENCE_REGISTRY.includes(consequenceSelect.value)) {
+                        consequenceSelect.classList.remove('hazard-invalid');
+                    } else {
+                        consequenceSelect.classList.add('hazard-invalid');
+                    }
+                }
             }
             
             updateDashboardMetrics();
@@ -3541,6 +3831,91 @@ data.forEach((row, index) => {
                 }
             });
         }
+        // Global filter state
+        let activeFilterType = null; // 'risk' or 'hazard'
+        let activeFilterValue = null; // The selected category/group
+
+        function clearTableFilter() {
+            activeFilterType = null;
+            activeFilterValue = null;
+            showAllTableRows();
+            updateFilterBadge();
+            showCustomAlert('✅ Filter cleared - showing all rows', 'success');
+        }
+
+        function filterTableByRiskCategory(category) {
+            activeFilterType = 'risk';
+            activeFilterValue = category;
+            const allRows = document.querySelectorAll('#table-container table tbody tr');
+            allRows.forEach(row => {
+                const riskCat = row.querySelector('.cat').textContent.trim();
+                if (riskCat === category) {
+                    row.style.display = 'table-row'; // Explicitly set to table-row
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            updateFilterBadge();
+            showCustomAlert(`📊 Filtering by Risk Category: ${category}`, 'success');
+        }
+
+        function filterTableByHazardGroup(groupName) {
+            activeFilterType = 'hazard';
+            activeFilterValue = groupName;
+            const allRows = document.querySelectorAll('#table-container table tbody tr');
+            allRows.forEach(row => {
+                const groupDropdown = row.querySelector('.group select');
+                if (groupDropdown && groupDropdown.value === groupName) {
+                    row.style.display = 'table-row'; // Explicitly set to table-row
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            updateFilterBadge();
+            showCustomAlert(`📊 Filtering by Hazard Group: ${groupName}`, 'success');
+        }
+
+        function showAllTableRows() {
+            const allRows = document.querySelectorAll('#table-container table tbody tr');
+            allRows.forEach(row => {
+                row.style.display = 'table-row'; // Explicitly set to table-row instead of empty string
+            });
+        }
+
+        function updateFilterBadge() {
+            let badge = document.getElementById('filterBadge');
+            
+            if (!activeFilterType) {
+                if (badge) {
+                    badge.remove();
+                }
+                return;
+            }
+
+            if (!badge) {
+                badge = document.createElement('div');
+                badge.id = 'filterBadge';
+                badge.className = 'fixed top-4 right-4 bg-blue-600 text-white px-4 py-3 rounded-lg shadow-lg z-50 flex items-center gap-3 animate-pulse';
+                document.body.appendChild(badge);
+            }
+
+            const filterLabel = activeFilterType === 'risk' ? '🔴 Risk:' : '⚠️ Hazard:';
+            badge.innerHTML = `
+                <span>${filterLabel} <strong>${activeFilterValue}</strong></span>
+                <button class="clearFilterBtn ml-2 bg-white/20 hover:bg-white/30 px-2 py-1 rounded text-sm font-semibold transition cursor-pointer">Clear</button>
+            `;
+            
+            // Attach event listener to the clear button
+            const clearBtn = badge.querySelector('.clearFilterBtn');
+            if (clearBtn) {
+                clearBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    clearTableFilter();
+                });
+            }
+        }
+
         function drawRiskChart(data, options) {
             try {
                 const chartData = new google.visualization.DataTable();
@@ -3554,13 +3929,24 @@ data.forEach((row, index) => {
                 chartData.addRows(categories.map(cat => [cat, data[cat]]));
                 const riskOptions = {
                     ...options,
-                    title: 'Risk Category Distribution',
+                    title: 'Risk Category Distribution (Click to filter)',
                     colors: categories.map(cat => colorMap[cat.toUpperCase()] || '#6c757d')
                 };
                 const chartElement = document.getElementById('riskChart');
                  if (!chartElement) throw new Error("riskChart element not found");
                  chartElement.innerHTML = ''; // Clear previous chart
                 const chart = new google.visualization.PieChart(chartElement);
+                
+                // Add click event listener
+                google.visualization.events.addListener(chart, 'select', function() {
+                    const selection = chart.getSelection();
+                    if (selection.length > 0) {
+                        const selectedRow = selection[0].row;
+                        const selectedCategory = chartData.getValue(selectedRow, 0);
+                        filterTableByRiskCategory(selectedCategory);
+                    }
+                });
+                
                 chart.draw(chartData, riskOptions);
              } catch (e) {
                  console.error("Error in drawRiskChart:", e);
@@ -3582,13 +3968,26 @@ data.forEach((row, index) => {
                 chartData.addRows(categories.map((cat, i) => [displayLabels[i], data[cat]]));
                 const hazardOptions = {
                     ...options,
-                    title: 'Hazard Group Distribution',
+                    title: 'Hazard Group Distribution (Click to filter)',
                     colors: generateColors(categories.length),
                 };
                  const chartElement = document.getElementById('hazardChart');
                  if (!chartElement) throw new Error("hazardChart element not found");
                  chartElement.innerHTML = ''; // Clear previous chart
                 const chart = new google.visualization.PieChart(chartElement);
+                
+                // Add click event listener
+                google.visualization.events.addListener(chart, 'select', function() {
+                    const selection = chart.getSelection();
+                    if (selection.length > 0) {
+                        const selectedRow = selection[0].row;
+                        const selectedLabel = chartData.getValue(selectedRow, 0);
+                        // Map display label back to full category name
+                        const selectedCategory = categories[selection[0].row];
+                        filterTableByHazardGroup(selectedCategory);
+                    }
+                });
+                
                 chart.draw(chartData, hazardOptions);
              } catch (e) {
                  console.error("Error in drawHazardChart:", e);
@@ -3608,9 +4007,16 @@ data.forEach((row, index) => {
         let allModalRowIndices = [];
         let modalFieldValues = {}; // Track edited values in modal
         
+        // Helper to check if current modal row is deleted (global scope)
+        window.isCurrentModalRowDeleted = function() {
+            const currentRowIndex = allModalRowIndices[currentModalRowIndex];
+            const row = document.querySelector(`#table-container tr[data-row-index="${currentRowIndex}"]`);
+            return row && (row.classList.contains('deleted-row') || row.dataset.deleted === 'true');
+        };
+        
         window.openTableImageModal = function(imageUrl, rowIndex) {
-            // Get all visible rows for navigation
-            const allRows = document.querySelectorAll('#table-container tbody tr:not(.deleted-row)');
+            // Get ALL rows for navigation (including deleted ones)
+            const allRows = document.querySelectorAll('#table-container tbody tr');
             allModalRowIndices = Array.from(allRows).map((row, i) => parseInt(row.dataset.rowIndex || i));
             currentModalRowIndex = allModalRowIndices.indexOf(rowIndex);
             
@@ -3641,6 +4047,9 @@ data.forEach((row, index) => {
                 return;
             }
             
+            // Check if row is deleted
+            const isRowDeleted = row.classList.contains('deleted-row') || row.dataset.deleted === 'true';
+            
             // Extract headers and row data
             const headers = Array.from(document.querySelectorAll('#table-container thead th')).map(th => th.textContent.trim());
             const rowData = {};
@@ -3668,12 +4077,41 @@ data.forEach((row, index) => {
                 enlargedImage.src = imgInRow.src;
             }
             
+            // Build prominent hazard source badge for quick context
+            const hazardSource = DOMPurify.sanitize(rowData['Hazard Source'] || '—');
+
+            const hazardBadge = `<div class="mt-2 inline-flex items-center">
+                    <span class="px-3 py-1.5 rounded-lg text-sm font-bold border-2 border-[#991b1b] shadow-md" style="background-color: #fee2e2; color: #991b1b;" title="Hazard Source">
+                        ⚠️ ${hazardSource}
+                    </span>
+                </div>`;
+
             // Update title and counter
-            taskTitle.textContent = `Task ${currentModalRowIndex + 1}: ${rowData['Steps'] || 'Untitled'}`;
+            if (isRowDeleted) {
+                taskTitle.innerHTML = `<div><span class="line-through opacity-60">Task ${currentModalRowIndex + 1}: ${DOMPurify.sanitize(rowData['Steps'] || 'Untitled')}</span> <span class="ml-2 text-red-500 text-sm font-normal">(Deleted)</span></div>${hazardBadge}`;
+            } else {
+                taskTitle.innerHTML = `<div>Task ${currentModalRowIndex + 1}: ${DOMPurify.sanitize(rowData['Steps'] || 'Untitled')}</div>${hazardBadge}`;
+            }
             taskCounter.textContent = `${currentModalRowIndex + 1} / ${allModalRowIndices.length}`;
             
             // Build editable form
             let formHtml = '';
+            
+            // Show deleted banner with restore button if row is deleted
+            if (isRowDeleted) {
+                formHtml += `<div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="text-red-500 text-lg">🗑️</span>
+                            <span class="text-red-700 font-medium text-sm">This task has been deleted</span>
+                        </div>
+                        <button onclick="restoreRowFromModal(${rowIndex})" class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded-lg transition shadow-sm">
+                            ↩️ Restore Task
+                        </button>
+                    </div>
+                </div>`;
+            }
+            
             const editableFields = [
                 'Steps', 'Hazard Group', 'Hazard List', 'Risk/Consequences',
                 'Hazard Source', 'Current Control', 'Recommendation',
@@ -3684,14 +4122,16 @@ data.forEach((row, index) => {
                 if (rowData[field] !== undefined) {
                     const isSelect = headers.includes(field) && row.querySelector(`td:nth-child(${headers.indexOf(field) + 1}) select`);
                     const fieldId = `modal-${field.replace(/\//g, '-').replace(/\s/g, '_')}`;
+                    const disabledAttr = isRowDeleted ? 'disabled' : '';
+                    const deletedClass = isRowDeleted ? 'opacity-50 line-through bg-slate-100' : '';
                     
                     if (isSelect) {
                         // Get dropdown options
                         const selectOptions = row.querySelector(`td:nth-child(${headers.indexOf(field) + 1}) select`);
                         if (selectOptions) {
-                            formHtml += `<div class="form-group">
-                                <label class="block text-sm font-medium text-slate-700 mb-1">${field}:</label>
-                                <select id="${fieldId}" class="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 transition text-sm">`;
+                            formHtml += `<div class="form-group ${isRowDeleted ? 'opacity-60' : ''}">
+                                <label class="block text-sm font-medium text-slate-700 mb-1 ${isRowDeleted ? 'line-through' : ''}">${field}:</label>
+                                <select id="${fieldId}" class="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 transition text-sm ${isRowDeleted ? 'bg-slate-100 cursor-not-allowed' : ''}" ${disabledAttr}>`;
                             
                             Array.from(selectOptions.options).forEach(opt => {
                                 const selected = opt.value === rowData[field] ? 'selected' : '';
@@ -3702,9 +4142,9 @@ data.forEach((row, index) => {
                         }
                     } else {
                         // Text area for text fields
-                        formHtml += `<div class="form-group">
-                            <label class="block text-sm font-medium text-slate-700 mb-1">${field}:</label>
-                            <textarea id="${fieldId}" class="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 transition text-sm resize-none" rows="2">${DOMPurify.sanitize(rowData[field])}</textarea>
+                        formHtml += `<div class="form-group ${isRowDeleted ? 'opacity-60' : ''}">
+                            <label class="block text-sm font-medium text-slate-700 mb-1 ${isRowDeleted ? 'line-through' : ''}">${field}:</label>
+                            <textarea id="${fieldId}" class="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 transition text-sm resize-none ${isRowDeleted ? 'bg-slate-100 cursor-not-allowed' : ''}" rows="2" ${disabledAttr}>${DOMPurify.sanitize(rowData[field])}</textarea>
                         </div>`;
                     }
                 }
@@ -3719,10 +4159,11 @@ data.forEach((row, index) => {
             ratingFields.forEach(field => {
                 const fieldId = `modal-${field}`;
                 const selectEl = row.querySelector(`td:nth-child(${headers.indexOf(field) + 1}) select`);
+                const disabledAttr = isRowDeleted ? 'disabled' : '';
                 if (selectEl) {
-                    formHtml += `<div>
-                        <label class="block text-[10px] uppercase tracking-wide text-slate-500 mb-1">${field}</label>
-                        <select id="${fieldId}" class="w-full p-1.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 transition text-xs">`;
+                    formHtml += `<div class="${isRowDeleted ? 'opacity-60' : ''}">
+                        <label class="block text-[10px] uppercase tracking-wide text-slate-500 mb-1 ${isRowDeleted ? 'line-through' : ''}">${field}</label>
+                        <select id="${fieldId}" class="w-full p-1.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 transition text-xs ${isRowDeleted ? 'bg-slate-100 cursor-not-allowed' : ''}" ${disabledAttr}>`;
                     Array.from(selectEl.options).forEach(opt => {
                         const selected = opt.value === rowData[field] ? 'selected' : '';
                         formHtml += `<option value="${opt.value}" ${selected}>${opt.text}</option>`;
@@ -3736,15 +4177,15 @@ data.forEach((row, index) => {
             // Add Risk Score and Risk Category display
             const riskScore = rowData['Risk Score'] || '—';
             const riskCategory = rowData['Risk Category'] || '—';
-            formHtml += `<div class="form-group mt-3 pt-3 border-t border-slate-200">
+            formHtml += `<div class="form-group mt-3 pt-3 border-t border-slate-200 ${isRowDeleted ? 'opacity-60' : ''}">
                 <div class="flex items-center gap-4">
                     <div class="flex-1">
-                        <label class="block text-[10px] uppercase tracking-wide text-slate-500 mb-1">Risk Score</label>
-                        <div id="modal-risk-score" class="text-lg font-bold text-slate-800">${riskScore}</div>
+                        <label class="block text-[10px] uppercase tracking-wide text-slate-500 mb-1 ${isRowDeleted ? 'line-through' : ''}">Risk Score</label>
+                        <div id="modal-risk-score" class="text-lg font-bold text-slate-800 ${isRowDeleted ? 'line-through' : ''}">${riskScore}</div>
                     </div>
                     <div class="flex-1">
-                        <label class="block text-[10px] uppercase tracking-wide text-slate-500 mb-1">Risk Category</label>
-                        <div id="modal-risk-category" class="text-sm font-semibold px-2 py-1 rounded inline-block">${riskCategory}</div>
+                        <label class="block text-[10px] uppercase tracking-wide text-slate-500 mb-1 ${isRowDeleted ? 'line-through' : ''}">Risk Category</label>
+                        <div id="modal-risk-category" class="text-sm font-semibold px-2 py-1 rounded inline-block ${isRowDeleted ? 'line-through' : ''}">${riskCategory}</div>
                     </div>
                 </div>
             </div>`;
@@ -3869,6 +4310,18 @@ data.forEach((row, index) => {
                 consequenceSelect.addEventListener('change', applyConsequenceValidity);
             }
             
+            // Toggle EHS Standards section based on deleted state
+            const ehsRefContent = document.getElementById('ehsRefContent');
+            if (ehsRefContent) {
+                if (isRowDeleted) {
+                    ehsRefContent.classList.add('opacity-50', 'pointer-events-none');
+                    ehsRefContent.style.filter = 'grayscale(0.5)';
+                } else {
+                    ehsRefContent.classList.remove('opacity-50', 'pointer-events-none');
+                    ehsRefContent.style.filter = '';
+                }
+            }
+            
             // Update next task preview if exists
             // Next task preview removed - no longer needed
         }
@@ -3991,6 +4444,93 @@ data.forEach((row, index) => {
              if (modalCancelBtn) modalCancelBtn.addEventListener('click', closeTableImageModal);
              if (modalFooterPrevBtn) modalFooterPrevBtn.addEventListener('click', () => navigateModal('prev'));
              if (modalFooterNextBtn) modalFooterNextBtn.addEventListener('click', () => navigateModal('next'));
+             
+             // EHS Reference Toggle
+             const ehsRefToggleBtn = document.getElementById('ehsRefToggleBtn');
+             const ehsRefContent = document.getElementById('ehsRefContent');
+             const ehsRefToggleIcon = document.getElementById('ehsRefToggleIcon');
+             
+             if (ehsRefToggleBtn && ehsRefContent) {
+                 ehsRefToggleBtn.addEventListener('click', () => {
+                     ehsRefContent.classList.toggle('hidden');
+                     // Change icon direction
+                     if (ehsRefContent.classList.contains('hidden')) {
+                         ehsRefToggleIcon.textContent = '▶️';
+                     } else {
+                         ehsRefToggleIcon.textContent = '▼️';
+                         // Auto-scroll the modal form container to bottom to show Risk Rating section
+                         setTimeout(() => {
+                             const editableForm = document.getElementById('modalEditableForm');
+                             if (editableForm && editableForm.parentElement) {
+                                 const scrollContainer = editableForm.parentElement.parentElement;
+                                 scrollContainer.scrollTop = scrollContainer.scrollHeight;
+                             }
+                         }, 100);
+                     }
+                 });
+             }
+             
+             // EHS Table Click Handlers - Select and populate modal dropdowns
+             const ehsFreqRows = document.querySelectorAll('.ehs-freq-row');
+             const ehsSevRows = document.querySelectorAll('.ehs-sev-row');
+             const ehsLikeRows = document.querySelectorAll('.ehs-like-row');
+             
+             ehsFreqRows.forEach(row => {
+                 row.addEventListener('click', () => {
+                     if (window.isCurrentModalRowDeleted()) {
+                         showCustomAlert('⚠️ Cannot modify a deleted task. Restore it first.', 'warning');
+                         return;
+                     }
+                     const freqValue = row.getAttribute('data-freq-value');
+                     // Find frequency dropdown in modal form
+                     const freqSelect = document.querySelector('#modal-Frequency');
+                     if (freqSelect && !freqSelect.disabled) {
+                         freqSelect.value = freqValue;
+                         freqSelect.dispatchEvent(new Event('change'));
+                         showCustomAlert(`✅ Frequency set to: ${freqValue}`, 'success');
+                     } else {
+                         console.warn('Frequency dropdown not found in modal or is disabled');
+                     }
+                 });
+             });
+             
+             ehsSevRows.forEach(row => {
+                 row.addEventListener('click', () => {
+                     if (window.isCurrentModalRowDeleted()) {
+                         showCustomAlert('⚠️ Cannot modify a deleted task. Restore it first.', 'warning');
+                         return;
+                     }
+                     const sevValue = row.getAttribute('data-sev-value');
+                     // Find severity dropdown in modal form
+                     const sevSelect = document.querySelector('#modal-Severity');
+                     if (sevSelect && !sevSelect.disabled) {
+                         sevSelect.value = sevValue;
+                         sevSelect.dispatchEvent(new Event('change'));
+                         showCustomAlert(`✅ Severity set to: ${sevValue}`, 'success');
+                     } else {
+                         console.warn('Severity dropdown not found in modal or is disabled');
+                     }
+                 });
+             });
+             
+             ehsLikeRows.forEach(row => {
+                 row.addEventListener('click', () => {
+                     if (window.isCurrentModalRowDeleted()) {
+                         showCustomAlert('⚠️ Cannot modify a deleted task. Restore it first.', 'warning');
+                         return;
+                     }
+                     const likeValue = row.getAttribute('data-like-value');
+                     // Find likelihood dropdown in modal form
+                     const likeSelect = document.querySelector('#modal-Likelihood');
+                     if (likeSelect && !likeSelect.disabled) {
+                         likeSelect.value = likeValue;
+                         likeSelect.dispatchEvent(new Event('change'));
+                         showCustomAlert(`✅ Likelihood set to: ${likeValue}`, 'success');
+                     } else {
+                         console.warn('Likelihood dropdown not found in modal or is disabled');
+                     }
+                 });
+             });
              
              // Keyboard navigation for modal
              document.addEventListener('keydown', (event) => {
@@ -4392,7 +4932,20 @@ async function downloadProjectZip() {
             zip.file("arranged_risk_table.csv", `Error: ${e.message}`);
         }
 
-        // 5. Generate and Download
+        // 5. Generate Shareable HTML Report (NEW!)
+        try {
+            if (typeof window.generateShareableHTML === 'function') {
+                const shareableHTML = await window.generateShareableHTML(imageNameMap);
+                if (shareableHTML) {
+                    zip.file("Risk_Assessment_Report.html", shareableHTML);
+                    console.log("✅ Shareable HTML report added to ZIP");
+                }
+            }
+        } catch (e) {
+            console.warn("Could not generate shareable HTML:", e);
+        }
+
+        // 6. Generate and Download
         const content = await zip.generateAsync({ type: "blob" });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(content);
@@ -4458,6 +5011,35 @@ window.toggleRowDelete = function(rowIndex, btn) {
     } catch (e) {
         console.warn('Error updating row controls for delete toggle:', e);
     }
+}
+
+// --- Restore row from modal ---
+window.restoreRowFromModal = function(rowIndex) {
+    const row = document.querySelector(`#table-container tr[data-row-index="${rowIndex}"]`);
+    if (!row) return;
+    
+    // Remove deleted status
+    row.classList.remove('deleted-row');
+    row.dataset.deleted = 'false';
+    
+    // Find and update the delete button in that row
+    const btn = row.querySelector('.restore-btn, .delete-btn');
+    if (btn) {
+        btn.textContent = '🗑';
+        btn.className = 'delete-btn';
+        btn.title = 'Delete row';
+    }
+    
+    // Re-enable all controls in the row
+    const controls = Array.from(row.querySelectorAll('select, input, textarea, button'));
+    controls.forEach(control => {
+        control.removeAttribute('disabled');
+        control.style.opacity = '';
+        control.style.pointerEvents = '';
+    });
+    
+    // Refresh the modal view to update UI
+    loadModalTaskDetails(rowIndex);
 }
 
 // --- Translation Storage to track original values ---
