@@ -413,12 +413,18 @@
         #riskReductionPanel summary::-webkit-details-marker {
             display: none;
         }
-        #riskReductionPanel summary span {
+        #riskReductionPanel > summary > span:last-child {
             transition: transform 0.2s ease;
         }
-        #riskReductionPanel[open] summary span {
+        #riskReductionPanel[open] > summary > span:last-child {
             transform: rotate(180deg);
         }
+        
+        /* Prevent rotation on nested details text spans */
+        #riskReductionPanel details span[data-en-text] {
+            display: inline-block;
+        }
+        
         
         .control-label {
             font-size: 12px;
@@ -739,7 +745,7 @@
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-6 sm:p-8 text-white">
                 <div>
                     <h1 class="text-3xl sm:text-4xl font-bold mb-2">Risk Assessment Buddy (SMART 2.0)</h1>
-                    <p class="text-indigo-100">Choose your workflow to get started</p>
+                    <p class="text-indigo-100" data-en-text="Choose your workflow to get started">Choose your workflow to get started</p>
                 </div>
                 <div class="bg-white/20 backdrop-blur-md p-4 rounded-lg border border-white/30">
                     <label for="langSelect" class="block text-sm font-semibold text-white mb-2">🌐 Language:</label>
@@ -753,15 +759,15 @@
 
             <!-- Tab Navigation -->
             <div class="flex border-t border-white/20 bg-gradient-to-r from-indigo-700 to-blue-800">
-                <button id="tab-rich-media" class="tab-btn flex-1 sm:flex-none px-6 py-4 text-white font-semibold text-sm sm:text-base hover:bg-white/10 transition border-b-4 border-yellow-400 bg-white/10 flex items-center justify-center gap-2" onclick="switchTab('rich-media')">
+                <button id="tab-rich-media" class="tab-btn flex-1 sm:flex-none px-6 py-4 text-white font-semibold text-sm sm:text-base hover:bg-white/10 transition border-b-4 border-yellow-400 bg-white/10 flex items-center justify-center gap-2" onclick="switchTab('rich-media')" data-en-text="Rich Media">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                     Rich Media
                 </button>
-                <button id="tab-free-text" class="tab-btn flex-1 sm:flex-none px-6 py-4 text-white font-semibold text-sm sm:text-base hover:bg-white/10 transition border-b-4 border-transparent flex items-center justify-center gap-2" onclick="switchTab('free-text')">
+                <button id="tab-free-text" class="tab-btn flex-1 sm:flex-none px-6 py-4 text-white font-semibold text-sm sm:text-base hover:bg-white/10 transition border-b-4 border-transparent flex items-center justify-center gap-2" onclick="switchTab('free-text')" data-en-text="Free Text">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                     Free Text
                 </button>
-                <button id="tab-excel" class="tab-btn flex-1 sm:flex-none px-6 py-4 text-white font-semibold text-sm sm:text-base hover:bg-white/10 transition border-b-4 border-transparent flex items-center justify-center gap-2" onclick="switchTab('excel')">
+                <button id="tab-excel" class="tab-btn flex-1 sm:flex-none px-6 py-4 text-white font-semibold text-sm sm:text-base hover:bg-white/10 transition border-b-4 border-transparent flex items-center justify-center gap-2" onclick="switchTab('excel')" data-en-text="Excel Sheet">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
                     Excel Sheet
                 </button>
@@ -781,8 +787,8 @@
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-indigo-500 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                             </svg>
-                            <span class="font-semibold text-indigo-900">Click to upload or drag and drop</span>
-                            <span class="text-sm text-indigo-700">Images or Videos</span>
+                            <span class="font-semibold text-indigo-900" data-en-text="Click to upload or drag and drop">Click to upload or drag and drop</span>
+                            <span class="text-sm text-indigo-700" data-en-text="Images or Videos">Images or Videos</span>
                         </label>
                         <input type="file" id="imageUpload" multiple accept="image/png, image/jpeg, video/mp4, video/quicktime, video/x-msvideo, video/x-matroska, .mov, .avi, .mkv, .webm" class="hidden-file-input">
                     </div>
@@ -793,7 +799,7 @@
                     
                     <div id="status" class="text-center font-semibold text-slate-600 bg-slate-100 p-4 rounded-lg">Loading AI models... 🧠</div>
                     <div id="results" class="hidden max-h-40 overflow-y-auto bg-slate-50 p-4 rounded-lg border border-slate-200 text-sm"></div>
-                    <div id="manual-blur-info" class="hidden text-center text-sm font-medium text-indigo-800 bg-indigo-100 p-4 rounded-lg border border-indigo-200">
+                    <div id="manual-blur-info" class="hidden text-center text-sm font-medium text-indigo-800 bg-indigo-100 p-4 rounded-lg border border-indigo-200" data-en-text="Click a thumbnail below to open the large preview for manual blurring and to add risk notes. You can also drag-and-drop to reorder images.">
                         Click a thumbnail below to open the large preview for manual blurring and to add risk notes. You can also drag-and-drop to reorder images.
                     </div>
                     <button id="processBtn" disabled class="w-full bg-indigo-600 text-white font-semibold py-3 px-5 rounded-lg shadow-md hover:bg-indigo-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed">Process Files</button>
@@ -854,12 +860,12 @@
             <div class="p-6 sm:p-8 space-y-6">
                 <div class="grid grid-cols-1 lg:grid-cols-1 gap-6">
                         <div class="bg-gradient-to-br from-amber-50 to-orange-50 p-6 rounded-lg border border-amber-200">
-                        <h3 class="text-lg font-bold text-amber-900 mb-3">💡 Pro Tips</h3>
+                        <h3 class="text-lg font-bold text-amber-900 mb-3" data-en-text="💡 Pro Tips">💡 Pro Tips</h3>
                         <ul class="space-y-2 text-sm text-amber-800">
-                            <li>• Mention past incidents for more accurate scoring</li>
-                            <li>• Add detailed hazard descriptions in notes</li>
-                            <li>• Review AI suggestions before finalizing</li>
-                            <li>• Save your Project and resume your work </li>
+                            <li data-en-text="• Mention past incidents for more accurate scoring">• Mention past incidents for more accurate scoring</li>
+                            <li data-en-text="• Add detailed hazard descriptions in notes">• Add detailed hazard descriptions in notes</li>
+                            <li data-en-text="• Review AI suggestions before finalizing">• Review AI suggestions before finalizing</li>
+                            <li data-en-text="• Save your Project and resume your work">• Save your Project and resume your work </li>
                         </ul>
                     </div>
                 </div>
@@ -926,8 +932,9 @@
                             <button class="flex-1 sm:flex-none bg-slate-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-slate-700 transition duration-300" onclick="window.print();">Print</button>
                             <button id="translateTableBtn" class="flex-1 sm:flex-none bg-amber-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-amber-700 transition duration-300">Translate Table</button>
                             <button id="downloadProjectZipBtn" class="flex-1 sm:flex-none bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-700 transition duration-300">Download Project ZIP</button>
-                            
+                            <button id="saveProjectBtn2" class="flex-1 sm:flex-none bg-purple-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-purple-700 transition duration-300" data-en-text="Save Project">Save Project</button>
                         </div>
+                    </div>
                 </div>
                 <div class="table-wrapper overflow-x-auto" id="table-container">
                     </div>
@@ -1214,7 +1221,7 @@
             <!-- Center: Editable Details Form -->
             <div class="flex-1 flex flex-col overflow-hidden risk-panel-scroll">
                 <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex-1 overflow-y-auto risk-panel-scroll">
-                    <h3 class="text-base font-semibold text-slate-800 mb-3">Edit Task Details</h3>
+                    <h3 class="text-base font-semibold text-slate-800 mb-3" data-en-text="Edit Task Details">Edit Task Details</h3>
                     <div id="modalEditableForm" class="space-y-3">
                         <!-- Form fields will be dynamically generated here -->
                     </div>
@@ -1225,18 +1232,18 @@
             <div class="w-96 flex flex-col risk-panel-scroll">
                 <details id="riskReductionPanel" class="bg-gradient-to-br from-blue-50 to-white border border-blue-200 rounded-xl shadow-sm">
                     <summary class="cursor-pointer p-5 flex items-center justify-between select-none hover:bg-blue-50 rounded-xl transition">
-                        <h3 class="text-sm font-bold text-blue-900">🛡️ Risk Reduction Strategy</h3>
+                        <h3 class="text-sm font-bold text-blue-900" data-en-text="🛡️ Risk Reduction Strategy">🛡️ Risk Reduction Strategy</h3>
                         <span class="text-blue-600 text-xs">▼</span>
                     </summary>
                     <div class="px-5 pb-5 flex flex-col space-y-4 border-t border-blue-200">
                     
                     <!-- Hierarchy of Control Triangle -->
                     <div class="flex flex-col">
-                        <label class="block text-xs font-semibold text-slate-700 mb-3 uppercase tracking-wide">Select Control Type</label>
+                        <label class="block text-xs font-semibold text-slate-700 mb-3 uppercase tracking-wide" data-en-text="Select Control Type">Select Control Type</label>
                         <div class="relative w-full h-40 mb-4" id="controlTriangle">
                             <!-- SVG Triangle will be generated here -->
                         </div>
-                        <div id="selectedControlDisplay" class="text-center text-xs font-semibold text-blue-900 bg-blue-100 rounded px-3 py-3 min-h-8 border border-blue-300">
+                        <div id="selectedControlDisplay" class="text-center text-xs font-semibold text-blue-900 bg-blue-100 rounded px-3 py-3 min-h-8 border border-blue-300" data-en-text="Click a level to select">
                             Click a level to select
                         </div>
                         <!-- Hidden dropdown for fallback -->
@@ -1253,18 +1260,18 @@
 
                     <!-- Description Input -->
                     <div class="flex flex-col">
-                        <label class="block text-xs font-semibold text-slate-700 mb-3 uppercase tracking-wide">Description</label>
-                        <textarea id="counterMeasureDescription" class="w-full h-16 px-3 py-2 border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none" placeholder="Describe how this control will be implemented..."></textarea>
-                        <button id="addCounterMeasureBtn" class="w-full mt-3 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg text-xs transition shadow-sm">+ Add Control</button>
+                        <label class="block text-xs font-semibold text-slate-700 mb-3 uppercase tracking-wide" data-en-text="Description">Description</label>
+                        <textarea id="counterMeasureDescription" class="w-full h-16 px-3 py-2 border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none" placeholder="Describe how this control will be implemented..." data-en-placeholder="Describe how this control will be implemented..."></textarea>
+                        <button id="addCounterMeasureBtn" class="w-full mt-3 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg text-xs transition shadow-sm" data-en-text="+ Add Control">+ Add Control</button>
                     </div>
 
                     <!-- Selected Counter Measures List -->
                     <div class="min-h-0 flex flex-col">
-                        <h4 class="text-xs font-semibold text-slate-700 mb-2 uppercase tracking-wide">Selected Controls</h4>
+                        <h4 class="text-xs font-semibold text-slate-700 mb-2 uppercase tracking-wide" data-en-text="Selected Controls">Selected Controls</h4>
                         <div id="selectedCounterMeasures" class="space-y-2 max-h-32 overflow-y-auto pr-1 risk-panel-scroll">
                             <!-- Controls will be added here dynamically -->
                         </div>
-                        <div id="noControlsMessage" class="text-xs text-slate-500 italic text-center py-3">No controls added yet</div>
+                        <div id="noControlsMessage" class="text-xs text-slate-500 italic text-center py-3" data-en-text="No controls added yet">No controls added yet</div>
                     </div>
 
                     <!-- Risk Reduction Visualization -->
@@ -1273,35 +1280,35 @@
                     </div>
                     
                     <!-- Collapsible Risk Calculation Explanation -->
-                    <details class="mt-3 text-xs">
+                    <details class="mt-3 text-xs" style="direction: ltr;">
                         <summary class="cursor-pointer text-slate-500 hover:text-slate-700 font-medium flex items-center gap-1 select-none">
-                            <span>ℹ️</span> How is this calculated?
+                            <span>ℹ️</span> <span data-en-text="How is this calculated?">How is this calculated?</span>
                         </summary>
                         <div class="mt-2 p-3 bg-slate-50 border border-slate-200 rounded-lg text-slate-600 space-y-2 leading-relaxed">
-                            <p><strong class="text-slate-700">🎯 The Hierarchy of Controls (NIOSH/OSHA)</strong></p>
-                            <p>This tool uses the internationally recognized <strong>Hierarchy of Controls</strong> developed by NIOSH (National Institute for Occupational Safety and Health) and endorsed by OSHA. Controls at the top are most effective because they <em>eliminate or reduce the hazard itself</em>, while lower controls rely on <em>human behavior</em>.</p>
+                            <p><strong class="text-slate-700" data-en-text="🎯 The Hierarchy of Controls (NIOSH/OSHA)">🎯 The Hierarchy of Controls (NIOSH/OSHA)</strong></p>
+                            <p data-en-text="This tool uses the internationally recognized Hierarchy of Controls developed by NIOSH (National Institute for Occupational Safety and Health) and endorsed by OSHA. Controls at the top are most effective because they eliminate or reduce the hazard itself, while lower controls rely on human behavior.">This tool uses the internationally recognized Hierarchy of Controls developed by NIOSH (National Institute for Occupational Safety and Health) and endorsed by OSHA. Controls at the top are most effective because they eliminate or reduce the hazard itself, while lower controls rely on human behavior.</p>
                             
-                            <p class="pt-2"><strong class="text-slate-700">📊 Control Effectiveness (Based on Safety Science)</strong></p>
+                            <p class="pt-2"><strong class="text-slate-700" data-en-text="📊 Control Effectiveness (Based on Safety Science)">📊 Control Effectiveness (Based on Safety Science)</strong></p>
                             <ul class="list-disc pl-4 space-y-1">
-                                <li><strong>Eliminate:</strong> Physically removes the hazard → Risk becomes <strong>0</strong></li>
-                                <li><strong>Substitute/Engineer:</strong> High-reliability controls → Up to <strong>80%</strong> reduction</li>
-                                <li><strong>Admin/Visual/PPE:</strong> Behavior-dependent controls → Up to <strong>55%</strong> reduction</li>
+                                <li><strong data-en-text="Eliminate: Physically removes the hazard → Risk becomes 0">Eliminate: Physically removes the hazard → Risk becomes 0</strong></li>
+                                <li><strong data-en-text="Substitute/Engineer: High-reliability controls → Up to 80% reduction">Substitute/Engineer: High-reliability controls → Up to 80% reduction</strong></li>
+                                <li><strong data-en-text="Admin/Visual/PPE: Behavior-dependent controls → Up to 55% reduction">Admin/Visual/PPE: Behavior-dependent controls → Up to 55% reduction</strong></li>
                             </ul>
-                            <p class="text-[10px] text-slate-500 italic">Note: Exact percentages are estimates based on the principle that engineering controls are significantly more reliable than administrative controls, as they don't depend on consistent human action.</p>
+                            <p class="text-[10px] text-slate-500 italic" data-en-text="Note: Exact percentages are estimates based on the principle that engineering controls are significantly more reliable than administrative controls, as they don't depend on consistent human action.">Note: Exact percentages are estimates based on the principle that engineering controls are significantly more reliable than administrative controls, as they don't depend on consistent human action.</p>
                             
-                            <p class="pt-2"><strong class="text-slate-700">⚖️ Diminishing Returns Principle</strong></p>
-                            <p>Safety science recognizes that adding multiple controls of the same type yields <em>diminishing marginal benefit</em>. The first control provides the greatest protection; each additional layer adds progressively less. This is modeled using geometric decay factors.</p>
+                            <p class="pt-2"><strong class="text-slate-700" data-en-text="⚖️ Diminishing Returns Principle">⚖️ Diminishing Returns Principle</strong></p>
+                            <p data-en-text="Safety science recognizes that adding multiple controls of the same type yields diminishing marginal benefit. The first control provides the greatest protection; each additional layer adds progressively less. This is modeled using geometric decay factors.">Safety science recognizes that adding multiple controls of the same type yields diminishing marginal benefit. The first control provides the greatest protection; each additional layer adds progressively less. This is modeled using geometric decay factors.</p>
                             
-                            <p class="pt-2"><strong class="text-slate-700">🛡️ Defense in Depth</strong></p>
-                            <p>Best practice is to combine <strong>high-level controls</strong> (Substitute/Engineer) with <strong>administrative controls</strong> and <strong>PPE</strong>. This "layered defense" approach ensures protection even if one control fails.</p>
+                            <p class="pt-2"><strong class="text-slate-700" data-en-text="🛡️ Defense in Depth">🛡️ Defense in Depth</strong></p>
+                            <p data-en-text="Best practice is to combine high-level controls (Substitute/Engineer) with administrative controls and PPE. This 'layered defense' approach ensures protection even if one control fails.">Best practice is to combine high-level controls (Substitute/Engineer) with administrative controls and PPE. This 'layered defense' approach ensures protection even if one control fails.</p>
                             
-                            <p class="pt-3 border-t border-slate-200 mt-2"><strong class="text-slate-700">📚 References</strong></p>
+                            <p class="pt-3 border-t border-slate-200 mt-2"><strong class="text-slate-700" data-en-text="📚 References">📚 References</strong></p>
                             <ul class="list-none pl-0 space-y-1 text-[10px] text-slate-500">
-                                <li>• NIOSH - Hierarchy of Controls (CDC/NIOSH)</li>
-                                <li>• OSHA - Recommended Practices for Safety and Health Programs</li>
-                                <li>• Canadian Centre for Occupational Health & Safety (CCOHS)</li>
-                                <li>• UK Health and Safety Executive (HSE)</li>
-                                <li>• Prevention through Design (PtD) Initiative</li>
+                                <li data-en-text="• NIOSH - Hierarchy of Controls (CDC/NIOSH)">• NIOSH - Hierarchy of Controls (CDC/NIOSH)</li>
+                                <li data-en-text="• OSHA - Recommended Practices for Safety and Health Programs">• OSHA - Recommended Practices for Safety and Health Programs</li>
+                                <li data-en-text="• Canadian Centre for Occupational Health & Safety (CCOHS)">• Canadian Centre for Occupational Health & Safety (CCOHS)</li>
+                                <li data-en-text="• UK Health and Safety Executive (HSE)">• UK Health and Safety Executive (HSE)</li>
+                                <li data-en-text="• Prevention through Design (PtD) Initiative">• Prevention through Design (PtD) Initiative</li>
                             </ul>
                         </div>
                     </details>
@@ -1315,16 +1322,16 @@
             <!-- Tip -->
             <div class="flex items-center gap-2 bg-indigo-50 border border-indigo-200 rounded-lg px-3 py-2 flex-1 min-w-0">
                 <span class="text-indigo-600 text-base">💡</span>
-                <p class="text-xs text-indigo-700 font-medium">Use ← → arrow keys to navigate. Changes are auto saved!</p>
+                <p class="text-xs text-indigo-700 font-medium" data-en-text="Use ← → arrow keys to navigate. Changes are auto saved!">Use ← → arrow keys to navigate. Changes are auto saved!</p>
             </div>
 
             <!-- Navigation Controls -->
             <div class="flex items-center gap-3 flex-shrink-0">
-                <button id="modalDeleteBtn" class="delete-btn bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 transition text-sm" title="Delete this task">🗑️ Delete</button>
-                <button id="modalCancelBtn" class="bg-slate-400 text-white font-semibold py-2 px-4 rounded-lg hover:bg-slate-500 transition text-sm">Close</button>
-                <button id="modalFooterPrevBtn" class="min-w-[100px] bg-slate-200 text-slate-800 font-semibold py-2 px-3 rounded-lg hover:bg-slate-300 transition shadow-sm text-sm" title="Previous task (← arrow)">← Previous</button>
+                <button id="modalDeleteBtn" class="delete-btn bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 transition text-sm" title="Delete this task" data-en-text="🗑️ Delete">🗑️ Delete</button>
+                <button id="modalCancelBtn" class="bg-slate-400 text-white font-semibold py-2 px-4 rounded-lg hover:bg-slate-500 transition text-sm" data-en-text="Close">Close</button>
+                <button id="modalFooterPrevBtn" class="min-w-[100px] bg-slate-200 text-slate-800 font-semibold py-2 px-3 rounded-lg hover:bg-slate-300 transition shadow-sm text-sm" title="Previous task (← arrow)" data-en-text="← Previous">← Previous</button>
                 <span id="modalTaskCounter" class="text-slate-600 font-medium text-sm">1 / 1</span>
-                <button id="modalFooterNextBtn" class="min-w-[100px] bg-indigo-600 text-white font-semibold py-2 px-3 rounded-lg hover:bg-indigo-700 transition shadow-sm text-sm" title="Next task (→ arrow)">Next →</button>
+                <button id="modalFooterNextBtn" class="min-w-[100px] bg-indigo-600 text-white font-semibold py-2 px-3 rounded-lg hover:bg-indigo-700 transition shadow-sm text-sm" title="Next task (→ arrow)" data-en-text="Next →">Next →</button>
             </div>
         </div>
 
@@ -1332,7 +1339,7 @@
         <div class="mt-6 border-t border-slate-300 pt-4">
             <button id="ehsRefToggleBtn" class="flex items-center gap-2 text-slate-700 hover:text-slate-900 font-semibold text-sm py-2 px-3 rounded-lg hover:bg-slate-100 transition">
                 <span id="ehsRefToggleIcon">▶️</span>
-                <span>📋 EHS Standards - Frequency, Severity & Likelihood Definitions</span>
+                <span data-en-text="📋 EHS Standards - Frequency, Severity & Likelihood Definitions">📋 EHS Standards - Frequency, Severity & Likelihood Definitions</span>
             </button>
             
             <div id="ehsRefContent" class="hidden mt-4 bg-slate-50 border border-slate-200 rounded-lg p-4 overflow-y-auto max-h-96">
@@ -1343,54 +1350,54 @@
                         <table class="w-full text-xs border-collapse">
                             <thead>
                                 <tr class="bg-yellow-400 font-bold">
-                                    <th class="border border-yellow-600 px-2 py-1">F Value</th>
-                                    <th class="border border-yellow-600 px-2 py-1">Category</th>
-                                    <th class="border border-yellow-600 px-2 py-1">Day</th>
-                                    <th class="border border-yellow-600 px-2 py-1">Week</th>
-                                    <th class="border border-yellow-600 px-2 py-1">Month</th>
-                                    <th class="border border-yellow-600 px-2 py-1">Year</th>
+                                    <th class="border border-yellow-600 px-2 py-1" data-en-text="F Value">F Value</th>
+                                    <th class="border border-yellow-600 px-2 py-1" data-en-text="Category">Category</th>
+                                    <th class="border border-yellow-600 px-2 py-1" data-en-text="Day">Day</th>
+                                    <th class="border border-yellow-600 px-2 py-1" data-en-text="Week">Week</th>
+                                    <th class="border border-yellow-600 px-2 py-1" data-en-text="Month">Month</th>
+                                    <th class="border border-yellow-600 px-2 py-1" data-en-text="Year">Year</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr class="bg-white hover:bg-blue-50 cursor-pointer ehs-freq-row" data-freq-value="1">
                                     <td class="border border-slate-300 px-2 py-1 font-bold text-blue-600 hover:bg-blue-200 select-ehs-value">1</td>
-                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold">RARELY</td>
-                                    <td class="border border-slate-300 px-2 py-1">-</td>
-                                    <td class="border border-slate-300 px-2 py-1">-</td>
-                                    <td class="border border-slate-300 px-2 py-1">&lt;0.5 day</td>
-                                    <td class="border border-slate-300 px-2 py-1">1 day</td>
+                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold" data-en-text="RARELY">RARELY</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="-">-</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="-">-</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="<0.5 day">&lt;0.5 day</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="1 day">1 day</td>
                                 </tr>
                                 <tr class="bg-white hover:bg-blue-50 cursor-pointer ehs-freq-row" data-freq-value="1.25">
                                     <td class="border border-slate-300 px-2 py-1 font-bold text-blue-600 hover:bg-blue-200 select-ehs-value">1.25</td>
-                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold">OCCASIONAL</td>
-                                    <td class="border border-slate-300 px-2 py-1">&lt;30 min</td>
-                                    <td class="border border-slate-300 px-2 py-1">&lt;2 hours</td>
-                                    <td class="border border-slate-300 px-2 py-1">&lt;1 days</td>
-                                    <td class="border border-slate-300 px-2 py-1">&lt;5 days</td>
+                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold" data-en-text="OCCASIONAL">OCCASIONAL</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="<30 min">&lt;30 min</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="<2 hours">&lt;2 hours</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="<1 days">&lt;1 days</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="<5 days">&lt;5 days</td>
                                 </tr>
                                 <tr class="bg-white hover:bg-blue-50 cursor-pointer ehs-freq-row" data-freq-value="1.5">
                                     <td class="border border-slate-300 px-2 py-1 font-bold text-blue-600 hover:bg-blue-200 select-ehs-value">1.5</td>
-                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold">INTERMEDIATE</td>
-                                    <td class="border border-slate-300 px-2 py-1">30-120 min</td>
-                                    <td class="border border-slate-300 px-2 py-1">2-8 hours</td>
-                                    <td class="border border-slate-300 px-2 py-1">1-4 days</td>
-                                    <td class="border border-slate-300 px-2 py-1">5 days -2 months</td>
+                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold" data-en-text="INTERMEDIATE">INTERMEDIATE</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="30-120 min">30-120 min</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="2-8 hours">2-8 hours</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="1-4 days">1-4 days</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="5 days -2 months">5 days -2 months</td>
                                 </tr>
                                 <tr class="bg-white hover:bg-blue-50 cursor-pointer ehs-freq-row" data-freq-value="1.75">
                                     <td class="border border-slate-300 px-2 py-1 font-bold text-blue-600 hover:bg-blue-200 select-ehs-value">1.75</td>
-                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold">FREQUENTLY</td>
-                                    <td class="border border-slate-300 px-2 py-1">2-5 hours</td>
-                                    <td class="border border-slate-300 px-2 py-1">1-3 days</td>
-                                    <td class="border border-slate-300 px-2 py-1">4-15 days</td>
-                                    <td class="border border-slate-300 px-2 py-1">2-5 months</td>
+                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold" data-en-text="FREQUENTLY">FREQUENTLY</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="2-5 hours">2-5 hours</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="1-3 days">1-3 days</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="4-15 days">4-15 days</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="2-5 months">2-5 months</td>
                                 </tr>
                                 <tr class="bg-white hover:bg-blue-50 cursor-pointer ehs-freq-row" data-freq-value="2">
                                     <td class="border border-slate-300 px-2 py-1 font-bold text-blue-600 hover:bg-blue-200 select-ehs-value">2</td>
-                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold">PERMANENT</td>
-                                    <td class="border border-slate-300 px-2 py-1">&gt;5 hours</td>
-                                    <td class="border border-slate-300 px-2 py-1">&gt;3 days</td>
-                                    <td class="border border-slate-300 px-2 py-1">&gt; 15 days</td>
-                                    <td class="border border-slate-300 px-2 py-1">&gt; 5 months</td>
+                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold" data-en-text="PERMANENT">PERMANENT</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text=">5 hours">&gt;5 hours</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text=">3 days">&gt;3 days</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="> 15 days">&gt; 15 days</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="> 5 months">&gt; 5 months</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1404,41 +1411,41 @@
                         <table class="w-full text-xs border-collapse">
                             <thead>
                                 <tr class="bg-yellow-400 font-bold">
-                                    <th class="border border-yellow-600 px-2 py-1">S Value</th>
-                                    <th class="border border-yellow-600 px-2 py-1">Classification</th>
-                                    <th class="border border-yellow-600 px-2 py-1">Most Probable Injury</th>
+                                    <th class="border border-yellow-600 px-2 py-1" data-en-text="S Value">S Value</th>
+                                    <th class="border border-yellow-600 px-2 py-1" data-en-text="Classification">Classification</th>
+                                    <th class="border border-yellow-600 px-2 py-1" data-en-text="Most Probable Injury">Most Probable Injury</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr class="bg-white hover:bg-blue-50 cursor-pointer ehs-sev-row" data-sev-value="1">
                                     <td class="border border-slate-300 px-2 py-1 font-bold text-blue-600 hover:bg-blue-200 select-ehs-value">1</td>
-                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold">No potential of injury</td>
-                                    <td class="border border-slate-300 px-2 py-1">• No treatment needed</td>
+                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold" data-en-text="No potential of injury">No potential of injury</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="• No treatment needed">• No treatment needed</td>
                                 </tr>
                                 <tr class="bg-white hover:bg-blue-50 cursor-pointer ehs-sev-row" data-sev-value="3">
                                     <td class="border border-slate-300 px-2 py-1 font-bold text-blue-600 hover:bg-blue-200 select-ehs-value">3</td>
-                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold">Potential of FIRST AID</td>
-                                    <td class="border border-slate-300 px-2 py-1">• Non-prescription medication<br/>• Bandage, cold therapy<br/>• Cleaning and flushing wounds<br/>• Non-rigid means of support<br/>• OSHA recordkeeping</td>
+                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold" data-en-text="Potential of FIRST AID">Potential of FIRST AID</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="• Non-prescription medication">• Non-prescription medication<br/>• Bandage, cold therapy<br/>• Cleaning and flushing wounds<br/>• Non-rigid means of support<br/>• OSHA recordkeeping</td>
                                 </tr>
                                 <tr class="bg-white hover:bg-blue-50 cursor-pointer ehs-sev-row" data-sev-value="5">
                                     <td class="border border-slate-300 px-2 py-1 font-bold text-blue-600 hover:bg-blue-200 select-ehs-value">5</td>
-                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold">Potential of MEDICAL TREATMENT</td>
-                                    <td class="border border-slate-300 px-2 py-1">• Prescription medications<br/>• Wound closing devices<br/>• Device with rigid support<br/>• Removal of foreign objects from the eye<br/>(beyond simple flushing)</td>
+                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold" data-en-text="Potential of MEDICAL TREATMENT">Potential of MEDICAL TREATMENT</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="• Prescription medications">• Prescription medications<br/>• Wound closing devices<br/>• Device with rigid support<br/>• Removal of foreign objects from the eye<br/>(beyond simple flushing)</td>
                                 </tr>
                                 <tr class="bg-white hover:bg-blue-50 cursor-pointer ehs-sev-row" data-sev-value="7">
                                     <td class="border border-slate-300 px-2 py-1 font-bold text-blue-600 hover:bg-blue-200 select-ehs-value">7</td>
-                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold">Potential of DART</td>
-                                    <td class="border border-slate-300 px-2 py-1">• Temporary disability<br/>• Temporary hospitalization</td>
+                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold" data-en-text="Potential of DART">Potential of DART</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="• Temporary disability">• Temporary disability<br/>• Temporary hospitalization</td>
                                 </tr>
                                 <tr class="bg-white hover:bg-blue-50 cursor-pointer ehs-sev-row" data-sev-value="9">
                                     <td class="border border-slate-300 px-2 py-1 font-bold text-blue-600 hover:bg-blue-200 select-ehs-value">9</td>
-                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold">Potential of SIA</td>
-                                    <td class="border border-slate-300 px-2 py-1">• Amputation<br/>• Disfigurement<br/>• Loss of eyesight<br/>• 3rd degree burns<br/>• Life threatening/altering<br/>• Long-term occupational disease</td>
+                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold" data-en-text="Potential of SIA">Potential of SIA</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="• Amputation">• Amputation<br/>• Disfigurement<br/>• Loss of eyesight<br/>• 3rd degree burns<br/>• Life threatening/altering<br/>• Long-term occupational disease</td>
                                 </tr>
                                 <tr class="bg-white hover:bg-blue-50 cursor-pointer ehs-sev-row" data-sev-value="10">
                                     <td class="border border-slate-300 px-2 py-1 font-bold text-blue-600 hover:bg-blue-200 select-ehs-value">10</td>
-                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold">Potential of Fatality</td>
-                                    <td class="border border-slate-300 px-2 py-1">• Death</td>
+                                    <td class="border border-slate-300 px-2 py-1 text-blue-700 font-semibold" data-en-text="Potential of Fatality">Potential of Fatality</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="• Death">• Death</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1452,11 +1459,11 @@
                         <table class="w-full text-xs border-collapse">
                             <thead>
                                 <tr class="bg-yellow-400 font-bold">
-                                    <th class="border border-yellow-600 px-2 py-1">L Value</th>
-                                    <th class="border border-yellow-600 px-2 py-1">Classification</th>
-                                    <th class="border border-yellow-600 px-2 py-1">Machinery Related Risks</th>
-                                    <th class="border border-yellow-600 px-2 py-1">Industrial Hygiene Risks</th>
-                                    <th class="border border-yellow-600 px-2 py-1">Other H&amp;S Risks</th>
+                                    <th class="border border-yellow-600 px-2 py-1" data-en-text="L Value">L Value</th>
+                                    <th class="border border-yellow-600 px-2 py-1" data-en-text="Classification">Classification</th>
+                                    <th class="border border-yellow-600 px-2 py-1" data-en-text="Machinery Related Risks">Machinery Related Risks</th>
+                                    <th class="border border-yellow-600 px-2 py-1" data-en-text="Industrial Hygiene Risks">Industrial Hygiene Risks</th>
+                                    <th class="border border-yellow-600 px-2 py-1" data-en-text="Other H&S Risks">Other H&amp;S Risks</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1502,36 +1509,36 @@
 
                 <!-- Risk Rating Table -->
                 <div class="mt-6">
-                    <h4 class="font-bold text-slate-800 mb-3 text-sm">Risk Rating &amp; Response</h4>
+                    <h4 class="font-bold text-slate-800 mb-3 text-sm" data-en-text="Risk Rating & Response">Risk Rating & Response</h4>
                     <div class="overflow-x-auto">
                         <table class="w-full text-xs border-collapse">
                             <thead>
                                 <tr class="bg-yellow-400 font-bold">
-                                    <th class="border border-yellow-600 px-2 py-1">Risk Score (F × S × L)</th>
-                                    <th class="border border-yellow-600 px-2 py-1">Interpretation</th>
-                                    <th class="border border-yellow-600 px-2 py-1">Response Required</th>
+                                    <th class="border border-yellow-600 px-2 py-1" data-en-text="Risk Score (F × S × L)">Risk Score (F × S × L)</th>
+                                    <th class="border border-yellow-600 px-2 py-1" data-en-text="Interpretation">Interpretation</th>
+                                    <th class="border border-yellow-600 px-2 py-1" data-en-text="Response Required">Response Required</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr class="bg-green-100">
                                     <td class="border border-slate-300 px-2 py-1 font-bold">1-19</td>
-                                    <td class="border border-slate-300 px-2 py-1 bg-green-400 text-white font-bold">LOW</td>
-                                    <td class="border border-slate-300 px-2 py-1">Low priority - Further reduce risk if feasible.</td>
+                                    <td class="border border-slate-300 px-2 py-1 bg-green-400 text-white font-bold" data-en-text="LOW">LOW</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="Low priority - Further reduce risk if feasible.">Low priority - Further reduce risk if feasible.</td>
                                 </tr>
                                 <tr class="bg-yellow-100">
                                     <td class="border border-slate-300 px-2 py-1 font-bold">20-49</td>
-                                    <td class="border border-slate-300 px-2 py-1 bg-yellow-400 text-black font-bold">MEDIUM</td>
-                                    <td class="border border-slate-300 px-2 py-1">Further reduce risk over time. Prioritize higher risks first.</td>
+                                    <td class="border border-slate-300 px-2 py-1 bg-yellow-400 text-black font-bold" data-en-text="MEDIUM">MEDIUM</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="Further reduce risk over time. Prioritize higher risks first.">Further reduce risk over time. Prioritize higher risks first.</td>
                                 </tr>
                                 <tr class="bg-orange-100">
                                     <td class="border border-slate-300 px-2 py-1 font-bold">50-71</td>
-                                    <td class="border border-slate-300 px-2 py-1 bg-orange-400 text-white font-bold">HIGH</td>
-                                    <td class="border border-slate-300 px-2 py-1">Action plan to reduce this risk level as a lower priority.</td>
+                                    <td class="border border-slate-300 px-2 py-1 bg-orange-400 text-white font-bold" data-en-text="HIGH">HIGH</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="Action plan to reduce this risk level as a lower priority.">Action plan to reduce this risk level as a lower priority.</td>
                                 </tr>
                                 <tr class="bg-red-100">
                                     <td class="border border-slate-300 px-2 py-1 font-bold">72-200</td>
-                                    <td class="border border-slate-300 px-2 py-1 bg-red-600 text-white font-bold">CRITICAL</td>
-                                    <td class="border border-slate-300 px-2 py-1">Deploy interim protective measures and prioritize implementation of more secured permanent controls. Highlight to exposed associates the risk they are exposed to.</td>
+                                    <td class="border border-slate-300 px-2 py-1 bg-red-600 text-white font-bold" data-en-text="CRITICAL">CRITICAL</td>
+                                    <td class="border border-slate-300 px-2 py-1" data-en-text="Deploy interim protective measures and prioritize implementation of more secured permanent controls. Highlight to exposed associates the risk they are exposed to.">Deploy interim protective measures and prioritize implementation of more secured permanent controls. Highlight to exposed associates the risk they are exposed to.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -2196,7 +2203,153 @@
     "No microphone found. Please ensure a microphone is connected.": "Aucun microphone trouvé. Veuillez vous assurer qu'un microphone est connecté.",
     "Microphone access denied. Please allow microphone access in your browser.": "Accès au microphone refusé. Veuillez autoriser l'accès au microphone dans votre navigateur.",
     "Network error. Please check your internet connection.": "Erreur réseau. Veuillez vérifier votre connexion Internet.",
-    "Speech recognition error: ": "Erreur de reconnaissance vocale : "
+    "Speech recognition error: ": "Erreur de reconnaissance vocale : ",
+    // Edit Task Modal (French)
+    "Edit Task Details": "Modifier les détails de la tâche",
+    "🛡️ Risk Reduction Strategy": "🛡️ Stratégie de réduction des risques",
+    "Select Control Type": "Sélectionner le type de contrôle",
+    "Click a level to select": "Cliquez sur un niveau pour sélectionner",
+    "Description": "Description",
+    "Describe how this control will be implemented...": "Décrivez comment ce contrôle sera mis en œuvre...",
+    "+ Add Control": "+ Ajouter un contrôle",
+    "Selected Controls": "Contrôles sélectionnés",
+    "No controls added yet": "Aucun contrôle ajouté pour le moment",
+    "How is this calculated?": "Comment est-ce calculé ?",
+    "🎯 The Hierarchy of Controls (NIOSH/OSHA)": "🎯 La hiérarchie des contrôles (NIOSH/OSHA)",
+    "This tool uses the internationally recognized Hierarchy of Controls developed by NIOSH (National Institute for Occupational Safety and Health) and endorsed by OSHA. Controls at the top are most effective because they eliminate or reduce the hazard itself, while lower controls rely on human behavior.": "Cet outil utilise la hiérarchie des contrôles internationalement reconnue développée par le NIOSH (National Institute for Occupational Safety and Health) et approuvée par l'OSHA. Les contrôles en haut sont les plus efficaces car ils éliminent ou réduisent le danger lui-même, tandis que les contrôles inférieurs dépendent du comportement humain.",
+    "📊 Control Effectiveness (Based on Safety Science)": "📊 Efficacité des contrôles (basée sur la science de la sécurité)",
+    "Eliminate: Physically removes the hazard → Risk becomes 0": "Éliminer : Supprime physiquement le danger → Le risque devient 0",
+    "Substitute/Engineer: High-reliability controls → Up to 80% reduction": "Substituer/Ingénierie : Contrôles haute fiabilité → Jusqu'à 80% de réduction",
+    "Admin/Visual/PPE: Behavior-dependent controls → Up to 55% reduction": "Admin/Visuel/EPI : Contrôles dépendants du comportement → Jusqu'à 55% de réduction",
+    "Note: Exact percentages are estimates based on the principle that engineering controls are significantly more reliable than administrative controls, as they don't depend on consistent human action.": "Note : Les pourcentages exacts sont des estimations basées sur le principe que les contrôles d'ingénierie sont considérablement plus fiables que les contrôles administratifs, car ils ne dépendent pas d'une action humaine cohérente.",
+    "⚖️ Diminishing Returns Principle": "⚖️ Principe des rendements décroissants",
+    "Safety science recognizes that adding multiple controls of the same type yields diminishing marginal benefit. The first control provides the greatest protection; each additional layer adds progressively less. This is modeled using geometric decay factors.": "La science de la sécurité reconnaît que l'ajout de plusieurs contrôles du même type produit un bénéfice marginal décroissant. Le premier contrôle offre la plus grande protection ; chaque couche supplémentaire ajoute progressivement moins. Ceci est modélisé à l'aide de facteurs de décroissance géométrique.",
+    "🛡️ Defense in Depth": "🛡️ Défense en profondeur",
+    "Best practice is to combine high-level controls (Substitute/Engineer) with administrative controls and PPE. This 'layered defense' approach ensures protection even if one control fails.": "La meilleure pratique consiste à combiner des contrôles de haut niveau (Substituer/Ingénierie) avec des contrôles administratifs et des EPI. Cette approche de 'défense en couches' garantit la protection même si un contrôle échoue.",
+    "📚 References": "📚 Références",
+    "• NIOSH - Hierarchy of Controls (CDC/NIOSH)": "• NIOSH - Hiérarchie des contrôles (CDC/NIOSH)",
+    "• OSHA - Recommended Practices for Safety and Health Programs": "• OSHA - Pratiques recommandées pour les programmes de sécurité et de santé",
+    "• Canadian Centre for Occupational Health & Safety (CCOHS)": "• Centre canadien d'hygiène et de sécurité au travail (CCOHS)",
+    "• UK Health and Safety Executive (HSE)": "• Health and Safety Executive du Royaume-Uni (HSE)",
+    "• Prevention through Design (PtD) Initiative": "• Initiative Prévention par le Design (PtD)",
+    "Use ← → arrow keys to navigate. Changes are auto saved!": "Utilisez les touches ← → pour naviguer. Les modifications sont automatiquement sauvegardées !",
+    "🗑️ Delete": "🗑️ Supprimer",
+    "Close": "Fermer",
+    "← Previous": "← Précédent",
+    "Next →": "Suivant →",
+    "↩️ Restore": "↩️ Restaurer",
+    "This task has been deleted": "Cette tâche a été supprimée",
+    "↩️ Restore Task": "↩️ Restaurer la tâche",
+    "Risk Rating:": "Évaluation du risque :",
+    "Risk Score": "Score de risque",
+    "Risk Category": "Catégorie de risque",
+    "📋 EHS Standards - Frequency, Severity & Likelihood Definitions": "📋 Normes EHS - Définitions de fréquence, gravité et probabilité",
+
+    // Risk Rating Table translations
+    "Risk Rating & Response": "Évaluation du risque et réponse",
+    "Risk Score (F × S × L)": "Score de risque (F × S × L)",
+    "Interpretation": "Interprétation",
+    "Response Required": "Réponse requise",
+    "LOW": "FAIBLE",
+    "MEDIUM": "MOYEN",
+    "HIGH": "ÉLEVÉ",
+    "CRITICAL": "CRITIQUE",
+    "Low priority - Further reduce risk if feasible.": "Priorité faible - Réduire davantage le risque si possible.",
+    "Further reduce risk over time. Prioritize higher risks first.": "Réduire davantage le risque au fil du temps. Prioriser d'abord les risques plus élevés.",
+    "Action plan to reduce this risk level as a lower priority.": "Plan d'action pour réduire ce niveau de risque en priorité moindre.",
+    "Deploy interim protective measures and prioritize implementation of more secured permanent controls. Highlight to exposed associates the risk they are exposed to.": "Déployer des mesures de protection intermédiaires et prioriser la mise en œuvre de contrôles permanents plus sécurisés. Mettre en évidence auprès des associés exposés le risque auquel ils sont exposés.",
+
+    // Predicted Risk Card translations
+    "Predicted Risk": "Risque prévu",
+    "control": "contrôle",
+    "controls": "contrôles",
+    "🎯 ELIMINATED:": "🎯 ÉLIMINÉ :",
+    "Hazard completely removed - no risk remains.": "Danger complètement supprimé - aucun risque ne subsiste.",
+    "⚡ STRONG CONTROLS:": "⚡ CONTRÔLES FORTS :",
+    "high-level controls (Substitute/Engineer) applied with": "contrôles de haut niveau (Substituer/Ingénierie) appliqués avec",
+    "max reduction.": "réduction maximale.",
+    "⚡ LAYERED DEFENSE:": "⚡ DÉFENSE EN COUCHES :",
+    "High-level control +": "Contrôle de haut niveau +",
+    "administrative/PPE control": "contrôle administratif/EPI",
+    "combined reduction).": "réduction combinée).",
+    "⚡ HIGH-LEVEL CONTROL:": "⚡ CONTRÔLE DE HAUT NIVEAU :",
+    "Substitution or Engineering control applied": "Contrôle de substitution ou d'ingénierie appliqué",
+    "reduction).": "réduction).",
+    "⚠️ LIMITED PROTECTION:": "⚠️ PROTECTION LIMITÉE :",
+    "lower-level controls only. Consider Substitution or Engineering controls.": "contrôles de niveau inférieur uniquement. Envisager des contrôles de substitution ou d'ingénierie.",
+    "📋 LOWER-LEVEL CONTROLS:": "📋 CONTRÔLES DE NIVEAU INFÉRIEUR :",
+    "(Admin/Visual/PPE) -": "(Admin/Visuel/EPI) -",
+    "Select controls from the hierarchy above to see risk projections...": "Sélectionnez des contrôles dans la hiérarchie ci-dessus pour voir les projections de risque...",
+
+    // Workflow and Tables (French)
+    "Choose your workflow to get started": "Choisissez votre workflow pour commencer",
+    "Rich Media": "Médias riches",
+    "Free Text": "Texte libre",
+    "Excel Sheet": "Feuille Excel",
+    "Click to upload or drag and drop": "Cliquez pour télécharger ou glissez-déposez",
+    "Images or Videos": "Images ou vidéos",
+    "Models loaded. Please select your images or videos.": "Modèles chargés. Veuillez sélectionner vos images ou vidéos.",
+    "Click a thumbnail below to open the large preview for manual blurring and to add risk notes. You can also drag-and-drop to reorder images.": "Cliquez sur une vignette ci-dessous pour ouvrir l'aperçu agrandé pour le flou manuel et ajouter des notes de risque. Vous pouvez également glisser-déposer pour réorganiser les images.",
+    "💡 Pro Tips": "💡 Conseils professionnels",
+    "• Mention past incidents for more accurate scoring": "• Mentionner les incidents passés pour un score plus précis",
+    "• Add detailed hazard descriptions in notes": "• Ajouter des descriptions détaillées des dangers dans les notes",
+    "• Review AI suggestions before finalizing": "• Examiner les suggestions IA avant la finalisation",
+    "• Save your Project and resume your work": "• Enregistrer votre projet et reprendre votre travail",
+    "F Value": "Valeur F",
+    "Category": "Catégorie",
+    "Day": "Jour",
+    "Week": "Semaine",
+    "Month": "Mois",
+    "Year": "Année",
+    "RARELY": "RAREMENT",
+    "<0.5 day": "<0,5 jour",
+    "1 day": "1 jour",
+    "OCCASIONAL": "OCCASIONNEL",
+    "<30 min": "<30 min",
+    "<2 hours": "<2 heures",
+    "<1 days": "<1 jours",
+    "<5 days": "<5 jours",
+    "INTERMEDIATE": "INTERMÉDIAIRE",
+    "30-120 min": "30-120 min",
+    "2-8 hours": "2-8 heures",
+    "1-4 days": "1-4 jours",
+    "5 days -2 months": "5 jours -2 mois",
+    "FREQUENTLY": "FRÉQUEMMENT",
+    "2-5 hours": "2-5 heures",
+    "1-3 days": "1-3 jours",
+    "4-15 days": "4-15 jours",
+    "2-5 months": "2-5 mois",
+    "PERMANENT": "PERMANENT",
+    ">5 hours": ">5 heures",
+    ">3 days": ">3 jours",
+    "> 15 days": "> 15 jours",
+    "> 5 months": "> 5 mois",
+    "S Value": "Valeur S",
+    "Classification": "Classification",
+    "Most Probable Injury": "Blessure la plus probable",
+    "No potential of injury": "Aucun risque de blessure",
+    "• No treatment needed": "• Aucun traitement nécessaire",
+    "Potential of FIRST AID": "Potentiel de premiers secours",
+    "• Non-prescription medication": "• Médicaments en vente libre",
+    "Potential of MEDICAL TREATMENT": "Potentiel de traitement médical",
+    "• Prescription medications": "• Médicaments sur ordonnance",
+    "Potential of DART": "Potentiel de DART",
+    "• Temporary disability": "• Invalidité temporaire",
+    "Potential of SIA": "Potentiel de SIA",
+    "• Amputation": "• Amputation",
+    "Potential of Fatality": "Potentiel de mortalité",
+    "• Death": "• Décès",
+    "L Value": "Valeur L",
+    "Machinery Related Risks": "Risques liés aux machines",
+    "Industrial Hygiene Risks": "Risques pour l'hygiène industrielle",
+    "Other H&S Risks": "Autres risques H&S",
+    "-": "-",
+    "Loading AI models...": "Chargement des modeles IA...",
+    "Loading AI models from CDN... Please wait.": "Chargement des modeles IA depuis le CDN... Veuillez patienter.",
+    "file(s) selected. Click 'Process Files' to continue.": "fichier(s) selectionne(s). Cliquez sur Traiter les fichiers pour continuer.",
+    "Models loading...": "Chargement des modeles...",
+    "file(s) selected. Please wait.": "fichier(s) selectionne(s). Veuillez patienter.",
+    "Error loading AI models from CDN. Check your internet connection and the browser console for details.": "Erreur de chargement des modeles IA depuis le CDN. Verifiez votre connexion Internet et la console du navigateur pour plus de details."
   },
   de: {
     // Hazard Groups (German)
@@ -2476,7 +2629,153 @@
     "No microphone found. Please ensure a microphone is connected.": "Kein Mikrofon gefunden. Bitte stellen Sie sicher, dass ein Mikrofon angeschlossen ist.",
     "Microphone access denied. Please allow microphone access in your browser.": "Mikrofonzugriff verweigert. Bitte erlauben Sie den Mikrofonzugriff in Ihrem Browser.",
     "Network error. Please check your internet connection.": "Netzwerkfehler. Bitte überprüfen Sie Ihre Internetverbindung.",
-    "Speech recognition error: ": "Spracherkennungsfehler: "
+    "Speech recognition error: ": "Spracherkennungsfehler: ",
+    // Edit Task Modal (German)
+    "Edit Task Details": "Aufgabendetails bearbeiten",
+    "🛡️ Risk Reduction Strategy": "🛡️ Risikominderungsstrategie",
+    "Select Control Type": "Steuerungstyp auswählen",
+    "Click a level to select": "Klicken Sie auf eine Ebene, um auszuwählen",
+    "Description": "Beschreibung",
+    "Describe how this control will be implemented...": "Beschreiben Sie, wie diese Steuerung implementiert wird...",
+    "+ Add Control": "+ Steuerung hinzufügen",
+    "Selected Controls": "Ausgewählte Steuerungen",
+    "No controls added yet": "Noch keine Steuerungen hinzugefügt",
+    "How is this calculated?": "Wie wird das berechnet?",
+    "🎯 The Hierarchy of Controls (NIOSH/OSHA)": "🎯 Die Hierarchie der Steuerungen (NIOSH/OSHA)",
+    "This tool uses the internationally recognized Hierarchy of Controls developed by NIOSH (National Institute for Occupational Safety and Health) and endorsed by OSHA. Controls at the top are most effective because they eliminate or reduce the hazard itself, while lower controls rely on human behavior.": "Dieses Tool verwendet die international anerkannte Hierarchie der Steuerungen, die vom NIOSH (National Institute for Occupational Safety and Health) entwickelt und von der OSHA unterstützt wird. Steuerungen an der Spitze sind am effektivsten, da sie die Gefahr selbst eliminieren oder reduzieren, während untere Steuerungen vom menschlichen Verhalten abhängen.",
+    "📊 Control Effectiveness (Based on Safety Science)": "📊 Steuerungseffektivität (basierend auf Sicherheitswissenschaft)",
+    "Eliminate: Physically removes the hazard → Risk becomes 0": "Eliminieren: Entfernt die Gefahr physisch → Risiko wird 0",
+    "Substitute/Engineer: High-reliability controls → Up to 80% reduction": "Substituieren/Ingenieur: Hochzuverlässige Steuerungen → Bis zu 80% Reduktion",
+    "Admin/Visual/PPE: Behavior-dependent controls → Up to 55% reduction": "Admin/Visuell/PPE: Verhaltensabhängige Steuerungen → Bis zu 55% Reduktion",
+    "Note: Exact percentages are estimates based on the principle that engineering controls are significantly more reliable than administrative controls, as they don't depend on consistent human action.": "Hinweis: Die genauen Prozentsätze sind Schätzungen basierend auf dem Prinzip, dass Ingenieursteuerungen deutlich zuverlässiger sind als administrative Steuerungen, da sie nicht von konsistentem menschlichem Handeln abhängen.",
+    "⚖️ Diminishing Returns Principle": "⚖️ Prinzip der abnehmenden Erträge",
+    "Safety science recognizes that adding multiple controls of the same type yields diminishing marginal benefit. The first control provides the greatest protection; each additional layer adds progressively less. This is modeled using geometric decay factors.": "Die Sicherheitswissenschaft erkennt, dass das Hinzufügen mehrerer Steuerungen desselben Typs einen abnehmenden marginalen Nutzen bringt. Die erste Steuerung bietet den größten Schutz; jede zusätzliche Schicht fügt progressiv weniger hinzu. Dies wird mit geometrischen Zerfallsfaktoren modelliert.",
+    "🛡️ Defense in Depth": "🛡️ Tiefenverteidigung",
+    "Best practice is to combine high-level controls (Substitute/Engineer) with administrative controls and PPE. This 'layered defense' approach ensures protection even if one control fails.": "Bewährte Praxis ist es, Steuerungen auf hohem Niveau (Substituieren/Ingenieur) mit administrativen Steuerungen und PSA zu kombinieren. Dieser 'mehrschichtige Verteidigungsansatz' gewährleistet Schutz, auch wenn eine Steuerung ausfällt.",
+    "📚 References": "📚 Referenzen",
+    "• NIOSH - Hierarchy of Controls (CDC/NIOSH)": "• NIOSH - Hierarchie der Steuerungen (CDC/NIOSH)",
+    "• OSHA - Recommended Practices for Safety and Health Programs": "• OSHA - Empfohlene Praktiken für Sicherheits- und Gesundheitsprogramme",
+    "• Canadian Centre for Occupational Health & Safety (CCOHS)": "• Kanadisches Zentrum für Arbeitsgesundheit und Sicherheit (CCOHS)",
+    "• UK Health and Safety Executive (HSE)": "• Health and Safety Executive Großbritannien (HSE)",
+    "• Prevention through Design (PtD) Initiative": "• Prevention through Design (PtD) Initiative",
+    "Use ← → arrow keys to navigate. Changes are auto saved!": "Verwenden Sie die ← → Pfeiltasten zur Navigation. Änderungen werden automatisch gespeichert!",
+    "🗑️ Delete": "🗑️ Löschen",
+    "Close": "Schließen",
+    "← Previous": "← Vorherige",
+    "Next →": "Nächste →",
+    "↩️ Restore": "↩️ Wiederherstellen",
+    "This task has been deleted": "Diese Aufgabe wurde gelöscht",
+    "↩️ Restore Task": "↩️ Aufgabe wiederherstellen",
+    "Risk Rating:": "Risikobewertung:",
+    "Risk Score": "Risikowert",
+    "Risk Category": "Risikokategorie",
+    "📋 EHS Standards - Frequency, Severity & Likelihood Definitions": "📋 EHS-Standards - Definitionen von Häufigkeit, Schweregrad und Wahrscheinlichkeit",
+
+    // Risk Rating Table translations
+    "Risk Rating & Response": "Risikobewertung und Reaktion",
+    "Risk Score (F × S × L)": "Risikowert (F × S × L)",
+    "Interpretation": "Interpretation",
+    "Response Required": "Erforderliche Reaktion",
+    "LOW": "NIEDRIG",
+    "MEDIUM": "MITTEL",
+    "HIGH": "HOCH",
+    "CRITICAL": "KRITISCH",
+    "Low priority - Further reduce risk if feasible.": "Niedrige Priorität - Risiko weiter reduzieren, falls möglich.",
+    "Further reduce risk over time. Prioritize higher risks first.": "Risiko im Laufe der Zeit weiter reduzieren. Höhere Risiken zuerst priorisieren.",
+    "Action plan to reduce this risk level as a lower priority.": "Aktionsplan zur Reduzierung dieses Risikoniveaus mit niedrigerer Priorität.",
+    "Deploy interim protective measures and prioritize implementation of more secured permanent controls. Highlight to exposed associates the risk they are exposed to.": "Zwischenmaßnahmen zum Schutz einsetzen und die Implementierung sichererer dauerhafter Kontrollen priorisieren. Den exponierten Mitarbeitern das Risiko, dem sie ausgesetzt sind, hervorheben.",
+
+    // Predicted Risk Card translations
+    "Predicted Risk": "Vorhergesagtes Risiko",
+    "control": "Steuerung",
+    "controls": "Steuerungen",
+    "🎯 ELIMINATED:": "🎯 ELIMINIERT:",
+    "Hazard completely removed - no risk remains.": "Gefahr vollständig beseitigt - kein Risiko verbleibt.",
+    "⚡ STRONG CONTROLS:": "⚡ STARKE STEUERUNGEN:",
+    "high-level controls (Substitute/Engineer) applied with": "Steuerungen auf hohem Niveau (Substituieren/Ingenieur) angewendet mit",
+    "max reduction.": "maximale Reduktion.",
+    "⚡ LAYERED DEFENSE:": "⚡ MEHRSCHICHTIGE VERTEIDIGUNG:",
+    "High-level control +": "Steuerung auf hohem Niveau +",
+    "administrative/PPE control": "administrative/PSA-Steuerung",
+    "combined reduction).": "kombinierte Reduktion).",
+    "⚡ HIGH-LEVEL CONTROL:": "⚡ STEUERUNG AUF HOHEM NIVEAU:",
+    "Substitution or Engineering control applied": "Substitutions- oder Ingenieursteuerung angewendet",
+    "reduction).": "Reduktion).",
+    "⚠️ LIMITED PROTECTION:": "⚠️ BEGRENZTER SCHUTZ:",
+    "lower-level controls only. Consider Substitution or Engineering controls.": "nur Steuerungen auf niedrigerem Niveau. Erwägen Sie Substitutions- oder Ingenieursteuerungen.",
+    "📋 LOWER-LEVEL CONTROLS:": "📋 STEUERUNGEN AUF NIEDRIGEREM NIVEAU:",
+    "(Admin/Visual/PPE) -": "(Admin/Visuell/PSA) -",
+    "Select controls from the hierarchy above to see risk projections...": "Wählen Sie Steuerungen aus der obigen Hierarchie, um Risikoprognosen zu sehen...",
+
+    // Workflow and Tables (German)
+    "Choose your workflow to get started": "Wählen Sie Ihren Arbeitsablauf aus, um zu beginnen",
+    "Rich Media": "Rich Media",
+    "Free Text": "Freitext",
+    "Excel Sheet": "Excel-Arbeitsblatt",
+    "Click to upload or drag and drop": "Klicken Sie zum Hochladen oder ziehen Sie per Drag-and-Drop",
+    "Images or Videos": "Bilder oder Videos",
+    "Models loaded. Please select your images or videos.": "Modelle geladen. Bitte wählen Sie Ihre Bilder oder Videos.",
+    "Click a thumbnail below to open the large preview for manual blurring and to add risk notes. You can also drag-and-drop to reorder images.": "Klicken Sie auf eine Miniaturansicht unten, um die große Vorschau zum manuellen Unschärfen zu öffnen und Risikohinweise hinzuzufügen. Sie können auch Drag-and-Drop verwenden, um Bilder neu anzuordnen.",
+    "💡 Pro Tips": "💡 Profi-Tipps",
+    "• Mention past incidents for more accurate scoring": "• Erwähnen Sie vergangene Vorfälle für genauere Bewertungen",
+    "• Add detailed hazard descriptions in notes": "• Fügen Sie in Notizen detaillierte Gefahrenbeschreibungen hinzu",
+    "• Review AI suggestions before finalizing": "• Überprüfen Sie KI-Vorschläge vor der Fertigstellung",
+    "• Save your Project and resume your work": "• Speichern Sie Ihr Projekt und setzen Sie Ihre Arbeit fort",
+    "F Value": "F-Wert",
+    "Category": "Kategorie",
+    "Day": "Tag",
+    "Week": "Woche",
+    "Month": "Monat",
+    "Year": "Jahr",
+    "RARELY": "SELTEN",
+    "<0.5 day": "<0,5 Tag",
+    "1 day": "1 Tag",
+    "OCCASIONAL": "GELEGENTLICH",
+    "<30 min": "<30 min",
+    "<2 hours": "<2 Stunden",
+    "<1 days": "<1 Tage",
+    "<5 days": "<5 Tage",
+    "INTERMEDIATE": "ZWISCHENDURCH",
+    "30-120 min": "30-120 min",
+    "2-8 hours": "2-8 Stunden",
+    "1-4 days": "1-4 Tage",
+    "5 days -2 months": "5 Tage -2 Monate",
+    "FREQUENTLY": "HÄUFIG",
+    "2-5 hours": "2-5 Stunden",
+    "1-3 days": "1-3 Tage",
+    "4-15 days": "4-15 Tage",
+    "2-5 months": "2-5 Monate",
+    "PERMANENT": "DAUERHAFT",
+    ">5 hours": ">5 Stunden",
+    ">3 days": ">3 Tage",
+    "> 15 days": "> 15 Tage",
+    "> 5 months": "> 5 Monate",
+    "S Value": "S-Wert",
+    "Classification": "Klassifizierung",
+    "Most Probable Injury": "Wahrscheinlichste Verletzung",
+    "No potential of injury": "Kein Verletzungspotenzial",
+    "• No treatment needed": "• Keine Behandlung erforderlich",
+    "Potential of FIRST AID": "Potenzial für Erste Hilfe",
+    "• Non-prescription medication": "• Freiverkäufliche Medikamente",
+    "Potential of MEDICAL TREATMENT": "Potenzial für ärztliche Behandlung",
+    "• Prescription medications": "• Verschreibungspflichtige Medikamente",
+    "Potential of DART": "Potenzial für DART",
+    "• Temporary disability": "• Vorübergehende Behinderung",
+    "Potential of SIA": "Potenzial für SIA",
+    "• Amputation": "• Amputation",
+    "Potential of Fatality": "Todesfallpotenzial",
+    "• Death": "• Tod",
+    "L Value": "L-Wert",
+    "Machinery Related Risks": "Maschinenbezogene Risiken",
+    "Industrial Hygiene Risks": "Risiken der Arbeitshygiene",
+    "Other H&S Risks": "Sonstige Arbeitsschutzrisiken",
+    "-": "-",
+    "Loading AI models...": "KI-Modelle werden geladen...",
+    "Loading AI models from CDN... Please wait.": "KI-Modelle werden vom CDN geladen... Bitte warten.",
+    "file(s) selected. Click 'Process Files' to continue.": "Datei(en) ausgewaehlt. Klicken Sie auf Dateien verarbeiten um fortzufahren.",
+    "Models loading...": "Modelle werden geladen...",
+    "file(s) selected. Please wait.": "Datei(en) ausgewaehlt. Bitte warten.",
+    "Error loading AI models from CDN. Check your internet connection and the browser console for details.": "Fehler beim Laden der KI-Modelle vom CDN. Ueberpruefen Sie Ihre Internetverbindung und die Browser-Konsole fuer Details."
   }
 };
 
@@ -2492,11 +2791,48 @@
             return TRANSLATIONS[currentLang][englishText];
         };
 
+        // --- UPDATE MODAL TRANSLATIONS ---
+        const updateModalTranslations = () => {
+            // Update modal header
+            const modalHeader = document.querySelector('#tableImageModal h3');
+            if (modalHeader && modalHeader.getAttribute('data-en-text')) {
+                modalHeader.innerHTML = t(modalHeader.getAttribute('data-en-text'));
+            }
+
+            // Update Risk Reduction Strategy header
+            const riskStrategyHeader = document.querySelector('#riskReductionPanel summary h3');
+            if (riskStrategyHeader && riskStrategyHeader.getAttribute('data-en-text')) {
+                riskStrategyHeader.innerHTML = t(riskStrategyHeader.getAttribute('data-en-text'));
+            }
+
+            // Update summary text spans - both outer and nested details
+            const allSummarySpans = document.querySelectorAll('details summary span[data-en-text]');
+            allSummarySpans.forEach(span => {
+                const englishText = span.getAttribute('data-en-text');
+                span.innerText = t(englishText);
+            })
+
+            // Update all translatable elements in the modal
+            const allModalElements = document.querySelectorAll('#tableImageModal [data-en-text], #riskReductionPanel [data-en-text]:not(summary span[data-en-text])');
+            allModalElements.forEach(el => {
+                const englishText = el.getAttribute('data-en-text');
+                if (englishText) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        if (el.hasAttribute('placeholder')) {
+                            el.placeholder = t(englishText);
+                        }
+                    } else {
+                        el.innerText = t(englishText);
+                    }
+                }
+            });
+        };
+
         // --- UPDATE UI TEXT WHEN LANGUAGE CHANGES ---
         const updateUIText = () => {
             // Update button text by their IDs
             const buttonIds = [
-                'processBtn', 'downloadBtn', 'generateAiReportBtn', 'saveProjectBtn', 
+                'processBtn', 'downloadBtn', 'generateAiReportBtn', 'saveProjectBtn', 'saveProjectBtn2',
                 'loadProjectBtn', 'generateTasksBtn', 'translateTableBtn', 'downloadProjectZipBtn',
                 'privacyBtn'
             ];
@@ -2567,6 +2903,54 @@
                 if (translated !== englishText) {
                     p.innerText = translated;
                     p.setAttribute('data-en-text', englishText);
+                }
+            });
+
+            // Update modal content if it's currently open
+            updateModalTranslations();
+
+            // Update risk rating table
+            const tableCells = document.querySelectorAll('td[data-en-text], th[data-en-text]');
+            tableCells.forEach(cell => {
+                const englishText = cell.getAttribute('data-en-text');
+                if (englishText) {
+                    cell.innerText = t(englishText);
+                }
+            });
+
+            // Update risk rating table header
+            const tableHeaders = document.querySelectorAll('h4[data-en-text]');
+            tableHeaders.forEach(header => {
+                const englishText = header.getAttribute('data-en-text');
+                if (englishText) {
+                    header.innerText = t(englishText);
+                }
+            });
+
+            // Update ALL elements with data-en-text attribute (comprehensive update)
+            const allTranslatableElements = document.querySelectorAll('[data-en-text]');
+            allTranslatableElements.forEach(el => {
+                const englishText = el.getAttribute('data-en-text');
+                if (englishText) {
+                    // Handle buttons that contain SVGs - only update text nodes
+                    if (el.tagName === 'BUTTON' && el.querySelector('svg')) {
+                        // Find and update only the text node (not the SVG)
+                        const childNodes = el.childNodes;
+                        for (let i = 0; i < childNodes.length; i++) {
+                            if (childNodes[i].nodeType === Node.TEXT_NODE && childNodes[i].textContent.trim()) {
+                                childNodes[i].textContent = ' ' + t(englishText) + ' ';
+                                break; // Only update the first non-empty text node
+                            }
+                        }
+                    } else if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        if (el.hasAttribute('placeholder')) {
+                            el.placeholder = t(englishText);
+                        }
+                    } else if (el.tagName === 'TD' || el.tagName === 'TH' || el.tagName === 'H4') {
+                        // Skip - already handled above
+                    } else {
+                        el.innerText = t(englishText);
+                    }
                 }
             });
         };
@@ -3054,14 +3438,35 @@ data.forEach((row, index) => {
                 // Ensure defaults for potentially missing AI output
                 const hazardListValue = row['Hazard List'] || Object.keys(HAZARD_REGISTRY)[0];
                 const consequenceValue = row['Risk/Consequences'] || CONSEQUENCE_REGISTRY[0];
-                const frequencyValue = row.Frequency || 1;
-                const severityValue = row.Severity;
-                const likelihoodValue = row.Likelihood;
+                const frequencyValue = parseFloat(row.Frequency) || 1;
+                const severityValue = parseFloat(row.Severity);
+                const likelihoodValue = parseFloat(row.Likelihood);
+                
+                // VALIDATION: Ensure frequency is within the valid range (1 to 2)
+                const validFrequencies = Object.keys(FREQUENCY_SCALE).map(parseFloat);
+                const validSeverities = Object.keys(SEVERITY_SCALE).map(parseFloat);
+                const validLikelihoods = Object.keys(LIKELIHOOD_SCALE).map(parseFloat);
+                
+                // Check if values exceed max and log a warning
+                if (frequencyValue > 2) {
+                    console.warn(`⚠️ Row ${index}: Frequency value ${frequencyValue} exceeds max (2). This may be from AI doubling. Using max value of 2.`);
+                }
+                if (severityValue > 10) {
+                    console.warn(`⚠️ Row ${index}: Severity value ${severityValue} exceeds max (10). This may be from AI doubling. Using max value of 10.`);
+                }
+                if (likelihoodValue > 10) {
+                    console.warn(`⚠️ Row ${index}: Likelihood value ${likelihoodValue} exceeds max (10). This may be from AI doubling. Using max value of 10.`);
+                }
+                
+                // Clamp values to valid ranges
+                const clampedFrequency = Math.min(frequencyValue, 2);
+                const clampedSeverity = Math.min(severityValue || 1, 10);
+                const clampedLikelihood = Math.min(likelihoodValue || 1, 10);
                
-    const hazardDetails = HAZARD_REGISTRY[hazardListValue] || { group: 'Unknown', severity: severityValue || 1, likelihood: likelihoodValue || 1 };
-    const frequency = frequencyValue;
-    const severity = severityValue || hazardDetails.severity;
-    const likelihood = likelihoodValue || hazardDetails.likelihood;
+    const hazardDetails = HAZARD_REGISTRY[hazardListValue] || { group: 'Unknown', severity: clampedSeverity, likelihood: clampedLikelihood };
+    const frequency = clampedFrequency;
+    const severity = clampedSeverity || hazardDetails.severity;
+    const likelihood = clampedLikelihood || hazardDetails.likelihood;
     
     // Use saved Risk Score if available, otherwise calculate
     const savedRiskScore = row['Risk Score'] ? parseFloat(row['Risk Score']) : null;
@@ -3115,6 +3520,9 @@ data.forEach((row, index) => {
             });
             tableHTML += `</tbody></table></div>`;
             tableContainer.innerHTML = tableHTML;
+            
+            // Auto-scroll to bottom while table is being populated
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 
                 // Mark hazard list dropdowns that are not in the standard registry
                 const hazardListCells = tableContainer.querySelectorAll('.hazard-list-cell select');
@@ -3960,6 +4368,17 @@ data.forEach((row, index) => {
                  }
                  const jsonString = rawJson.substring(startIndex, endIndex + 1);
                 const parsed = JSON.parse(jsonString);
+                
+                // DEBUG: Log the raw AI values to inspect
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    console.log('AI returned values - Sample row:', {
+                        Steps: parsed[0].Steps,
+                        Frequency: parsed[0].Frequency,
+                        Severity: parsed[0].Severity,
+                        Likelihood: parsed[0].Likelihood
+                    });
+                }
+                
                 return Array.isArray(parsed) ? parsed : [];
             } catch (e) {
                 console.error('Failed to parse AI response. Raw data:', rawJson, 'Error:', e);
@@ -4471,11 +4890,13 @@ data.forEach((row, index) => {
             const modalDeleteBtn = document.getElementById('modalDeleteBtn');
             if (modalDeleteBtn) {
                 if (isRowDeleted) {
-                    modalDeleteBtn.textContent = '↩️ Restore';
+                    modalDeleteBtn.textContent = t('↩️ Restore');
+                    modalDeleteBtn.setAttribute('data-en-text', '↩️ Restore');
                     modalDeleteBtn.className = 'restore-btn bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition text-sm';
                     modalDeleteBtn.title = 'Restore this task';
                 } else {
-                    modalDeleteBtn.textContent = '🗑️ Delete';
+                    modalDeleteBtn.textContent = t('🗑️ Delete');
+                    modalDeleteBtn.setAttribute('data-en-text', '🗑️ Delete');
                     modalDeleteBtn.className = 'delete-btn bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition text-sm';
                     modalDeleteBtn.title = 'Delete this task';
                 }
@@ -4488,9 +4909,9 @@ data.forEach((row, index) => {
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
                             <span class="text-red-500 text-lg">🗑️</span>
-                            <span class="text-red-700 font-medium text-sm">This task has been deleted</span>
+                            <span class="text-red-700 font-medium text-sm" data-en-text="This task has been deleted">This task has been deleted</span>
                         </div>
-                        <button onclick="restoreRowFromModal(${rowIndex})" class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded-lg transition shadow-sm">
+                        <button onclick="restoreRowFromModal(${rowIndex})" class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded-lg transition shadow-sm" data-en-text="↩️ Restore Task">
                             ↩️ Restore Task
                         </button>
                     </div>
@@ -4515,7 +4936,7 @@ data.forEach((row, index) => {
                         const selectOptions = row.querySelector(`td:nth-child(${headers.indexOf(field) + 1}) select`);
                         if (selectOptions) {
                             formHtml += `<div class="form-group ${isRowDeleted ? 'opacity-60' : ''}">
-                                <label class="block text-sm font-medium text-slate-700 mb-1 ${isRowDeleted ? 'line-through' : ''}">${field}:</label>
+                                <label class="block text-sm font-medium text-slate-700 mb-1 ${isRowDeleted ? 'line-through' : ''}" data-en-text="${field}">${field}:</label>
                                 <select id="${fieldId}" class="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 transition text-sm ${isRowDeleted ? 'bg-slate-100 cursor-not-allowed' : ''}" ${disabledAttr}>`;
                             
                             Array.from(selectOptions.options).forEach(opt => {
@@ -4529,7 +4950,7 @@ data.forEach((row, index) => {
                         // Text area for text fields - Steps and Current Control get more rows
                         const rowCount = (field === 'Steps' || field === 'Current Control' || field === 'Hazard Source') ? 4 : 2;
                         formHtml += `<div class="form-group ${isRowDeleted ? 'opacity-60' : ''}">
-                            <label class="block text-sm font-medium text-slate-700 mb-1 ${isRowDeleted ? 'line-through' : ''}">${field}:</label>
+                            <label class="block text-sm font-medium text-slate-700 mb-1 ${isRowDeleted ? 'line-through' : ''}" data-en-text="${field}">${field}:</label>
                             <textarea id="${fieldId}" class="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 transition text-sm resize-y ${isRowDeleted ? 'bg-slate-100 cursor-not-allowed' : ''}" rows="${rowCount}" ${disabledAttr}>${DOMPurify.sanitize(rowData[field])}</textarea>
                         </div>`;
                     }
@@ -4539,7 +4960,7 @@ data.forEach((row, index) => {
             // Add Frequency, Severity, Likelihood dropdowns (horizontal layout)
             const ratingFields = ['Frequency', 'Severity', 'Likelihood'];
             formHtml += `<div class="form-group mt-4 pt-3 border-t border-slate-200">
-                <label class="block text-sm font-medium text-slate-700 mb-2">Risk Rating:</label>
+                <label class="block text-sm font-medium text-slate-700 mb-2" data-en-text="Risk Rating:">Risk Rating:</label>
                 <div class="grid grid-cols-3 gap-2">`;
             
             ratingFields.forEach(field => {
@@ -4548,7 +4969,7 @@ data.forEach((row, index) => {
                 const disabledAttr = isRowDeleted ? 'disabled' : '';
                 if (selectEl) {
                     formHtml += `<div class="${isRowDeleted ? 'opacity-60' : ''}">
-                        <label class="block text-[10px] uppercase tracking-wide text-slate-500 mb-1 ${isRowDeleted ? 'line-through' : ''}">${field}</label>
+                        <label class="block text-[10px] uppercase tracking-wide text-slate-500 mb-1 ${isRowDeleted ? 'line-through' : ''}" data-en-text="${field}">${field}</label>
                         <select id="${fieldId}" class="w-full p-1.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 transition text-xs ${isRowDeleted ? 'bg-slate-100 cursor-not-allowed' : ''}" ${disabledAttr}>`;
                     Array.from(selectEl.options).forEach(opt => {
                         const selected = opt.value === rowData[field] ? 'selected' : '';
@@ -4566,11 +4987,11 @@ data.forEach((row, index) => {
             formHtml += `<div class="form-group mt-3 pt-3 border-t border-slate-200 ${isRowDeleted ? 'opacity-60' : ''}">
                 <div class="flex items-center gap-4">
                     <div class="flex-1">
-                        <label class="block text-[10px] uppercase tracking-wide text-slate-500 mb-1 ${isRowDeleted ? 'line-through' : ''}">Risk Score</label>
+                        <label class="block text-[10px] uppercase tracking-wide text-slate-500 mb-1 ${isRowDeleted ? 'line-through' : ''}" data-en-text="Risk Score">Risk Score</label>
                         <div id="modal-risk-score" class="text-lg font-bold text-slate-800 ${isRowDeleted ? 'line-through' : ''}">${riskScore}</div>
                     </div>
                     <div class="flex-1">
-                        <label class="block text-[10px] uppercase tracking-wide text-slate-500 mb-1 ${isRowDeleted ? 'line-through' : ''}">Risk Category</label>
+                        <label class="block text-[10px] uppercase tracking-wide text-slate-500 mb-1 ${isRowDeleted ? 'line-through' : ''}" data-en-text="Risk Category">Risk Category</label>
                         <div id="modal-risk-category" class="text-sm font-semibold px-2 py-1 rounded inline-block ${isRowDeleted ? 'line-through' : ''}">${riskCategory}</div>
                     </div>
                 </div>
@@ -4635,6 +5056,26 @@ data.forEach((row, index) => {
                         else if (c.includes('medium')) catEl.classList.add('bg-yellow-100', 'text-yellow-700');
                         else if (c.includes('low')) catEl.classList.add('bg-green-100', 'text-green-700');
                         else catEl.classList.add('bg-slate-100', 'text-slate-700');
+                    }
+                    
+                    // UPDATE RISK EVOLUTION DYNAMICALLY
+                    const evolutionContainer = document.getElementById('riskEvolutionContainer');
+                    if (evolutionContainer) {
+                        // Get the current controls from the selectedControlsMap
+                        const controlKey = `row_${rowIndex}`;
+                        const selectedControls = (window.selectedControlsMap && window.selectedControlsMap[controlKey]) || [];
+                        const controlTypes = selectedControls.map(c => c.controlType);
+                        
+                        // Calculate projected score based on new risk score and existing controls
+                        const projectedScore = calculateProjectedRiskScore(score, controlTypes);
+                        
+                        // Update the Risk Evolution visualization with the new scores
+                        evolutionContainer.innerHTML = generateRiskEvolutionVisualization(
+                            score,  // Use the new current score as baseline
+                            score,  // Current is the new score
+                            projectedScore, 
+                            controlTypes.length
+                        );
                     }
                 }
             };
@@ -4866,6 +5307,9 @@ data.forEach((row, index) => {
             
             // Update next task preview if exists
             // Next task preview removed - no longer needed
+            
+            // Apply translations to modal content
+            updateModalTranslations();
         }
         
         function updateNextTaskPreview() {
@@ -5145,6 +5589,7 @@ data.forEach((row, index) => {
                      localStorage.setItem('appLanguage', currentLang); // Save to localStorage
                      console.log(`Language changed to: ${currentLang}`);
                      updateUIText(); // Update all UI text
+                     updateModalTranslations(); // Update modal text if modal is open
                      // Refresh all table dropdowns when language changes
                      const tableContainer = document.getElementById('table-container');
                      if (tableContainer) {
@@ -5626,10 +6071,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // --- RISK EVOLUTION VISUALIZATION ---
 function generateRiskEvolutionVisualization(initialScore, currentScore, projectedScore, controlCount) {
-    // Ensure scores are valid numbers
+    // Ensure scores are valid numbers (but allow 0 for eliminated risk)
     initialScore = parseFloat(initialScore) || 0;
     currentScore = parseFloat(currentScore) || 0;
-    projectedScore = parseFloat(projectedScore) || currentScore;
+    projectedScore = (projectedScore !== null && projectedScore !== undefined) ? parseFloat(projectedScore) : currentScore;
     
     // Color function based on score
     const getColorForScore = (score) => {
@@ -5832,19 +6277,19 @@ function generateRiskReductionVisualization(currentRiskScore, selectedControls, 
     // Generate dynamic message based on selected controls
     let message = '';
     if (eliminateSelected) {
-        message = '<b>🎯 ELIMINATED:</b> Hazard completely removed - no risk remains.';
+        message = `<b>${t('🎯 ELIMINATED:')}</b> ${t('Hazard completely removed - no risk remains.')}`;
     } else if (cntHard > 1) {
-        message = `<b>⚡ STRONG CONTROLS:</b> ${cntHard} high-level controls (Substitute/Engineer) applied with ${Math.round((1 - hardCap) * 100)}% max reduction.`;
+        message = `<b>${t('⚡ STRONG CONTROLS:')}</b> ${cntHard} ${t('high-level controls (Substitute/Engineer) applied with')} ${Math.round((1 - hardCap) * 100)}% ${t('max reduction.')}`;
     } else if (cntHard === 1 && cntSoft > 0) {
-        message = `<b>⚡ LAYERED DEFENSE:</b> High-level control + ${cntSoft} administrative/PPE control${cntSoft > 1 ? 's' : ''} (${Math.round((1 - softCap) * 100)}% combined reduction).`;
+        message = `<b>${t('⚡ LAYERED DEFENSE:')}</b> ${t('High-level control +')} ${cntSoft} ${t('administrative/PPE control')}${cntSoft > 1 ? 's' : ''} (${Math.round((1 - softCap) * 100)}% ${t('combined reduction).')}`;
     } else if (cntHard === 1) {
-        message = `<b>⚡ HIGH-LEVEL CONTROL:</b> Substitution or Engineering control applied (${Math.round((1 - hardCap) * 100)}% reduction).`;
+        message = `<b>${t('⚡ HIGH-LEVEL CONTROL:')}</b> ${t('Substitution or Engineering control applied')} (${Math.round((1 - hardCap) * 100)}% ${t('reduction).')}`;
     } else if (cntSoft > 3) {
-        message = `<b>⚠️ LIMITED PROTECTION:</b> ${cntSoft} lower-level controls only. Consider Substitution or Engineering controls.`;
+        message = `<b>${t('⚠️ LIMITED PROTECTION:')}</b> ${cntSoft} ${t('lower-level controls only. Consider Substitution or Engineering controls.')}`;
     } else if (cntSoft > 0) {
-        message = `<b>📋 LOWER-LEVEL CONTROLS:</b> ${cntSoft} control${cntSoft > 1 ? 's' : ''} (Admin/Visual/PPE) - ${Math.round((1 - softCap) * 100)}% max reduction.`;
+        message = `<b>${t('📋 LOWER-LEVEL CONTROLS:')}</b> ${cntSoft} ${t(cntSoft > 1 ? 'controls' : 'control')} ${t('(Admin/Visual/PPE) -')} ${Math.round((1 - softCap) * 100)}% ${t('max reduction.')}`;
     } else {
-        message = '<i>Select controls from the hierarchy above to see risk projections...</i>';
+        message = `<i>${t('Select controls from the hierarchy above to see risk projections...')}</i>`;
     }
 
     // Build HTML
@@ -5852,8 +6297,8 @@ function generateRiskReductionVisualization(currentRiskScore, selectedControls, 
         <div style="border: 1px solid #bfdbfe; border-radius: 8px; padding: 10px; background: linear-gradient(to right, #eff6ff, #ffffff); box-shadow: 0 2px 4px rgba(59,130,246,0.1); font-size: 11px;">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
                 <div>
-                    <div style="font-size: 9px; font-weight: 700; color: #1e40af; text-transform: uppercase;">Predicted Risk</div>
-                    <div style="font-size: 9px; color: #60a5fa;">${totalControls} control${totalControls !== 1 ? 's' : ''}</div>
+                    <div style="font-size: 9px; font-weight: 700; color: #1e40af; text-transform: uppercase;">${t('Predicted Risk')}</div>
+                    <div style="font-size: 9px; color: #60a5fa;">${totalControls} ${t(totalControls !== 1 ? 'controls' : 'control')}</div>
                 </div>
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <div style="font-size: 28px; font-weight: 800; color: #94a3b8; opacity: 0.6;">${currentRiskScore}</div>
@@ -6263,16 +6708,16 @@ window.populatePictureColumn = populatePictureColumn;
     const files = event.target.files;
     if (!files || files.length === 0) {
         if (modelsLoaded) {
-            statusDiv.innerText = 'Models loaded. Please select your images or videos.';
+            statusDiv.innerText = t('Models loaded. Please select your images or videos.');
         } else {
-            statusDiv.innerText = 'Loading AI models... 🧠'; // Or error state if needed
+            statusDiv.innerText = t('Loading AI models...') + ' 🧠'; // Or error state if needed
         }
         return;
     }
     if (modelsLoaded) {
-        statusDiv.innerText = `${files.length} file(s) selected. Click 'Process Files' to continue.`;
+        statusDiv.innerText = `${files.length} ` + t('file(s) selected. Click \'Process Files\' to continue.');
     } else {
-         statusDiv.innerText = `Models loading... ${files.length} file(s) selected. Please wait.`;
+         statusDiv.innerText = t('Models loading...') + ` ${files.length} ` + t('file(s) selected. Please wait.');
     }
 });
         // --- End of event listener ---
@@ -6666,32 +7111,56 @@ window.populatePictureColumn = populatePictureColumn;
         }
         // --- FIX: Load models from CDN ---
         async function loadModels() {
-            // Changed MODEL_URL to point to a CDN
-            const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/'; 
-            try {
-                if (typeof faceapi === 'undefined') throw new Error("face-api.js script not loaded. Please ensure it's included correctly, perhaps via CDN.");
-                statusDiv.innerText = 'Loading AI models from CDN... Please wait.';
-                // Load the specific model needed (ssdMobilenetv1)
-                await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
-                // Optional: Load other models if needed later, e.g., faceLandmark68Net, faceRecognitionNet
-                // await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
-                // await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
-                
-                modelsLoaded = true;
-                // Update status based on whether files are already selected
-                 const files = fileUpload.files;
-                 if (files && files.length > 0) {
-                     statusDiv.innerText = `${files.length} file(s) selected. Click 'Process Files' to continue.`;
-                 } else {
-                     statusDiv.innerText = 'Models loaded. Please select your images or videos.';
-                 }
-                processBtn.disabled = false;
-            } catch (error) {
-                // Improved error message
-                statusDiv.innerText = 'Error loading AI models from CDN. Check your internet connection and the browser console for details.';
-                console.error("Model loading error:", error);
-                // Optionally add a retry button or mechanism here
+            // Try local models first, then fall back to CDN
+            const MODEL_URLS = [
+                './models/',  // Local models folder
+                'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/'  // CDN fallback
+            ];
+            
+            let modelLoaded = false;
+            let lastError = null;
+            
+            for (const MODEL_URL of MODEL_URLS) {
+                try {
+                    console.log('Attempting to load models from:', MODEL_URL);
+                    if (typeof faceapi === 'undefined') {
+                        throw new Error("face-api.js script not loaded. Please ensure it's included correctly, perhaps via CDN.");
+                    }
+                    statusDiv.innerText = 'Loading AI models from CDN... Please wait.';
+                    
+                    // Load the specific model needed (ssdMobilenetv1)
+                    console.log('Loading ssdMobilenetv1...');
+                    await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
+                    console.log('Models loaded successfully from:', MODEL_URL);
+                    
+                    modelLoaded = true;
+                    break; // Success, exit loop
+                } catch (error) {
+                    lastError = error;
+                    console.warn(`Failed to load from ${MODEL_URL}:`, error.message);
+                    // Continue to next URL
+                }
             }
+            
+            if (!modelLoaded) {
+                throw lastError || new Error('Failed to load models from all sources');
+            }
+            
+            // Optional: Load other models if needed later, e.g., faceLandmark68Net, faceRecognitionNet
+            // await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
+            // await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
+            
+            modelsLoaded = true;
+            console.log('modelsLoaded flag set to true');
+            
+            // Update status based on whether files are already selected
+             const files = fileUpload.files;
+             if (files && files.length > 0) {
+                 statusDiv.innerText = `${files.length} file(s) selected. Click 'Process Files' to continue.`;
+             } else {
+                 statusDiv.innerText = 'Models loaded. Please select your images or videos.';
+             }
+            processBtn.disabled = false;
         }
         // --- END FIX ---
 
@@ -6711,7 +7180,11 @@ window.populatePictureColumn = populatePictureColumn;
                     return; // Stop further execution if libs are missing
                 }
                 // If all libs seem present, attempt to load models
-                loadModels();
+                loadModels().catch(error => {
+                    console.error('Error in loadModels:', error);
+                    statusDiv.innerText = 'Error loading AI models. Check your internet connection and the browser console for details.';
+                    statusDiv.classList.add('text-red-600', 'font-bold');
+                });
             }, 500); // Slight delay to ensure scripts might have loaded
 
             // Rest of the DOMContentLoaded event listeners...
@@ -8000,10 +8473,15 @@ document.addEventListener('DOMContentLoaded', initSpeechRecognition);
 
 // --- Save/Load Project Feature ---
 async function saveProject() {
-    if (galleryDiv.querySelectorAll('.gallery-item img').length === 0) {
-        showCustomAlert("No images or notes to save.", 'info');
+    // Check if there's either images/notes OR table data to save
+    const hasImages = galleryDiv.querySelectorAll('.gallery-item img').length > 0;
+    const hasTableData = document.querySelector('#table-container table') !== null;
+    
+    if (!hasImages && !hasTableData) {
+        showCustomAlert("No data to save. Please generate a table or upload images.", 'info');
         return;
     }
+    
     const projectData = {
         version: '1.0',
         images: [],
@@ -8243,6 +8721,7 @@ if (projectData.tableData && projectData.tableData.counterMeasures) {
 
 // Attach listeners
 document.getElementById('saveProjectBtn').addEventListener('click', saveProject);
+document.getElementById('saveProjectBtn2').addEventListener('click', saveProject);
 document.getElementById('loadProjectBtn').addEventListener('click', () => document.getElementById('projectFileInput').click());
 document.getElementById('projectFileInput').addEventListener('change', (e) => {
     const file = e.target.files[0];
