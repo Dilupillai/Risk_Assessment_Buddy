@@ -15,6 +15,26 @@ async function generateShareableHTML(imageNameMap) {
         .map(th => th.textContent.trim())
         .filter(h => h !== 'AI' && h !== 'Delete');
     
+    // Control effectiveness factors (same as main app)
+    const controlEffectiveness = {
+        'Eliminate': 1.00,
+        'Substitute': 0.65,
+        'Engineer': 0.55,
+        'Visual': 0.45,
+        'Admin': 0.30,
+        'Individual': 0.15
+    };
+    
+    // Control colors for visualization
+    const controlColors = {
+        'Eliminate': { bg: '#dc2626', text: '#fff' },
+        'Substitute': { bg: '#f97316', text: '#fff' },
+        'Engineer': { bg: '#eab308', text: '#1e293b' },
+        'Visual': { bg: '#22c55e', text: '#fff' },
+        'Admin': { bg: '#3b82f6', text: '#fff' },
+        'Individual': { bg: '#8b5cf6', text: '#fff' }
+    };
+    
     // Collect row data with images
     const tableData = [];
     
@@ -81,6 +101,7 @@ async function generateShareableHTML(imageNameMap) {
     rows.forEach((row, idx) => {
         const cells = row.querySelectorAll('td');
         const rowData = { index: idx + 1 };
+        const rowIndex = row.getAttribute('data-row-index') || idx;
         
         // Get image data (now as base64)
         const img = row.querySelector('img');
@@ -112,6 +133,45 @@ async function generateShareableHTML(imageNameMap) {
             }
         });
         
+        // Get counter measures / actions for this row
+        let counterMeasures = [];
+        if (row.dataset.counterMeasures) {
+            try { counterMeasures = JSON.parse(row.dataset.counterMeasures); } catch (e) {}
+        }
+        if (window.selectedControlsMap && window.selectedControlsMap[`row_${rowIndex}`]) {
+            counterMeasures = window.selectedControlsMap[`row_${rowIndex}`];
+        }
+        rowData.actions = counterMeasures;
+        
+        // Calculate projected risk score
+        const currentRiskScore = parseInt(rowData['Risk Score']) || 0;
+        rowData.currentRiskScore = currentRiskScore;
+        
+        if (counterMeasures.length > 0) {
+            const hardControls = counterMeasures.filter(c => ['Substitute', 'Engineer'].includes(c.controlType || c));
+            const softControls = counterMeasures.filter(c => ['Admin', 'Visual', 'Individual'].includes(c.controlType || c));
+            const hasEliminate = counterMeasures.some(c => (c.controlType || c) === 'Eliminate');
+            
+            let projectedScore = currentRiskScore;
+            if (hasEliminate) {
+                projectedScore = 0;
+            } else {
+                let hardMult = 1, softMult = 1;
+                hardControls.forEach((ctrl, i) => { 
+                    hardMult *= (1 - (controlEffectiveness[ctrl.controlType || ctrl] || 0) * Math.pow(0.4, i)); 
+                });
+                softControls.forEach((ctrl, i) => { 
+                    softMult *= (1 - (controlEffectiveness[ctrl.controlType || ctrl] || 0) * Math.pow(0.5, i)); 
+                });
+                projectedScore = Math.round(currentRiskScore * Math.max(hardMult, 0.35) * Math.max(softMult, 0.50));
+            }
+            rowData.projectedRiskScore = projectedScore;
+            rowData.riskReductionPercent = currentRiskScore > 0 ? Math.round(100 * (currentRiskScore - projectedScore) / currentRiskScore) : 0;
+        } else {
+            rowData.projectedRiskScore = currentRiskScore;
+            rowData.riskReductionPercent = 0;
+        }
+        
         tableData.push(rowData);
     });
     
@@ -121,6 +181,10 @@ async function generateShareableHTML(imageNameMap) {
         const cat = row['Risk Category'] || 'Unknown';
         riskDistribution[cat] = (riskDistribution[cat] || 0) + 1;
     });
+    
+    // Count total actions
+    const totalActions = tableData.reduce((sum, row) => sum + (row.actions?.length || 0), 0);
+    const tasksWithActions = tableData.filter(row => row.actions?.length > 0).length;
     
     // Generate complete standalone HTML
     return `<!DOCTYPE html>
@@ -191,6 +255,28 @@ async function generateShareableHTML(imageNameMap) {
                 </h2>
                 <div id="pieChart" style="width: 100%; height: 450px; border-radius: 12px; background: white; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);"></div>
             </div>
+            
+            <!-- Risk Evolution Summary Section (Simplified) -->
+            ${totalActions > 0 ? `
+            <div class="p-8 border-b border-gray-200 bg-gradient-to-br from-emerald-50 to-teal-50">
+                <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                    <span class="text-2xl">📈</span> 
+                    <span>Risk Evolution Summary</span>
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-xl p-6 shadow-md border border-emerald-200">
+                        <div class="text-sm text-slate-500 uppercase font-semibold mb-2">Tasks with Actions</div>
+                        <div class="text-3xl font-bold text-emerald-600">${tasksWithActions} <span class="text-lg text-slate-400">/ ${tableData.length}</span></div>
+                    </div>
+                    <div class="bg-white rounded-xl p-6 shadow-md border border-blue-200">
+                        <div class="text-sm text-slate-500 uppercase font-semibold mb-2">Total Proposed Actions</div>
+                        <div class="text-3xl font-bold text-blue-600">${totalActions}</div>
+                    </div>
+                </div>
+                <p class="text-sm text-slate-500 mt-4 text-center italic">💡 Click on any task image to view detailed Risk Evolution and proposed controls</p>
+            </div>
+            ` : ''}
+            
             <div class="p-6 overflow-x-auto">
                 <div class="mb-5 no-print flex items-center gap-3">
                     <button onclick="filterTableByCategory('All')" class="bg-gradient-to-r from-indigo-600 to-indigo-700 text-white px-6 py-2.5 rounded-lg hover:from-indigo-700 hover:to-indigo-800 transition-all font-semibold shadow-md hover:shadow-lg">
@@ -232,7 +318,7 @@ async function generateShareableHTML(imageNameMap) {
                 </table>
             </div>
             <div class="p-4 bg-slate-50 border-t border-slate-200 text-center text-sm text-slate-500 no-print">
-                <p>💡 Click on any image to view task details • Total Tasks: <strong>${tableData.length}</strong></p>
+                <p>💡 Click on any image to view task details • Total Tasks: <strong>${tableData.length}</strong> • Actions Proposed: <strong>${totalActions}</strong></p>
             </div>
         </div>
     </div>
@@ -298,6 +384,80 @@ async function generateShareableHTML(imageNameMap) {
                     '<div class="detail-value ' + valueClass + '">' + value + '</div>' +
                 '</div>';
             });
+            
+            // Add Risk Evolution section if there are actions (matching parent app style)
+            if (data.actions && data.actions.length > 0) {
+                const controlColors = {
+                    'Eliminate': { bg: '#dc2626', text: '#fff' },
+                    'Substitute': { bg: '#f97316', text: '#fff' },
+                    'Engineer': { bg: '#eab308', text: '#1e293b' },
+                    'Visual': { bg: '#22c55e', text: '#fff' },
+                    'Admin': { bg: '#3b82f6', text: '#fff' },
+                    'Individual': { bg: '#8b5cf6', text: '#fff' }
+                };
+                
+                // Color function based on score (matching parent app)
+                const getColorForScore = function(score) {
+                    if (score <= 19) return '#16a34a'; // Low - Green
+                    if (score <= 49) return '#eab308'; // Medium - Yellow
+                    if (score <= 71) return '#f97316'; // High - Orange
+                    return '#dc2626'; // Critical - Red
+                };
+                
+                const initColor = getColorForScore(data.currentRiskScore);
+                const projColor = getColorForScore(data.projectedRiskScore);
+                const totalReduction = data.riskReductionPercent;
+                const controlCount = data.actions.length;
+                
+                // Risk Evolution visualization matching parent app style
+                detailsHtml += '<div class="detail-row mt-4 pt-4 border-t border-slate-200">' +
+                    '<div style="font-size: 11px; font-weight: 700; color: #94a3b8; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">📊 Risk Evolution</div>' +
+                    '<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">' +
+                        
+                        // Initial Risk (Solid box)
+                        '<div style="flex: 1; min-width: 90px; background: ' + initColor + '; border-radius: 8px; padding: 10px 8px; text-align: center; color: white; position: relative; box-shadow: 0 2px 8px ' + initColor + '40;">' +
+                            '<div style="font-size: 9px; font-weight: 700; text-transform: uppercase;">Initial</div>' +
+                            '<div style="font-size: 24px; font-weight: 900;">' + data.currentRiskScore + '</div>' +
+                        '</div>' +
+                        
+                        // Arrow
+                        '<div style="color: #3b82f6; font-size: 18px; font-weight: bold;">➜</div>' +
+                        
+                        // Target Risk (Dashed border box)
+                        '<div style="flex: 1; min-width: 90px; border: 3px dashed ' + projColor + '; background: linear-gradient(135deg, #eff6ff, #ffffff); border-radius: 8px; padding: 10px 8px; text-align: center; position: relative; box-shadow: 0 2px 8px ' + projColor + '30;">' +
+                            '<div style="font-size: 9px; font-weight: 700; color: #1e40af; text-transform: uppercase;">Target</div>' +
+                            '<div style="font-size: 24px; font-weight: 900; color: ' + projColor + ';">' + data.projectedRiskScore + '</div>' +
+                            (totalReduction > 0 ? '<div style="position: absolute; top: -8px; right: -8px; background: #dcfce7; color: #15803d; border: 2px solid #22c55e; font-size: 9px; font-weight: 800; padding: 2px 5px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">-' + totalReduction + '%</div>' : '') +
+                            '<div style="position: absolute; bottom: -18px; left: 0; width: 100%; font-size: 9px; color: #3b82f6; font-weight: 600; white-space: nowrap;">(' + controlCount + ' pending)</div>' +
+                        '</div>' +
+                    '</div>';
+                
+                // Total reduction summary bar
+                if (totalReduction > 0) {
+                    detailsHtml += '<div style="margin-top: 20px; padding: 8px 12px; background: linear-gradient(135deg, #ecfdf5, #f0fdf4); border: 1px solid #a7f3d0; border-radius: 8px; display: flex; align-items: center; justify-content: space-between;">' +
+                        '<div style="font-size: 11px; color: #047857; font-weight: 600;">📉 Total Risk Reduction</div>' +
+                        '<div style="font-size: 16px; font-weight: 800; color: #15803d;">-' + totalReduction + '%</div>' +
+                    '</div>';
+                }
+                
+                detailsHtml += '</div>';
+                
+                // Proposed Controls section
+                detailsHtml += '<div class="detail-row mt-4">' +
+                    '<div class="detail-label text-blue-700 font-bold">🛡️ Proposed Controls (' + data.actions.length + ')</div>' +
+                    '<div class="space-y-2 mt-2">';
+                
+                data.actions.forEach(function(action) {
+                    const controlType = action.controlType || action;
+                    const colors = controlColors[controlType] || { bg: '#64748b', text: '#fff' };
+                    detailsHtml += '<div class="rounded-lg p-3 shadow-sm" style="background: ' + colors.bg + '; color: ' + colors.text + ';">' +
+                        '<div class="font-bold text-sm">' + controlType + '</div>' +
+                        (action.description ? '<div class="text-xs opacity-90 mt-1">' + action.description + '</div>' : '') +
+                    '</div>';
+                });
+                
+                detailsHtml += '</div></div>';
+            }
             
             document.getElementById('modalDetails').innerHTML = detailsHtml;
             document.getElementById('taskCounter').textContent = (index + 1) + ' / ' + tableData.length;
