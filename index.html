@@ -747,13 +747,22 @@
                     <h1 class="text-3xl sm:text-4xl font-bold mb-2">Risk Assessment Buddy (SMART 2.0)</h1>
                     <p class="text-indigo-100" data-en-text="Choose your workflow to get started">Choose your workflow to get started</p>
                 </div>
-                <div class="bg-white/20 backdrop-blur-md p-4 rounded-lg border border-white/30">
-                    <label for="langSelect" class="block text-sm font-semibold text-white mb-2">🌐 Language:</label>
-                    <select id="langSelect" class="w-full p-2 border border-white/40 rounded-md bg-white/90 focus:ring-2 focus:ring-yellow-300 transition font-medium text-slate-800">
-                        <option value="en">English</option>
-                        <option value="fr">Français (French)</option>
-                        <option value="de">Deutsch (German)</option>
-                    </select>
+                <div class="flex items-center gap-3">
+                    <!-- Best Practices Button -->
+                    <button id="bestPracticesBtn" class="bg-yellow-400 hover:bg-yellow-300 text-indigo-900 font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 flex items-center gap-2" title="Best Practices Guide">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                        </svg>
+                        <span data-en-text="Best Practices">Best Practices</span>
+                    </button>
+                    <div class="bg-white/20 backdrop-blur-md p-4 rounded-lg border border-white/30">
+                        <label for="langSelect" class="block text-sm font-semibold text-white mb-2">🌐 Language:</label>
+                        <select id="langSelect" class="w-full p-2 border border-white/40 rounded-md bg-white/90 focus:ring-2 focus:ring-yellow-300 transition font-medium text-slate-800">
+                            <option value="en">English</option>
+                            <option value="fr">Français (French)</option>
+                            <option value="de">Deutsch (German)</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
@@ -1148,6 +1157,77 @@
    
 
 </div>
+        </div>
+    </div>
+
+    <!-- Best Practices Modal -->
+    <div id="bestPracticesModal" class="modal-overlay hidden fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm p-4 items-center justify-center" style="display: none;">
+        <div class="modal-content bg-white m-auto p-6 sm:p-8 rounded-lg shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto relative">
+            <span id="closeBestPracticesModal" class="close-btn absolute top-4 right-5 text-slate-400 text-3xl font-bold cursor-pointer hover:text-slate-600 transition">&times;</span>
+            <h2 class="text-2xl font-bold text-slate-900 mb-2 flex items-center gap-2">
+                <span class="text-3xl">💡</span>
+                <span data-en-text="Best Practices: AI-Powered Collaborative Risk Assessment">Best Practices: AI-Powered Collaborative Risk Assessment</span>
+            </h2>
+            <p class="text-sm text-indigo-600 font-medium mb-6" data-en-text="Keeping the human element at the heart of safety">Keeping the human element at the heart of safety</p>
+
+            <div class="space-y-5 text-slate-700">
+                <!-- Core Principle -->
+                <div class="p-4 bg-gradient-to-r from-indigo-50 to-blue-50 border-l-4 border-indigo-500 rounded-r-lg">
+                    <h3 class="text-lg font-bold text-indigo-900 mb-2" data-en-text="🎯 Core Principle">🎯 Core Principle</h3>
+                    <p class="text-sm" data-en-text="This tool, while powered by AI, stays true to one of the fundamental tenets of safety risk assessment: collaboration and engagement with the operational team. AI helps reduce administrative burden, but YOU and your team are the drivers of meaningful change. Blind automation will never bring actionable results.">This tool, while powered by AI, stays true to one of the fundamental tenets of safety risk assessment: <strong>collaboration and engagement with the operational team</strong>. AI helps reduce administrative burden, but <strong>YOU and your team are the drivers of meaningful change</strong>. Blind automation will never bring actionable results.</p>
+                </div>
+
+                <!-- Step 1 -->
+                <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <h3 class="text-lg font-semibold text-green-900 mb-2" data-en-text="📹 Step 1: Capture Your Process">📹 Step 1: Capture Your Process</h3>
+                    <p class="text-sm" data-en-text="Start by collecting rich media (video or photos) of your process from start to end. Split each process into respective task steps and document what can go wrong. This is your first collaborative touchpoint.">Start by collecting <strong>rich media</strong> (video or photos) of your process from start to end. Split each process into respective task steps and document what can go wrong. This is your <strong>first collaborative touchpoint</strong>.</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                    <h3 class="text-lg font-semibold text-amber-900 mb-2" data-en-text="👥 Step 2: Engage Your Team">👥 Step 2: Engage Your Team</h3>
+                    <p class="text-sm" data-en-text="Bring the operational team together. Ask them: What are the hazards? What could go wrong? What existing controls do you have? Share details about any previous incidents that the EHS team is aware of. This sparks great conversations and ideas — the essence of effective risk assessment.">Bring the operational team together. Ask them: <em>What are the hazards? What could go wrong? What existing controls do you have?</em> Share details about any previous incidents that the EHS team is aware of. This sparks <strong>great conversations and ideas</strong> — the essence of effective risk assessment.</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h3 class="text-lg font-semibold text-blue-900 mb-2" data-en-text="🤖 Step 3: Generate AI Baseline">🤖 Step 3: Generate AI Baseline</h3>
+                    <p class="text-sm" data-en-text="Once hazard identification is complete, use the AI to generate a baseline risk assessment. The AI analyzes your inputs and produces a structured table with hazard groups, risk scores, and categories. This saves hours of manual work.">Once hazard identification is complete, use the AI to generate a <strong>baseline risk assessment</strong>. The AI analyzes your inputs and produces a structured table with hazard groups, risk scores, and categories. This saves hours of manual work.</p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                    <h3 class="text-lg font-semibold text-purple-900 mb-2" data-en-text="🔍 Step 4: Review and Re-evaluate">🔍 Step 4: Review and Re-evaluate</h3>
+                    <p class="text-sm" data-en-text="Click on the images or task steps to open the detailed review modal. Take time to re-evaluate the risk ratings with your team. During this collaborative review, Operations and EHS can propose multiple actions — record them in the Actions panel.">Click on the images or task steps to open the detailed review modal. Take time to <strong>re-evaluate the risk ratings</strong> with your team. During this collaborative review, Operations and EHS can propose multiple actions — record them in the <strong>Actions panel</strong>.</p>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="p-4 bg-teal-50 border border-teal-200 rounded-lg">
+                    <h3 class="text-lg font-semibold text-teal-900 mb-2" data-en-text="📊 Step 5: See Risk Evolution">📊 Step 5: See Risk Evolution</h3>
+                    <p class="text-sm" data-en-text="Using safety science and math, each action is beautifully standardized to give you a predictive/projected risk rating. The Risk Evolution visualization shows the live impact your proposed actions could have — transforming discussions into data-driven decisions.">Using <strong>safety science and math</strong>, each action is beautifully standardized to give you a predictive/projected risk rating. The <strong>Risk Evolution</strong> visualization shows the live impact your proposed actions could have — transforming discussions into data-driven decisions.</p>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="p-4 bg-rose-50 border border-rose-200 rounded-lg">
+                    <h3 class="text-lg font-semibold text-rose-900 mb-2" data-en-text="📥 Step 6: Export and Track">📥 Step 6: Export and Track</h3>
+                    <p class="text-sm" data-en-text="When you download the project file, you get the proposed actions as a CSV file which you can import into your existing tracking system. The collaboration extends from hazard identification to risk evaluation and action tracking.">When you download the project file, you get the proposed actions as a <strong>CSV file</strong> which you can import into your existing tracking system. The collaboration extends from hazard identification to risk evaluation and action tracking.</p>
+                </div>
+
+                <!-- Key Benefit -->
+                <div class="p-4 bg-gradient-to-r from-emerald-50 to-green-50 border-2 border-emerald-300 rounded-lg">
+                    <h3 class="text-lg font-bold text-emerald-900 mb-2" data-en-text="✅ The Key Benefit">✅ The Key Benefit</h3>
+                    <p class="text-sm" data-en-text="Because actions are proposed by the operational team themselves, you get genuine buy-in and agreement. This tool extends traditional risk assessment into a powerful brainstorming and collaboration platform — keeping the core tenets of Risk Assessment Methodology while leveraging AI's intelligence to offload administrative burden.">Because actions are proposed by the operational team themselves, you get <strong>genuine buy-in and agreement</strong>. This tool extends traditional risk assessment into a powerful <strong>brainstorming and collaboration platform</strong> — keeping the core tenets of Risk Assessment Methodology while leveraging AI's intelligence to offload administrative burden.</p>
+                </div>
+
+                <!-- Remember -->
+                <div class="p-3 bg-slate-100 rounded-lg text-center">
+                    <p class="text-sm font-semibold text-slate-700" data-en-text="💡 Remember: You are the driver. AI is your co-pilot, not the captain.">💡 <strong>Remember:</strong> You are the driver. AI is your co-pilot, not the captain.</p>
+                </div>
+            </div>
+
+            <div class="mt-6 text-center">
+                <button onclick="document.getElementById('bestPracticesModal').style.display='none'" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg transition" data-en-text="Got it!">Got it!</button>
+            </div>
         </div>
     </div>
 
@@ -2349,7 +2429,28 @@
     "file(s) selected. Click 'Process Files' to continue.": "fichier(s) selectionne(s). Cliquez sur Traiter les fichiers pour continuer.",
     "Models loading...": "Chargement des modeles...",
     "file(s) selected. Please wait.": "fichier(s) selectionne(s). Veuillez patienter.",
-    "Error loading AI models from CDN. Check your internet connection and the browser console for details.": "Erreur de chargement des modeles IA depuis le CDN. Verifiez votre connexion Internet et la console du navigateur pour plus de details."
+    "Error loading AI models from CDN. Check your internet connection and the browser console for details.": "Erreur de chargement des modeles IA depuis le CDN. Verifiez votre connexion Internet et la console du navigateur pour plus de details.",
+    // Best Practices Modal (French)
+    "Best Practices: AI-Powered Collaborative Risk Assessment": "Bonnes Pratiques : Évaluation Collaborative des Risques par IA",
+    "Keeping the human element at the heart of safety": "Garder l'élément humain au cœur de la sécurité",
+    "🎯 Core Principle": "🎯 Principe Fondamental",
+    "This tool, while powered by AI, stays true to one of the fundamental tenets of safety risk assessment: collaboration and engagement with the operational team. AI helps reduce administrative burden, but YOU and your team are the drivers of meaningful change. Blind automation will never bring actionable results.": "Cet outil, bien qu'alimenté par l'IA, reste fidèle à l'un des principes fondamentaux de l'évaluation des risques : la collaboration et l'engagement avec l'équipe opérationnelle. L'IA aide à réduire la charge administrative, mais VOUS et votre équipe êtes les moteurs du changement significatif. L'automatisation aveugle n'apportera jamais de résultats exploitables.",
+    "📹 Step 1: Capture Your Process": "📹 Étape 1 : Capturez Votre Processus",
+    "Start by collecting rich media (video or photos) of your process from start to end. Split each process into respective task steps and document what can go wrong. This is your first collaborative touchpoint.": "Commencez par collecter des médias riches (vidéo ou photos) de votre processus du début à la fin. Divisez chaque processus en étapes de tâches respectives et documentez ce qui peut mal tourner. C'est votre premier point de collaboration.",
+    "👥 Step 2: Engage Your Team": "👥 Étape 2 : Impliquez Votre Équipe",
+    "Bring the operational team together. Ask them: What are the hazards? What could go wrong? What existing controls do you have? Share details about any previous incidents that the EHS team is aware of. This sparks great conversations and ideas — the essence of effective risk assessment.": "Réunissez l'équipe opérationnelle. Demandez-leur : Quels sont les dangers ? Qu'est-ce qui pourrait mal tourner ? Quels contrôles existants avez-vous ? Partagez les détails des incidents précédents dont l'équipe EHS est au courant. Cela suscite d'excellentes conversations et idées — l'essence d'une évaluation des risques efficace.",
+    "🤖 Step 3: Generate AI Baseline": "🤖 Étape 3 : Générer la Base IA",
+    "Once hazard identification is complete, use the AI to generate a baseline risk assessment. The AI analyzes your inputs and produces a structured table with hazard groups, risk scores, and categories. This saves hours of manual work.": "Une fois l'identification des dangers terminée, utilisez l'IA pour générer une évaluation de base des risques. L'IA analyse vos entrées et produit un tableau structuré avec des groupes de dangers, des scores de risque et des catégories. Cela fait gagner des heures de travail manuel.",
+    "🔍 Step 4: Review and Re-evaluate": "🔍 Étape 4 : Réviser et Réévaluer",
+    "Click on the images or task steps to open the detailed review modal. Take time to re-evaluate the risk ratings with your team. During this collaborative review, Operations and EHS can propose multiple actions — record them in the Actions panel.": "Cliquez sur les images ou les étapes de tâches pour ouvrir le modal de révision détaillée. Prenez le temps de réévaluer les évaluations de risque avec votre équipe. Lors de cette révision collaborative, les opérations et l'EHS peuvent proposer plusieurs actions — enregistrez-les dans le panneau Actions.",
+    "📊 Step 5: See Risk Evolution": "📊 Étape 5 : Voir l'Évolution du Risque",
+    "Using safety science and math, each action is beautifully standardized to give you a predictive/projected risk rating. The Risk Evolution visualization shows the live impact your proposed actions could have — transforming discussions into data-driven decisions.": "Grâce à la science de la sécurité et aux mathématiques, chaque action est magnifiquement standardisée pour vous donner une évaluation de risque prédictive/projetée. La visualisation de l'Évolution du Risque montre l'impact en direct que vos actions proposées pourraient avoir — transformant les discussions en décisions basées sur les données.",
+    "📥 Step 6: Export and Track": "📥 Étape 6 : Exporter et Suivre",
+    "When you download the project file, you get the proposed actions as a CSV file which you can import into your existing tracking system. The collaboration extends from hazard identification to risk evaluation and action tracking.": "Lorsque vous téléchargez le fichier de projet, vous obtenez les actions proposées sous forme de fichier CSV que vous pouvez importer dans votre système de suivi existant. La collaboration s'étend de l'identification des dangers à l'évaluation des risques et au suivi des actions.",
+    "✅ The Key Benefit": "✅ L'Avantage Clé",
+    "Because actions are proposed by the operational team themselves, you get genuine buy-in and agreement. This tool extends traditional risk assessment into a powerful brainstorming and collaboration platform — keeping the core tenets of Risk Assessment Methodology while leveraging AI's intelligence to offload administrative burden.": "Parce que les actions sont proposées par l'équipe opérationnelle elle-même, vous obtenez une adhésion et un accord authentiques. Cet outil étend l'évaluation traditionnelle des risques en une puissante plateforme de brainstorming et de collaboration — conservant les principes fondamentaux de la méthodologie d'évaluation des risques tout en tirant parti de l'intelligence de l'IA pour décharger la charge administrative.",
+    "💡 Remember: You are the driver. AI is your co-pilot, not the captain.": "💡 N'oubliez pas : Vous êtes le conducteur. L'IA est votre copilote, pas le capitaine.",
+    "Got it!": "Compris !"
   },
   de: {
     // Hazard Groups (German)
@@ -2775,7 +2876,28 @@
     "file(s) selected. Click 'Process Files' to continue.": "Datei(en) ausgewaehlt. Klicken Sie auf Dateien verarbeiten um fortzufahren.",
     "Models loading...": "Modelle werden geladen...",
     "file(s) selected. Please wait.": "Datei(en) ausgewaehlt. Bitte warten.",
-    "Error loading AI models from CDN. Check your internet connection and the browser console for details.": "Fehler beim Laden der KI-Modelle vom CDN. Ueberpruefen Sie Ihre Internetverbindung und die Browser-Konsole fuer Details."
+    "Error loading AI models from CDN. Check your internet connection and the browser console for details.": "Fehler beim Laden der KI-Modelle vom CDN. Ueberpruefen Sie Ihre Internetverbindung und die Browser-Konsole fuer Details.",
+    // Best Practices Modal (German)
+    "Best Practices: AI-Powered Collaborative Risk Assessment": "Best Practices: KI-gestützte Kollaborative Risikobewertung",
+    "Keeping the human element at the heart of safety": "Den menschlichen Faktor im Mittelpunkt der Sicherheit bewahren",
+    "🎯 Core Principle": "🎯 Grundprinzip",
+    "This tool, while powered by AI, stays true to one of the fundamental tenets of safety risk assessment: collaboration and engagement with the operational team. AI helps reduce administrative burden, but YOU and your team are the drivers of meaningful change. Blind automation will never bring actionable results.": "Dieses Tool bleibt, obwohl es von KI angetrieben wird, einem der grundlegenden Prinzipien der Sicherheitsrisikobewertung treu: Zusammenarbeit und Einbindung des operativen Teams. KI hilft, den administrativen Aufwand zu reduzieren, aber SIE und Ihr Team sind die Treiber für bedeutsame Veränderungen. Blinde Automatisierung wird niemals umsetzbare Ergebnisse bringen.",
+    "📹 Step 1: Capture Your Process": "📹 Schritt 1: Erfassen Sie Ihren Prozess",
+    "Start by collecting rich media (video or photos) of your process from start to end. Split each process into respective task steps and document what can go wrong. This is your first collaborative touchpoint.": "Beginnen Sie damit, reichhaltige Medien (Video oder Fotos) Ihres Prozesses von Anfang bis Ende zu sammeln. Teilen Sie jeden Prozess in die jeweiligen Arbeitsschritte auf und dokumentieren Sie, was schiefgehen kann. Dies ist Ihr erster kollaborativer Berührungspunkt.",
+    "👥 Step 2: Engage Your Team": "👥 Schritt 2: Binden Sie Ihr Team ein",
+    "Bring the operational team together. Ask them: What are the hazards? What could go wrong? What existing controls do you have? Share details about any previous incidents that the EHS team is aware of. This sparks great conversations and ideas — the essence of effective risk assessment.": "Bringen Sie das operative Team zusammen. Fragen Sie sie: Was sind die Gefahren? Was könnte schiefgehen? Welche bestehenden Kontrollen haben Sie? Teilen Sie Details über frühere Vorfälle, die dem EHS-Team bekannt sind. Das entfacht großartige Gespräche und Ideen — das Wesen einer effektiven Risikobewertung.",
+    "🤖 Step 3: Generate AI Baseline": "🤖 Schritt 3: KI-Baseline generieren",
+    "Once hazard identification is complete, use the AI to generate a baseline risk assessment. The AI analyzes your inputs and produces a structured table with hazard groups, risk scores, and categories. This saves hours of manual work.": "Sobald die Gefahrenidentifikation abgeschlossen ist, verwenden Sie die KI, um eine Basis-Risikobewertung zu generieren. Die KI analysiert Ihre Eingaben und erstellt eine strukturierte Tabelle mit Gefahrengruppen, Risikobewertungen und Kategorien. Das spart Stunden manueller Arbeit.",
+    "🔍 Step 4: Review and Re-evaluate": "🔍 Schritt 4: Überprüfen und Neu bewerten",
+    "Click on the images or task steps to open the detailed review modal. Take time to re-evaluate the risk ratings with your team. During this collaborative review, Operations and EHS can propose multiple actions — record them in the Actions panel.": "Klicken Sie auf die Bilder oder Arbeitsschritte, um das detaillierte Überprüfungsmodal zu öffnen. Nehmen Sie sich Zeit, die Risikobewertungen mit Ihrem Team neu zu bewerten. Während dieser kollaborativen Überprüfung können Betrieb und EHS mehrere Maßnahmen vorschlagen — erfassen Sie diese im Maßnahmen-Panel.",
+    "📊 Step 5: See Risk Evolution": "📊 Schritt 5: Risikoentwicklung sehen",
+    "Using safety science and math, each action is beautifully standardized to give you a predictive/projected risk rating. The Risk Evolution visualization shows the live impact your proposed actions could have — transforming discussions into data-driven decisions.": "Mit Sicherheitswissenschaft und Mathematik wird jede Maßnahme schön standardisiert, um Ihnen eine prädiktive/prognostizierte Risikobewertung zu geben. Die Risikoentwicklungs-Visualisierung zeigt die Live-Auswirkungen, die Ihre vorgeschlagenen Maßnahmen haben könnten — und verwandelt Diskussionen in datengestützte Entscheidungen.",
+    "📥 Step 6: Export and Track": "📥 Schritt 6: Exportieren und Verfolgen",
+    "When you download the project file, you get the proposed actions as a CSV file which you can import into your existing tracking system. The collaboration extends from hazard identification to risk evaluation and action tracking.": "Wenn Sie die Projektdatei herunterladen, erhalten Sie die vorgeschlagenen Maßnahmen als CSV-Datei, die Sie in Ihr bestehendes Tracking-System importieren können. Die Zusammenarbeit erstreckt sich von der Gefahrenidentifikation über die Risikobewertung bis zur Maßnahmenverfolgung.",
+    "✅ The Key Benefit": "✅ Der Hauptvorteil",
+    "Because actions are proposed by the operational team themselves, you get genuine buy-in and agreement. This tool extends traditional risk assessment into a powerful brainstorming and collaboration platform — keeping the core tenets of Risk Assessment Methodology while leveraging AI's intelligence to offload administrative burden.": "Da Maßnahmen vom operativen Team selbst vorgeschlagen werden, erhalten Sie echte Zustimmung und Übereinstimmung. Dieses Tool erweitert die traditionelle Risikobewertung zu einer leistungsstarken Brainstorming- und Kollaborationsplattform — und bewahrt die Kernprinzipien der Risikobewertungsmethodik, während die Intelligenz der KI genutzt wird, um den administrativen Aufwand zu entlasten.",
+    "💡 Remember: You are the driver. AI is your co-pilot, not the captain.": "💡 Denken Sie daran: Sie sind der Fahrer. KI ist Ihr Kopilot, nicht der Kapitän.",
+    "Got it!": "Verstanden!"
   }
 };
 
@@ -6675,6 +6797,46 @@ window.populatePictureColumn = populatePictureColumn;
         window.addEventListener('click', (event) => {
             if (event.target == privacyModal) privacyModal.style.display = 'none';
         });
+
+        // Best Practices Modal Triggers
+        const bestPracticesModal = document.getElementById('bestPracticesModal');
+        const bestPracticesBtn = document.getElementById('bestPracticesBtn');
+        const closeBestPracticesModal = document.getElementById('closeBestPracticesModal');
+        
+        if (bestPracticesBtn && bestPracticesModal) {
+            bestPracticesBtn.onclick = () => {
+                bestPracticesModal.style.display = 'flex';
+                // Update translations for the modal content
+                updateBestPracticesModalTranslations();
+            };
+        }
+        if (closeBestPracticesModal && bestPracticesModal) {
+            closeBestPracticesModal.onclick = () => bestPracticesModal.style.display = 'none';
+        }
+        window.addEventListener('click', (event) => {
+            if (event.target == bestPracticesModal) bestPracticesModal.style.display = 'none';
+        });
+
+        // Function to update Best Practices modal translations
+        function updateBestPracticesModalTranslations() {
+            const elements = bestPracticesModal.querySelectorAll('[data-en-text]');
+            elements.forEach(el => {
+                const englishText = el.getAttribute('data-en-text');
+                if (englishText) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        el.placeholder = t(englishText);
+                    } else {
+                        // Preserve HTML formatting for text with <strong>, <em> etc
+                        const translatedText = t(englishText);
+                        if (el.innerHTML.includes('<strong>') || el.innerHTML.includes('<em>')) {
+                            el.innerHTML = translatedText;
+                        } else {
+                            el.innerText = translatedText;
+                        }
+                    }
+                }
+            });
+        }
 
         // Translation Modal Triggers
         const translationModal = document.getElementById('translationModal');
