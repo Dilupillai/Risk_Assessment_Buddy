@@ -3718,13 +3718,13 @@ data.forEach((row, index) => {
                 badge.onclick = () => openTableImageModal('', parseInt(rowIndex));
                 actionsCell.appendChild(badge);
             } else {
-                // Show a subtle "add" indicator
-                const addBtn = document.createElement('span');
-                addBtn.className = 'inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-400 cursor-pointer hover:bg-slate-200 hover:text-slate-600 transition';
-                addBtn.title = 'Click to add control measures';
-                addBtn.innerHTML = '+ Add';
-                addBtn.onclick = () => openTableImageModal('', parseInt(rowIndex));
-                actionsCell.appendChild(addBtn);
+                // Show "Nil" indicator when no controls
+                const nilBtn = document.createElement('span');
+                nilBtn.className = 'inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-400 cursor-pointer hover:bg-slate-200 hover:text-slate-600 transition';
+                nilBtn.title = 'No control measures - Click to add';
+                nilBtn.innerHTML = '🛡️ Nil';
+                nilBtn.onclick = () => openTableImageModal('', parseInt(rowIndex));
+                actionsCell.appendChild(nilBtn);
             }
         }
         
@@ -8856,8 +8856,57 @@ if (projectData.tableData && projectData.tableData.counterMeasures) {
             });
             console.log(`✅ Restored ${counterMeasures.length} rows with counter measures (legacy format)`);
         }
-        // Update control indicators on table after restoring
-        setTimeout(() => updateAllControlIndicators(), 100);
+        
+        // Update control indicators immediately after restoring data
+        // Iterate through all rows and update their action badges
+        const allRows = document.querySelectorAll('#table-container tbody tr');
+        allRows.forEach(row => {
+            const rowIndex = row.dataset.rowIndex;
+            if (rowIndex === undefined) return;
+            
+            const actionsCell = row.querySelector('.actions-cell');
+            if (!actionsCell) return;
+            
+            // Check for controls in both data sources
+            let hasControls = false;
+            let controlCount = 0;
+            
+            if (row.dataset.counterMeasures) {
+                try {
+                    const controls = JSON.parse(row.dataset.counterMeasures);
+                    if (controls && controls.length > 0) {
+                        hasControls = true;
+                        controlCount = controls.length;
+                    }
+                } catch (e) {}
+            }
+            if (!hasControls && window.selectedControlsMap && window.selectedControlsMap[`row_${rowIndex}`]) {
+                const controls = window.selectedControlsMap[`row_${rowIndex}`];
+                if (controls && controls.length > 0) {
+                    hasControls = true;
+                    controlCount = controls.length;
+                }
+            }
+            
+            // Update the action cell display
+            actionsCell.innerHTML = '';
+            if (hasControls) {
+                const badge = document.createElement('span');
+                badge.className = 'control-badge inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 cursor-pointer hover:bg-green-200 transition';
+                badge.title = `${controlCount} control measure${controlCount > 1 ? 's' : ''} added - Click to view/edit`;
+                badge.innerHTML = `🛡️ ${controlCount}`;
+                badge.onclick = () => openTableImageModal('', parseInt(rowIndex));
+                actionsCell.appendChild(badge);
+            } else {
+                const nilBtn = document.createElement('span');
+                nilBtn.className = 'inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-400 cursor-pointer hover:bg-slate-200 hover:text-slate-600 transition';
+                nilBtn.title = 'No control measures - Click to add';
+                nilBtn.innerHTML = '🛡️ Nil';
+                nilBtn.onclick = () => openTableImageModal('', parseInt(rowIndex));
+                actionsCell.appendChild(nilBtn);
+            }
+        });
+        console.log('✅ Updated all control indicators after project load');
     } catch (e) {
         console.warn('Could not restore counter measures from project file:', e);
     }
@@ -8873,6 +8922,14 @@ if (projectData.tableData && projectData.tableData.counterMeasures) {
         if (window.switchTab) {
             window.switchTab('rich-media');
         }
+        
+        // Auto-scroll to the top of the table for better UX
+        setTimeout(() => {
+            const table = document.querySelector('#table-container table');
+            if (table) {
+                table.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 300);
         
         showCustomAlert("Project loaded successfully!", 'success');
     } catch (error) {
