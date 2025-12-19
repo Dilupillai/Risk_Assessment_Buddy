@@ -74,7 +74,7 @@ Modernize legacy risk assessments:
 
 ```
 Risk_Assessment_Buddy/
-├── index.html                          # Main application file (10,070 lines)
+├── index.html                          # Main application file (~10,000+ lines)
 ├── shareable_html_generator.js         # Standalone HTML report generator
 ├── lib/                                # JavaScript libraries
 │   ├── face-api.min.js                # Face detection library
@@ -333,7 +333,7 @@ This project is provided as-is for safety and risk assessment purposes. Please r
 
 ### Technologies Used
 Special thanks to the open-source projects that make this possible:
-- face-api.js by Vincent Mühler
+- face-api.js by Vincent Muehler
 - Tailwind CSS team
 - JSZip by Stuart Knightley
 - Google Charts team
