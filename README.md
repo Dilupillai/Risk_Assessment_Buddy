@@ -283,19 +283,6 @@ The application generates multiple output formats:
 5. **ZIP Package**: Complete bundle with all formats and images
 6. **JSON Project File**: Save/resume capability
 
-## 🤝 Contributing
-
-This is an open-source project. Contributions are welcome!
-
-### Areas for Contribution
-- Additional language translations
-- Enhanced AI prompts for better hazard detection
-- Additional export formats
-- Mobile app version
-- Offline AI models
-- Integration with EHS management systems
-
-
 ## 🆘 Support & Troubleshooting
 
 ### Common Issues
@@ -303,8 +290,8 @@ This is an open-source project. Contributions are welcome!
 **Issue**: Faces not detected automatically
 - **Solution**: Use manual blur by clicking on faces in lightbox view
 
-**Issue**: AI generation fails or output is not matching with standard dropdown
-- **Solution**: Check internet connection, ensure API key is valid (if using custom AI endpoint). Follow red outline on the table to manually adjust the dropdown.
+**Issue**: AI generation fails or output is not matching with the standard dropdown
+- **Solution**: Check internet connection. Follow red outline on the table to manually adjust the dropdown.
 
 **Issue**: Large file upload fails
 - **Solution**: Compress images/videos before upload, or split into multiple smaller uploads
