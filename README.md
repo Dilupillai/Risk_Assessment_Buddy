@@ -34,7 +34,7 @@ Ideal for documenting existing processes:
 4. Review and refine the generated assessment
 5. Export completed assessment
 
-**Best for**: Standard operating procedures, process documentation, quick assessments
+**Best for**: Comprehensive process start to end risk assessments
 
 ### 3. 📊 Excel Import Workflow
 Modernize legacy risk assessments:
@@ -63,7 +63,7 @@ Modernize legacy risk assessments:
 - **JSZip**: ZIP file generation and Excel parsing
 - **XLSX.js**: Excel file reading and writing
 - **FileSaver.js**: Client-side file downloads
-- **PDFKit**: PDF report generation
+- **PDFKit**: PDF report generation for image notes. Will be depreciated in future updates
 - **Blob-stream**: Binary data handling
 
 ### Models
