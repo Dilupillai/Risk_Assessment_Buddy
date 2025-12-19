@@ -123,7 +123,7 @@ Risk_Assessment_Buddy/
    ```
 
 ### Quick Start (No Installation)
-Simply open `index.html` directly in your web browser for immediate use. Note: Some features may require a web server for full functionality.
+Follow the link: https://dilupillai.github.io/Risk_Assessment_Buddy/
 
 ## 📖 Usage Guide
 
