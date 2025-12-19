@@ -180,8 +180,8 @@ Follow the link: https://dilupillai.github.io/Risk_Assessment_Buddy/
 - Manual blur option: click on faces in lightbox view
 - Undo last blur if needed
 
-### AI Risk Scoring
-The application uses a sophisticated EHS-compliant risk matrix:
+### Risk Scoring
+The application uses a standard EHS-compliant risk matrix:
 
 **Frequency (F)**
 - 1.0: Rarely
@@ -279,7 +279,7 @@ The application generates multiple output formats:
 1. **Excel (.xlsx)**: Structured data table with all assessments
 2. **CSV (.csv)**: Compatible with other tools and systems
 3. **Shareable HTML**: Standalone interactive report with embedded images
-4. **PDF Report**: Professional document for printing and sharing
+4. **PDF Report**: Professional document for printing and sharing. To be depreciated
 5. **ZIP Package**: Complete bundle with all formats and images
 6. **JSON Project File**: Save/resume capability
 
@@ -295,9 +295,6 @@ This is an open-source project. Contributions are welcome!
 - Offline AI models
 - Integration with EHS management systems
 
-## 📄 License
-
-This project is provided as-is for safety and risk assessment purposes. Please review and comply with all applicable safety regulations and standards in your jurisdiction.
 
 ## 🆘 Support & Troubleshooting
 
@@ -306,8 +303,8 @@ This project is provided as-is for safety and risk assessment purposes. Please r
 **Issue**: Faces not detected automatically
 - **Solution**: Use manual blur by clicking on faces in lightbox view
 
-**Issue**: AI generation fails
-- **Solution**: Check internet connection, ensure API key is valid (if using custom AI endpoint)
+**Issue**: AI generation fails or output is not matching with standard dropdown
+- **Solution**: Check internet connection, ensure API key is valid (if using custom AI endpoint). Follow red outline on the table to manually adjust the dropdown.
 
 **Issue**: Large file upload fails
 - **Solution**: Compress images/videos before upload, or split into multiple smaller uploads
@@ -327,7 +324,7 @@ This project is provided as-is for safety and risk assessment purposes. Please r
 
 ## 📞 Contact & Credits
 
-**Project**: Risk Assessment Buddy (SMART 2.0)
+**Project**: Risk Assessment Buddy (SMART 2.0) by Dilu Pillai
 **Purpose**: Field accelerator tool for safety professionals
 **Version**: 2.0
 
